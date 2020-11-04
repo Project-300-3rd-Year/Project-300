@@ -48,11 +48,6 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
     }
 
-    void Update()
-    {
-        print(playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position));
-    }
-
     public void PlayerInteracted()
     {
         if(interactWithDoorCoroutine == null)
