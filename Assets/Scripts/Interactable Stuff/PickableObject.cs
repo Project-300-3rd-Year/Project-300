@@ -15,7 +15,7 @@ using UnityEngine;
  * Pickup "transform" position should adjust depending on object size (maybe).  
  */
 
-
+[RequireComponent(typeof(Rigidbody))]
 public class PickableObject : PlayerInteractableObject,iInteractable
 {
     public static event Action PlayerPickedUpObject; //Current subscribers - raycast script to enables/disable checking for interactables.
@@ -194,7 +194,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (InPlayersHands && collision.gameObject.tag != "Ground") //Maybe change this to check layer of ground instead.
+        if (InPlayersHands && collision.gameObject.tag != "Ground" && !ReachedPickupPosition) //Maybe change this to check layer of ground instead.
         {
             DropFromPlayersHands();
         }
@@ -213,7 +213,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     public void PlayerLookedAtMe()
     {
         if (IsInteractable)
-            AimDotUI.Instance.SetInteractImage(UIImageToShowIfPlayerLooksAtMe);
+            AimDotUI.Instance.ChangeAimDotToGreen();
         else
             AimDotUI.Instance.ChangeAimDotBackToNormal();
     }
