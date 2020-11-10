@@ -14,10 +14,14 @@ public class HidingSpot : PlayerInteractableObject, iInteractable
     [SerializeField] private Transform transformToMoveOutOf;
     [SerializeField] private float playerHeightTargetOnInteraction;
 
-    [SerializeField] private bool IsInHiding;
+    public static bool IsInHiding;
+
+    [SerializeField] private bool IsMovingIntoPosition;
+
+    [SerializeField] private HidingSpot[] otherHidingSpots;
 
 
-    public bool IsInteractable { get { return true; } set { } }
+    public bool IsInteractable { get { return IsMovingIntoPosition == false; } set { } }
 
     public event Action InteractedEvent;
 
@@ -35,26 +39,63 @@ public class HidingSpot : PlayerInteractableObject, iInteractable
     {
         if(IsInteractable)
         {
-            IsInHiding = true;
+            if(!IsInHiding) 
+            {
+                IsInHiding = true;
+                IsMovingIntoPosition = true;
 
-            PlayerLookedAwayFromMe();
-            PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
+                PlayerLookedAwayFromMe();
+                PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
 
-            playerMovement.DisableMovement();
-            playerCameraRotation.DisableRotation();
+                playerMovement.DisableMovement();
+                playerCameraRotation.DisableRotation();
 
-            LeanTween.rotate(player.gameObject, transformToMoveIntoOnInteraction.transform.eulerAngles, 1f);
-            LeanTween.move(player.gameObject, transformToMoveIntoOnInteraction, 1f)
+                for (int i = 0; i < otherHidingSpots.Length; i++)
+                {
+                    otherHidingSpots[i].ChangeDefaultKeyToInteract(KeyCode.Mouse1);
+                }
+
+                LeanTween.rotate(player.gameObject, transformToMoveIntoOnInteraction.transform.eulerAngles, 1.1f).setEase(LeanTweenType.easeInOutQuad);
+                LeanTween.move(player.gameObject, transformToMoveIntoOnInteraction, 1.1f).setEase(LeanTweenType.easeInOutQuad)
                 .setOnComplete(delegate ()
                 {
-                   LeanTween.move(player.gameObject, hidingTransform, 1f);
-                   LeanTween.rotate(player.gameObject, hidingTransform.transform.eulerAngles, 1f)
+                    LeanTween.move(player.gameObject, hidingTransform, 1.2f).setEase(LeanTweenType.easeInCubic);
+                    LeanTween.rotate(player.gameObject, hidingTransform.transform.eulerAngles, 1.3f).setEase(LeanTweenType.easeOutQuad)
                     .setOnComplete(delegate ()
                     {
-                       playerCameraRotation.EnableRotation();
-                        StartCoroutine(CheckInputForLeavingHidingSpot());
+                        playerCameraRotation.EnableRotation();
+                        IsMovingIntoPosition = false;
+
+                        PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
                     });
                 });
+            }
+            else //In hiding, move away from hiding spot.
+            {
+                IsMovingIntoPosition = true;
+                playerCameraRotation.DisableRotation();
+
+                LeanTween.rotate(player.gameObject, hidingTransform.transform.eulerAngles, 1f)
+                    .setOnComplete(delegate ()
+                    {
+                        LeanTween.move(player.gameObject, transformToMoveOutOf, 1f);
+                        LeanTween.rotate(player.gameObject, transformToMoveOutOf.transform.eulerAngles, 1f)
+                        .setOnComplete(delegate ()
+                        {
+                            playerCameraRotation.EnableRotation();
+                            playerMovement.EnableMovement();
+                            PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
+                            IsInHiding = false;
+                            IsMovingIntoPosition = false;
+
+                            for (int i = 0; i < otherHidingSpots.Length; i++)
+                            {
+                                otherHidingSpots[i].ChangeDefaultKeyToInteract(KeyCode.Mouse0);
+                            }
+
+                        });
+                    });
+            }
         }
     }
 
@@ -78,32 +119,35 @@ public class HidingSpot : PlayerInteractableObject, iInteractable
 
     }
 
-    private IEnumerator CheckInputForLeavingHidingSpot()
-    {
-        while(IsInHiding)
-        {
-            if(Input.GetKeyDown(KeyCode.Mouse1))
-            {
-                IsInHiding = false;
+    //private IEnumerator CheckInputForLeavingHidingSpot()
+    //{
+    //    while(IsInHiding)
+    //    {
+    //        if(Input.GetKeyDown(KeyCode.Mouse1))
+    //        {
+    //            IsMovingIntoPosition = true;
+    //            playerCameraRotation.DisableRotation();
 
-                playerCameraRotation.DisableRotation();
+    //            LeanTween.rotate(player.gameObject, hidingTransform.transform.eulerAngles, 1f)
+    //                .setOnComplete(delegate()
+    //                {
+    //                    LeanTween.move(player.gameObject, transformToMoveOutOf, 1f);
+    //                    LeanTween.rotate(player.gameObject, transformToMoveOutOf.transform.eulerAngles, 1f)
+    //                    .setOnComplete(delegate()
+    //                    {
+    //                        playerCameraRotation.EnableRotation();
+    //                        playerMovement.EnableMovement();
+    //                        PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
+    //                        IsInHiding = false;
+    //                        IsMovingIntoPosition = false;
 
-                LeanTween.rotate(player.gameObject, hidingTransform.transform.eulerAngles, 1f)
-                    .setOnComplete(delegate()
-                    {
-                        LeanTween.move(player.gameObject, transformToMoveOutOf, 1f);
-                        LeanTween.rotate(player.gameObject, transformToMoveOutOf.transform.eulerAngles, 1f)
-                        .setOnComplete(delegate()
-                        {
-                            playerCameraRotation.EnableRotation();
-                            playerMovement.EnableMovement();
-                            PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
+    //                        //IsInteractable = true;
 
-                        });
-                    });
-            }
+    //                    });
+    //                });
+    //        }
 
-            yield return null;
-        }
-    }
+    //        yield return null;
+    //    }
+    //}
 }
