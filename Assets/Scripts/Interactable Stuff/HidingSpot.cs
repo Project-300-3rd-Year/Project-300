@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HidingSpot : PlayerInteractableObject, iInteractable
 {
@@ -44,6 +45,14 @@ public class HidingSpot : PlayerInteractableObject, iInteractable
     [Header("Other Hiding Spots")] //If there are multiple hiding spots near each other, need to have a reference to them to change their key to interact.
     [SerializeField] private HidingSpot[] otherHidingSpots;
 
+    [Header("UI")]
+    [SerializeField] private Sprite hideSprite;
+    [SerializeField] private Sprite stopHidingSprite;
+    [SerializeField] private Image interactImage;
+    [SerializeField] private Transform posToMoveTo;
+    [SerializeField] private float imageMoveSpeed;
+    [SerializeField] private LeanTweenType imageMoveEase;
+    private Vector2 interactImageStartingPosition;
 
     public override void Awake()
     {
@@ -52,7 +61,11 @@ public class HidingSpot : PlayerInteractableObject, iInteractable
         playerCameraRotation = player.GetComponentInChildren<PlayerCameraRotation>();
         playerCharacterController = player.GetComponent<CharacterController>();
     }
-    public override void Start() => base.Start();
+    public override void Start()
+    {
+        base.Start();
+        interactImageStartingPosition = interactImage.transform.position;
+    }
 
     public void PlayerInteracted()
     {
@@ -160,11 +173,22 @@ public class HidingSpot : PlayerInteractableObject, iInteractable
     public void PlayerLookedAtMe()
     {
         AimDotUI.Instance.ChangeAimDotToGreen();
+        interactImage.sprite = IsInHiding == false ? hideSprite : stopHidingSprite;
+
+        if(LeanTween.isTweening(interactImage.gameObject))
+            LeanTween.cancel(interactImage.gameObject);
+
+        LeanTween.move(interactImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
     }
 
     public void PlayerLookedAwayFromMe()
     {
         AimDotUI.Instance.ChangeAimDotBackToNormal();
+
+        if (LeanTween.isTweening(interactImage.gameObject))
+            LeanTween.cancel(interactImage.gameObject);
+
+        LeanTween.move(interactImage.gameObject, interactImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
     }
 
     public void PlayerStoppedInteraction()
