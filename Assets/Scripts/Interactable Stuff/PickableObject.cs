@@ -106,10 +106,14 @@ public class PickableObject : PlayerInteractableObject,iInteractable
                 }
             }
 
+
             //Drop from hands if player rotated too fast.
-            if (playerCameraRotation.currentHorizontalRotationSpeed >= playerHorizontalRotationSpeedToDrop || playerCameraRotation.currentVerticalRotationSpeed >= playerVerticalRotationSpeedToDrop)
+            if(!IsBeingRotated)
             {
-                DropFromPlayersHands();
+                if (playerCameraRotation.currentHorizontalRotationSpeed >= playerHorizontalRotationSpeedToDrop || playerCameraRotation.currentVerticalRotationSpeed >= playerVerticalRotationSpeedToDrop)
+                {
+                    DropFromPlayersHands();
+                }
             }
 
             //Enter Rotation State.
