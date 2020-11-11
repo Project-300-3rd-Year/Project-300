@@ -5,9 +5,14 @@ using UnityEngine;
 
 public class PlayerInteractRaycast : MonoBehaviour
 {
+    //Components.
+    PlayerMovement playerMovement;
+
     //Events.
     public event Action<PlayerInteractableComponent> LookedAtInteractableEvent;
     public event Action LookedAwayFromInteractableEvent;
+
+    [SerializeField] private bool CanInteractWithObjects { get { return playerMovement.IsSprinting == false; }}
 
     //Instance.
     private static PlayerInteractRaycast _instance;
@@ -38,6 +43,11 @@ public class PlayerInteractRaycast : MonoBehaviour
     private Ray ray;
     private RaycastHit hitInfo;
 
+    private void Awake()
+    {
+        playerMovement = GetComponent<PlayerMovement>();
+    }
+
     private void Start()
     {
         PickableObject.PlayerPickedUpObject += DisableCheckingForInteractables; //Consider just calling methods instead of listening for event - not sure which is better.
@@ -46,20 +56,23 @@ public class PlayerInteractRaycast : MonoBehaviour
 
     private void Update()
     {
-        if (interactableObject != null)//Looking at interactable.
+        if(CanInteractWithObjects)
         {
-            if (interactableObject.inputDelegate(interactableObject.currentKeyToInteract)) //Player interacts.
+            if (interactableObject != null)//Looking at interactable.
             {
-                IinteractableObject.PlayerInteracted();
-            }
+                if (interactableObject.inputDelegate(interactableObject.currentKeyToInteract)) //Player interacts.
+                {
+                    IinteractableObject.PlayerInteracted();
+                }
 
-            //if (interactableObject != null) //After interacting an object might destroy itself.
-            //{
-            //    if (Input.GetKeyUp(interactableObject.defaultKeyToInteract))
-            //    {
-            //        IinteractableObject.PlayerStoppedInteraction();
-            //    }
-            //}
+                //if (interactableObject != null) //After interacting an object might destroy itself.
+                //{
+                //    if (Input.GetKeyUp(interactableObject.defaultKeyToInteract))
+                //    {
+                //        IinteractableObject.PlayerStoppedInteraction();
+                //    }
+                //}
+            }
         }
     }
 

@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float maxWalkSpeed;
 
     [Header("Sprinting")]
-    [SerializeField] private bool IsSprinting;
+    public bool IsSprinting;
     [SerializeField] private float sprintSpeed = 24f;
     [SerializeField] private float sprintTimer = 0;
     [SerializeField] private float maxSprintTime = 3;
@@ -141,6 +141,8 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            IsSprinting = false;
+
             if (SprintIsInCooldown)
             {
                 sprintCooldownTimer += Time.deltaTime;
