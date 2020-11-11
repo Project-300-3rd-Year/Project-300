@@ -9,6 +9,8 @@ public class PlayerCameraRotation : MonoBehaviour
     private PlayerMovement playerMovement;
     private Camera playerCamera;
 
+    [SerializeField] private bool CanRotate;
+
     private float horizontalRotationInput { get { return Input.GetAxisRaw("Mouse X"); } }
     private float verticalRotationInput { get { return Input.GetAxisRaw("Mouse Y"); } set { } }
 
@@ -38,7 +40,8 @@ public class PlayerCameraRotation : MonoBehaviour
 
     void Update()
     {
-        RotateOnPlayerInput();
+        if(CanRotate)
+            RotateOnPlayerInput();
     }
 
     private void RotateOnPlayerInput()
@@ -59,6 +62,12 @@ public class PlayerCameraRotation : MonoBehaviour
             verticalRotationInput = 0;
     }
 
-    public void DisableRotation() => mouseSensitivity = 0;
-    public void EnableRotation() => mouseSensitivity = defaultMouseSensitivity;
+    public void SetRotation(float rotation)
+    {
+        VerticalRotation = rotation;
+       // transform.localRotation = Quaternion.Euler(-rotation, 0f, 0f);
+    }
+
+    public void DisableRotation() => CanRotate = false;
+    public void EnableRotation() => CanRotate = true;
 }

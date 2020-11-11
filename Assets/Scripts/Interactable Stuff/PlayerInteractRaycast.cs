@@ -48,7 +48,7 @@ public class PlayerInteractRaycast : MonoBehaviour
     {
         if (interactableObject != null)//Looking at interactable.
         {
-            if (interactableObject.inputDelegate(interactableObject.defaultKeyToInteract)) //Player interacts.
+            if (interactableObject.inputDelegate(interactableObject.currentKeyToInteract)) //Player interacts.
             {
                 IinteractableObject.PlayerInteracted();
             }
