@@ -42,7 +42,7 @@ public class HidingSpot : PlayerInteractableObject, iInteractable
     [SerializeField] private LeanTweenType leavingPosRotateEaseType;
     [SerializeField] private KeyCode keyToLeaveHidingSpot;
 
-    [Header("Other Hiding Spots")] //If there are multiple hiding spots near each other, need to have a reference to them to change their key to interact.
+    [Header("Other Hiding Spots")] //If there are multiple hiding spots near each other, need to have a reference to them to change their key to interact (for the purpose of leaving)
     [SerializeField] private HidingSpot[] otherHidingSpots;
 
     [Header("UI")]
