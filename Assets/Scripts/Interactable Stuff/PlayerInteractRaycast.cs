@@ -12,7 +12,18 @@ public class PlayerInteractRaycast : MonoBehaviour
     public event Action<PlayerInteractableComponent> LookedAtInteractableEvent;
     public event Action LookedAwayFromInteractableEvent;
 
-    [SerializeField] private bool CanInteractWithObjects { get { return playerMovement.IsSprinting == false; }}
+    private bool _canInteractWithObjects = true;
+    [SerializeField] private bool CanInteractWithObjects
+    {
+        get
+        {
+            return (playerMovement.IsSprinting == false) && (_canInteractWithObjects == true);
+        }
+        set
+        {
+            _canInteractWithObjects = value;
+        }
+    }
 
     //Instance.
     private static PlayerInteractRaycast _instance;
@@ -139,4 +150,7 @@ public class PlayerInteractRaycast : MonoBehaviour
 
     public void EnableCheckingForInteractables() => checkForInteractableObjects = true;
     public void DisableCheckingForInteractables() => checkForInteractableObjects = false;
+
+    public void EnableInteractionWithObjects() => CanInteractWithObjects = true;
+    public void DisableInteractionWithObjects() => CanInteractWithObjects = false;
 }

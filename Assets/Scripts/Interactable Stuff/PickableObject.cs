@@ -100,7 +100,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
             transform.position = Vector3.MoveTowards(transform.position, targetTransform.transform.position, moveSpeed + playerMovement.Speed);
             if (!ReachedPickupPosition)
             {
-                if (Vector3.Distance(transform.position, targetTransform.transform.position) <= 0.2f)
+                if (Vector3.Distance(transform.position, targetTransform.transform.position) <= 0.001f)
                 {
                     ReachedPickupPosition = true;
                 }
@@ -198,7 +198,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (InPlayersHands && collision.gameObject.tag != "Ground" && !ReachedPickupPosition) //Maybe change this to check layer of ground instead.
+        if (InPlayersHands && collision.gameObject.tag != "Ground" && ReachedPickupPosition) //Maybe change this to check layer of ground instead.
         {
             DropFromPlayersHands();
         }
