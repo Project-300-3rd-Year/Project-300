@@ -4,20 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HidingSpot : PlayerInteractableObject, iInteractable
+public class HidingSpot : PlayerInteractableObject
 {
-    //Events.
-    public event Action InteractedEvent;
-
     //Components.
-    private PlayerMovement playerMovement;
-    private PlayerCameraRotation playerCameraRotation;
-    private CharacterController playerCharacterController;
-
-    public bool IsInteractable { get { return IsMovingIntoPosition == false; } set { } }
+    protected PlayerMovement playerMovement;
+    protected PlayerCameraRotation playerCameraRotation;
+    protected CharacterController playerCharacterController;
 
     [Header("Hiding Status")]
-    [SerializeField] private bool IsMovingIntoPosition;
+    [SerializeField] protected bool IsMovingIntoPosition;
     public static bool IsInHiding; //Hiding status across all hiding spots.
 
     [Header("First target position")]
@@ -28,31 +23,28 @@ public class HidingSpot : PlayerInteractableObject, iInteractable
     [SerializeField] private LeanTweenType firstPosRotateEaseType;
 
     [Header("Hiding spot")]
-    [SerializeField] private Transform targetTransformForHiding;
+    [SerializeField] protected Transform targetTransformForHiding;
     [SerializeField] private float timeToMoveToHidingPos;
     [SerializeField] private float timeToRotateToHidingPos;
     [SerializeField] private LeanTweenType hidingPosMoveEaseType;
     [SerializeField] private LeanTweenType hidingPosRotateEaseType;
 
     [Header("Leaving hiding spot")]
-    [SerializeField] private Transform targetTransformOnLeaving;
+    [SerializeField] protected Transform targetTransformOnLeaving;
     [SerializeField] private float timeToMoveToLeavingPos;
     [SerializeField] private float timeToRotateToLeavingPos;
     [SerializeField] private LeanTweenType leavingPosMoveEaseType;
     [SerializeField] private LeanTweenType leavingPosRotateEaseType;
-    [SerializeField] private KeyCode keyToLeaveHidingSpot;
-
-    [Header("Other Hiding Spots")] //If there are multiple hiding spots near each other, need to have a reference to them to change their key to interact (for the purpose of leaving)
-    [SerializeField] private HidingSpot[] otherHidingSpots;
+    [SerializeField] protected KeyCode keyToLeaveHidingSpot;
 
     [Header("UI")]
-    [SerializeField] private Sprite hideSprite;
-    [SerializeField] private Sprite stopHidingSprite;
-    [SerializeField] private Image interactImage;
-    [SerializeField] private Transform posToMoveTo;
-    [SerializeField] private float imageMoveSpeed;
-    [SerializeField] private LeanTweenType imageMoveEase;
-    private Vector2 interactImageStartingPosition;
+    [SerializeField] protected Sprite hideSprite;
+    [SerializeField] protected Sprite stopHidingSprite;
+    [SerializeField] protected Image interactImage;
+    [SerializeField] protected Transform posToMoveTo;
+    [SerializeField] protected float imageMoveSpeed;
+    [SerializeField] protected LeanTweenType imageMoveEase;
+    protected Vector2 interactImageStartingPosition;
 
     public override void Awake()
     {
@@ -67,134 +59,158 @@ public class HidingSpot : PlayerInteractableObject, iInteractable
         interactImageStartingPosition = interactImage.transform.position;
     }
 
-    public void PlayerInteracted()
-    {
-        if(IsInteractable)
-        {
-            if(!IsInHiding) //Not in hiding, move into hiding spot.
-            {
-                OnEnteringHidingSpot();
-
-                MoveToFirstPosition().setOnComplete(delegate ()
-                {
-                    MoveToHidingPosition().setOnComplete(OnReachingHidingSpot);
-                });
-            }
-            else //In hiding, move away from hiding spot.
-            {
-                OnLeavingHidingSpot();
-
-                MoveToFirstPosition().setOnComplete(delegate ()
-                {
-                    MoveToLeavingPosition().setOnComplete(OnLeftHidingSpot);
-                });
-            }
-        }
-    }
-
     //Moving to desired locations (returns LTDescr so can call OnComplete after using these methods).
-    private LTDescr MoveToFirstPosition()
+    //All hiding spot types can use these methods.
+    protected LTDescr MoveToFirstPosition()
     {
         LeanTween.rotate(player.gameObject, targetTransformOnInteraction.transform.eulerAngles, timeToRotateToFirstPos).setEase(firstPosRotateEaseType);
         LeanTween.rotate(Camera.main.gameObject, targetTransformOnInteraction.transform.eulerAngles, timeToRotateToFirstPos).setEase(firstPosRotateEaseType);
         return LeanTween.move(player.gameObject, targetTransformOnInteraction, timeToMoveToFirstPos).setEase(firstPosMoveEaseType);
     }
-    private LTDescr MoveToHidingPosition()
+    protected LTDescr MoveToHidingPosition()
     {
         LeanTween.rotate(player.gameObject, targetTransformForHiding.transform.eulerAngles, timeToRotateToHidingPos).setEase(hidingPosRotateEaseType);
         LeanTween.rotate(Camera.main.gameObject, targetTransformForHiding.transform.eulerAngles, timeToRotateToHidingPos).setEase(hidingPosRotateEaseType);
         return LeanTween.move(player.gameObject, targetTransformForHiding, timeToMoveToHidingPos).setEase(hidingPosMoveEaseType);
     }
-    private LTDescr MoveToLeavingPosition()
+    protected LTDescr MoveToLeavingPosition()
     {
         LeanTween.rotate(player.gameObject, targetTransformOnLeaving.transform.eulerAngles, timeToRotateToLeavingPos).setEase(leavingPosRotateEaseType);
         LeanTween.rotate(Camera.main.gameObject, targetTransformOnLeaving.transform.eulerAngles, timeToRotateToLeavingPos).setEase(leavingPosRotateEaseType);
         return LeanTween.move(player.gameObject, targetTransformOnLeaving, timeToMoveToLeavingPos).setEase(leavingPosMoveEaseType);
     }
 
-    //Things that happen when 
-    private void OnEnteringHidingSpot()
-    {
-        IsInHiding = true;
-        IsMovingIntoPosition = true;
+    ////Old code when no inheritence - it used iinteractable as well
+    //protected virtual void OnEnteringHidingSpot()
+    //{
+    //    IsInHiding = true;
+    //    IsMovingIntoPosition = true;
 
-        PlayerLookedAwayFromMe();
-        PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
+    //    //PlayerLookedAwayFromMe();
+    //    PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
 
-        playerMovement.DisableMovement();
-        playerCameraRotation.DisableRotation();
+    //    playerMovement.DisableMovement();
+    //    playerCameraRotation.DisableRotation();
 
-        for (int i = 0; i < otherHidingSpots.Length; i++)
-        {
-            otherHidingSpots[i].ChangeCurrentKeyToInteract(keyToLeaveHidingSpot);
-        }
-    }
-    private void OnReachingHidingSpot()
-    {
-        playerCameraRotation.EnableRotation();
-        playerCameraRotation.SetRotation(targetTransformForHiding.transform.eulerAngles.x);
-        IsMovingIntoPosition = false;
+    //    for (int i = 0; i < otherHidingSpots.Length; i++)
+    //    {
+    //        otherHidingSpots[i].ChangeCurrentKeyToInteract(keyToLeaveHidingSpot);
+    //    }
+    //}
+    //protected virtual void OnReachingHidingSpot()
+    //{
+    //    playerCameraRotation.EnableRotation();
+    //    playerCameraRotation.SetRotation(targetTransformForHiding.transform.eulerAngles.x);
+    //    IsMovingIntoPosition = false;
 
-        PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
-    }
-    private void OnLeavingHidingSpot()
-    {
-        IsMovingIntoPosition = true;
+    //    PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
+    //}
+    //protected virtual void OnLeavingHidingSpot()
+    //{
+    //    IsMovingIntoPosition = true;
 
-        PlayerLookedAwayFromMe();
-        PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
+    //   // PlayerLookedAwayFromMe();
+    //    PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
 
-        playerCameraRotation.DisableRotation();
-    }
-    private void OnLeftHidingSpot()
-    {
-        playerCameraRotation.SetRotation(targetTransformOnLeaving.transform.eulerAngles.x);
+    //    playerCameraRotation.DisableRotation();
+    //}
+    //protected virtual void OnLeftHidingSpot()
+    //{
+    //    playerCameraRotation.SetRotation(targetTransformOnLeaving.transform.eulerAngles.x);
 
-        playerCameraRotation.EnableRotation();
-        playerMovement.EnableMovement();
+    //    playerCameraRotation.EnableRotation();
+    //    playerMovement.EnableMovement();
 
-        PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
+    //    PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
 
-        IsInHiding = false;
-        IsMovingIntoPosition = false;
+    //    IsInHiding = false;
+    //    IsMovingIntoPosition = false;
 
-        for (int i = 0; i < otherHidingSpots.Length; i++)
-        {
-            otherHidingSpots[i].ChangeCurrentKeyToInteract(defaultKeyToInteract);
-        }
+    //    for (int i = 0; i < otherHidingSpots.Length; i++)
+    //    {
+    //        otherHidingSpots[i].ChangeCurrentKeyToInteract(defaultKeyToInteract);
+    //    }
 
-    }
+    //}
 
-    public void PlayerIsLookingAtMe()
-    {
 
-    }
 
-    public void PlayerLookedAtMe()
-    {
-        AimDotUI.Instance.ChangeAimDotToGreen();
-        interactImage.sprite = IsInHiding == false ? hideSprite : stopHidingSprite;
 
-        if(LeanTween.isTweening(interactImage.gameObject))
-            LeanTween.cancel(interactImage.gameObject);
 
-        LeanTween.move(interactImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
-    }
 
-    public void PlayerLookedAwayFromMe()
-    {
-        AimDotUI.Instance.ChangeAimDotBackToNormal();
 
-        if (LeanTween.isTweening(interactImage.gameObject))
-            LeanTween.cancel(interactImage.gameObject);
 
-        LeanTween.move(interactImage.gameObject, interactImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
-    }
 
-    public void PlayerStoppedInteraction()
-    {
+    //public void PlayerInteracted()
+    //{
+    //    if(IsInteractable)
+    //    {
+    //        if(!IsInHiding) //Not in hiding, move into hiding spot.
+    //        {
+    //            OnEnteringHidingSpot();
 
-    }
+    //            MoveToFirstPosition().setOnComplete(delegate ()
+    //            {
+    //                MoveToHidingPosition().setOnComplete(OnReachingHidingSpot);
+    //            });
+    //        }
+    //        else //In hiding, move away from hiding spot.
+    //        {
+    //            OnLeavingHidingSpot();
+
+    //            MoveToFirstPosition().setOnComplete(delegate ()
+    //            {
+    //                MoveToLeavingPosition().setOnComplete(OnLeftHidingSpot);
+    //            });
+    //        }
+    //    }
+    //}
+
+    //public void PlayerIsLookingAtMe()
+    //{
+
+    //}
+
+    //public void PlayerLookedAtMe()
+    //{
+    //    AimDotUI.Instance.ChangeAimDotToGreen();
+    //    interactImage.sprite = IsInHiding == false ? hideSprite : stopHidingSprite;
+
+    //    if(LeanTween.isTweening(interactImage.gameObject))
+    //        LeanTween.cancel(interactImage.gameObject);
+
+    //    LeanTween.move(interactImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
+    //}
+
+    //public void PlayerLookedAwayFromMe()
+    //{
+    //    AimDotUI.Instance.ChangeAimDotBackToNormal();
+
+    //    if (LeanTween.isTweening(interactImage.gameObject))
+    //        LeanTween.cancel(interactImage.gameObject);
+
+    //    LeanTween.move(interactImage.gameObject, interactImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
+    //}
+
+    //public void PlayerStoppedInteraction()
+    //{
+
+    //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //private IEnumerator CheckInputForLeavingHidingSpot()
     //{

@@ -19,6 +19,8 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
     [SerializeField] TextMeshProUGUI tmProDate;
     [SerializeField] TextMeshProUGUI tmProNote;
 
+    private Coroutine readingNoteCoroutine;
+
     public bool IsInteractable { get { return true; } set { _IsInteractable = value;} }
 
     public event Action InteractedEvent;
@@ -38,7 +40,13 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
     {
         if(IsInteractable)
         {
+            if (readingNoteCoroutine != null)
+                StopCoroutine(readingNoteCoroutine);
+
+            readingNoteCoroutine = StartCoroutine(ReadingNoteCoroutine());
+
             PlayerInteractRaycast.Instance.DisableInteractionWithObjects();
+            PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
 
             Cursor.lockState = CursorLockMode.None;
 
@@ -71,5 +79,29 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
     public void PlayerStoppedInteraction()
     {
 
+    }
+
+    private IEnumerator ReadingNoteCoroutine()
+    {
+        while (true)
+        {
+            if(Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                PlayerInteractRaycast.Instance.EnableInteractionWithObjects();
+                PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
+
+                Cursor.lockState = CursorLockMode.Locked;
+
+                playerMovement.EnableMovement();
+                playerCameraRotation.EnableRotation();
+
+                imgBackground.gameObject.SetActive(false);
+                imgNote.gameObject.SetActive(false);
+
+                break;
+            }
+
+            yield return null;
+        }
     }
 }
