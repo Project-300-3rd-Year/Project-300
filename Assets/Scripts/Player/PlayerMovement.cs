@@ -243,6 +243,10 @@ public class PlayerMovement : MonoBehaviour
                 currentMovementSpeed = IsCrouching ? maxCrouchSpeed : maxWalkSpeed;
         }
     }
+    private void Lean()
+    {
+        
+    }
 
     //TEMPORARY TEST FOR COLLIDING WITH OTHER RIGIDBODIES - FIX UP LATER.
     private void OnControllerColliderHit(ControllerColliderHit hit)
