@@ -69,5 +69,9 @@ public class PlayerCameraRotation : MonoBehaviour
     }
 
     public void DisableRotation() => CanRotate = false;
-    public void EnableRotation() => CanRotate = true;
+    public void EnableRotation()
+    {
+        CanRotate = true;
+        print("hello");
+    } 
 }

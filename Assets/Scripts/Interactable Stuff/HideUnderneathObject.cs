@@ -47,7 +47,6 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
     public void PlayerLookedAtMe()
     {
         AimDotUI.Instance.ChangeAimDotToGreen();
-        //interactImage.sprite = IsInHiding == false ? hideSprite : stopHidingSprite;
 
         if (LeanTween.isTweening(interactImage.gameObject))
             LeanTween.cancel(interactImage.gameObject);
@@ -71,7 +70,6 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
     {
 
     }
-
 
     //IHideable.
     public void OnEnteringHidingSpot()

@@ -9,8 +9,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     private PlayerCameraRotation playerCameraRotation;
     [SerializeField] private PlayerInteractableArea interactableArea;
 
-    [Header("Interaction")]
-    [SerializeField] private bool PlayerInteractingWithDoor;
+    public static bool PlayerInteractingWithDoor; //Static as there was an issue with being able to interact with two hadles at once.
     private Coroutine interactWithDoorCoroutine;
 
     [Header("Door - Rotation")]
@@ -50,8 +49,11 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
 
     public void PlayerInteracted()
     {
-        if(interactWithDoorCoroutine == null)
-            interactWithDoorCoroutine = StartCoroutine(InteractWithDoorHandle());
+        if(PlayerInteractingWithDoor == false)
+        {
+            if (interactWithDoorCoroutine == null)
+                interactWithDoorCoroutine = StartCoroutine(InteractWithDoorHandle());
+        }
     }
 
     public void PlayerIsLookingAtMe()
@@ -71,25 +73,14 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
             AimDotUI.Instance.ChangeAimDotBackToNormal();
     }
 
-    public void PlayerStoppedInteraction()
-    {
-        PlayerInteractingWithDoor = false;
-        AimDotUI.Instance.EnableAimDot();
-        AimDotUI.Instance.ChangeAimDotBackToNormal();
-        playerCameraRotation.EnableRotation();
-
-        if (interactWithDoorCoroutine != null)
-        {
-            StopCoroutine(interactWithDoorCoroutine);
-            interactWithDoorCoroutine = null;
-        }
-    }
-
     private IEnumerator InteractWithDoorHandle()
     {
-        Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
+        //doorRigidbody.isKinematic = false;
 
+        Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
         PlayerInteractingWithDoor = true;
+
+        PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
 
         playerCameraRotation.DisableRotation();
         AimDotUI.Instance.DisableAimDot();
@@ -104,11 +95,24 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         PlayerStoppedInteraction();
     }
 
-    //float ClampAngle(float angle, float from, float to)
-    //{
-    //    // accepts e.g. -80, 80
-    //    if (angle < 0f) angle = 360 + angle;
-    //    if (angle > 180f) return Mathf.Max(angle, 360 + from);
-    //    return Mathf.Min(angle, to);
-    //}
+
+    public void PlayerStoppedInteraction()
+    {
+        if (PlayerInteractingWithDoor)
+        {
+            PlayerInteractingWithDoor = false;
+            AimDotUI.Instance.EnableAimDot();
+            AimDotUI.Instance.ChangeAimDotBackToNormal();
+            playerCameraRotation.EnableRotation();
+
+            PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
+
+            if (interactWithDoorCoroutine != null)
+            {
+                StopCoroutine(interactWithDoorCoroutine);
+                interactWithDoorCoroutine = null;
+            }
+        }
+        //doorRigidbody.isKinematic = true;
+    }
 }

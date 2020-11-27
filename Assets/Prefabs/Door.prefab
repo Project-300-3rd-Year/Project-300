@@ -103,6 +103,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8232214416584894871}
   - component: {fileID: 8100681908455423803}
+  - component: {fileID: 650723383466511457}
   m_Layer: 0
   m_Name: InteractableArea
   m_TagString: InteractableArea
@@ -137,6 +138,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.3055577, y: 2.2375135, z: 3.523196}
   m_Center: {x: -1.9255989, y: 1.6186544, z: -0.05619978}
+--- !u!114 &650723383466511457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487309325380043365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f205d3b5f3925c4cbbff85b54cb6359, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsInteractable: 0
+  defaultKeyToInteract: 0
+  currentKeyToInteract: 0
+  holdToInteract: 0
+  KeyWasHeldOnLookingAtMe: 0
 --- !u!1 &922833030292058119
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,6 +214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _IsInteractable: 0
   defaultKeyToInteract: 323
+  currentKeyToInteract: 0
   holdToInteract: 0
   KeyWasHeldOnLookingAtMe: 0
   UIImageToShowIfPlayerLooksAtMe: {fileID: 0}

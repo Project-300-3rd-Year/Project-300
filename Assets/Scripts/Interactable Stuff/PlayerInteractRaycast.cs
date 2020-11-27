@@ -50,6 +50,7 @@ public class PlayerInteractRaycast : MonoBehaviour
     [Header("Ray")]
     [SerializeField] private bool CheckForRaycastLeavingInteractableObject;
     [SerializeField] private LayerMask layerMask;
+    [SerializeField] private LayerMask layersToBlockInteractRaycast;
     [SerializeField] private float interactDistance = 200;
     private Ray ray;
     private RaycastHit hitInfo;
@@ -97,33 +98,39 @@ public class PlayerInteractRaycast : MonoBehaviour
 
                 if (Physics.Raycast(ray, out hitInfo, interactDistance, layerMask, QueryTriggerInteraction.Collide)) //Looks at interactable.
                 {
-                    if (!CheckForRaycastLeavingInteractableObject)
-                        CheckForRaycastLeavingInteractableObject = true;
+                    if ((layersToBlockInteractRaycast & 1 << hitInfo.collider.gameObject.layer ) == 0) //If the hit object's layer isn't one of the layers that blocks interact raycast.
+                    {                                                                                  
+                        if (!CheckForRaycastLeavingInteractableObject)
+                            CheckForRaycastLeavingInteractableObject = true;
 
-                    if (interactableObject == null || hitInfo.collider.gameObject != interactableObject.gameObject)
+                        if (interactableObject == null || hitInfo.collider.gameObject != interactableObject.gameObject)
+                        {
+                            if (interactableObject != null) //If player looked at another object and the raycast didn't leave any interactable - this "deselects" the old object.
+                            {
+                                LookedAway();
+                            }
+
+                            hitInfo.collider.gameObject.TryGetComponent<PlayerInteractableObject>(out interactableObject);
+                            hitInfo.collider.gameObject.TryGetComponent<iInteractable>(out IinteractableObject);
+
+                            if (interactableObject != null && IinteractableObject != null) //Added extra check here as I added default layer to layermask.
+                            {                                                             //In order for default layer to stop raycast - not be able to pick up items through walls etc. It does mean that this get called 
+                                IinteractableObject.PlayerLookedAtMe();
+                                LookedAtInteractableEvent(interactableObject);
+                            }
+                        }
+
+                        if (IinteractableObject != null)
+                            IinteractableObject.PlayerIsLookingAtMe();
+                    }
+                    else //Looks away from interactable.
                     {
-                        if (interactableObject != null) //If player looked at another object and the raycast didn't leave any interactable - this "deselects" the old object.
+                        if (interactableObject != null)
                         {
                             LookedAway();
                         }
-
-                        hitInfo.collider.gameObject.TryGetComponent<PlayerInteractableObject>(out interactableObject);
-                        hitInfo.collider.gameObject.TryGetComponent<iInteractable>(out IinteractableObject);
-
-                        IinteractableObject.PlayerLookedAtMe();
-                        LookedAtInteractableEvent(interactableObject);
                     }
-
-                    if(IinteractableObject != null)
-                        IinteractableObject.PlayerIsLookingAtMe();
-                }
-                else //Looks away from interactable.
-                {
-                    if (interactableObject != null)
-                    {
-                        LookedAway();
-                    }
-                }
+                }               
             }
         }
     }
@@ -150,6 +157,7 @@ public class PlayerInteractRaycast : MonoBehaviour
 
     public void EnableCheckingForInteractables() => checkForInteractableObjects = true;
     public void DisableCheckingForInteractables() => checkForInteractableObjects = false;
+
 
     public void EnableInteractionWithObjects() => CanInteractWithObjects = true;
     public void DisableInteractionWithObjects() => CanInteractWithObjects = false;
