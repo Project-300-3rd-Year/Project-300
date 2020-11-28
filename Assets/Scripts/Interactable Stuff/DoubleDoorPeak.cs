@@ -3,47 +3,64 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* When player is in a hiding spot that has two doors (wardrobe). As soon as they fully enter the hiding spot this peek object is enabled.
+ * This object is directly in front of the player inside of the closed wardrobe.
+ * When player interacts, the two doors rotate open slightly which allows the player to peek out from the hiding spot.
+ * On pressing the "key to leave", this script calls the interact method from the hiding spot script, which triggers the movement to leave.    
+ * 
+ * 
+ * 
+ * Fix .. looking away while peeking - it stays open.
+ * keywasheld on looking still makes it peek
+ */
+
 public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
 {
     public bool IsInteractable { get { return true; } set { _IsInteractable = value; } }
     public event Action InteractedEvent;
 
-    [SerializeField] private GameObject door1;
-    [SerializeField] private GameObject door2;
+    [SerializeField] private bool _playerIsPeeking;
+    private bool PlayerIsPeeking
+    {
+        get { return _playerIsPeeking; }
+        set
+        {
+            print("g");
+            _playerIsPeeking = value;
+            if (_playerIsPeeking)
+                HidingSpot.IsInHiding = false;
+            else
+                HidingSpot.IsInHiding = true;
+        }       
+    }
 
+    [Header("Door Rotation Speeds")]
+    [SerializeField] private float doorPeekSpeed;
+
+    [Header("Door Rotations When Fully Peeking")]
     [SerializeField] Vector3 door1TargetRotation;
     [SerializeField] Vector3 door2TargetRotation;
 
-    private Quaternion door1ClosedRotation;
-    private Quaternion door2ClosedRotation;
+    [Header("Leaving")]
+    [SerializeField] DoubleDoorWardrobeHidingSpot hidingSpot;
+    [SerializeField] KeyCode keyToLeave;
 
-    [SerializeField] private float doorPeekSpeed;
-    [SerializeField] private bool PlayerIsPeeking;
-
-    Coroutine handlePeekingCoroutine;
-
-    public override void Awake()
-    {
-        base.Awake();
-    }
-
-    public override void Start()
-    {
-        base.Start();
-
-        door1ClosedRotation = door1.transform.rotation;
-        door2ClosedRotation = door2.transform.rotation;
-    }
+    //Start.
+    public override void Awake() => base.Awake();
+    public override void Start() => base.Start();
 
     void Update()
     {
         if (!PlayerIsPeeking)
         {
             //If doors aren't fully shut, rotate to close.
-            if(Quaternion.Angle(door1.transform.rotation, door1ClosedRotation) > 0 || Quaternion.Angle(door2.transform.rotation, door2ClosedRotation) > 0)
+            hidingSpot.CloseDoorsOverTime(doorPeekSpeed);
+
+            if(Input.GetKeyDown(keyToLeave)) //Only can leave when the player isn't peeking.
             {
-                door1.transform.rotation = Quaternion.RotateTowards(door1.transform.rotation, door1ClosedRotation, doorPeekSpeed * Time.deltaTime);
-                door2.transform.rotation = Quaternion.RotateTowards(door2.transform.rotation, door2ClosedRotation, doorPeekSpeed * Time.deltaTime);
+                hidingSpot.PlayerInteracted();
+                gameObject.SetActive(false);
+                AimDotUI.Instance.ChangeAimDotBackToNormal();
             }
         }
 
@@ -58,17 +75,7 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
     {
         PlayerIsPeeking = true;
 
-        if (Quaternion.Angle(door1.transform.rotation, Quaternion.Euler(door1TargetRotation)) > 1.5f 
-            || Quaternion.Angle(door2.transform.rotation, Quaternion.Euler(door2TargetRotation)) > 1.5f)
-        {
-            door1.transform.rotation = Quaternion.RotateTowards(door1.transform.rotation, Quaternion.Euler(door1TargetRotation), doorPeekSpeed * Time.deltaTime);
-            door2.transform.rotation = Quaternion.RotateTowards(door2.transform.rotation, Quaternion.Euler(door2TargetRotation), doorPeekSpeed * Time.deltaTime);
-        }
-    }
-
-    public void PlayerIsLookingAtMe()
-    {
-        
+        hidingSpot.RotateDoorsToTargetRotation(Quaternion.Euler(door1TargetRotation), Quaternion.Euler(door2TargetRotation),doorPeekSpeed);
     }
 
     public void PlayerLookedAtMe()
@@ -80,11 +87,10 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
     {
         AimDotUI.Instance.ChangeAimDotBackToNormal();
 
-        PlayerIsPeeking = false; //In case they looked away while peeking.
+        if(HidingSpot.IsInHiding)
+            PlayerIsPeeking = false; //In case they looked away while peeking.
     }
 
-    public void PlayerStoppedInteraction()
-    {
-       
-    }
+    public void PlayerStoppedInteraction() { }
+    public void PlayerIsLookingAtMe() { }
 }

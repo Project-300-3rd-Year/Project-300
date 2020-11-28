@@ -13,6 +13,7 @@ public class HidingSpot : PlayerInteractableObject
 
     [Header("Hiding Status")]
     [SerializeField] protected bool IsMovingIntoPosition;
+
     public static bool IsInHiding; //Hiding status across all hiding spots.
 
     [Header("First target position")]

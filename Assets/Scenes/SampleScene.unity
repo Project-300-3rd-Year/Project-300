@@ -3815,6 +3815,36 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.3095162, y: 3.4938536, z: 2.279582}
   m_Center: {x: 1.0380697, y: 0.145071, z: -0.07540026}
+--- !u!1 &1051891640
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1051891641}
+  m_Layer: 9
+  m_Name: LeavingPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1051891641
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1051891640}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -2.884, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1500341716}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1001 &1055425096
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5082,6 +5112,7 @@ Transform:
   m_Children:
   - {fileID: 402714075}
   - {fileID: 1716375760}
+  - {fileID: 1051891641}
   - {fileID: 1576904121}
   m_Father: {fileID: 2004019894}
   m_RootOrder: 9
@@ -5128,11 +5159,11 @@ MonoBehaviour:
   timeToRotateToHidingPos: 1.2
   hidingPosMoveEaseType: 28
   hidingPosRotateEaseType: 16
-  targetTransformOnLeaving: {fileID: 0}
-  timeToMoveToLeavingPos: 0
-  timeToRotateToLeavingPos: 0
-  leavingPosMoveEaseType: 0
-  leavingPosRotateEaseType: 0
+  targetTransformOnLeaving: {fileID: 1051891641}
+  timeToMoveToLeavingPos: 1.5
+  timeToRotateToLeavingPos: 1.4
+  leavingPosMoveEaseType: 28
+  leavingPosRotateEaseType: 16
   keyToLeaveHidingSpot: 0
   hideSprite: {fileID: 21300000, guid: d7185da6e9caf934da8686b607cd4d3f, type: 3}
   stopHidingSprite: {fileID: 21300000, guid: 999d4f31096bf3a4dbd8b3fba5cb19a1, type: 3}
@@ -5142,7 +5173,7 @@ MonoBehaviour:
   imageMoveEase: 2
   leftDoor: {fileID: 1083535208}
   rightDoor: {fileID: 31042620}
-  doorRotationSpeed: 0.5
+  doorRotationSpeed: 78.94
   leftDoorOpenRotation: {x: 0, y: 90, z: 0}
   rightDoorOpenRotation: {x: 0, y: 90, z: 0}
   doubleDoorPeak: {fileID: 1576904123}
@@ -5513,7 +5544,7 @@ Transform:
   m_Children:
   - {fileID: 1037332928}
   m_Father: {fileID: 1500341716}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1576904122
 BoxCollider:
@@ -5546,12 +5577,12 @@ MonoBehaviour:
   holdToInteract: 1
   KeyWasHeldOnLookingAtMe: 0
   UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
-  door1: {fileID: 1083535208}
-  door2: {fileID: 31042620}
+  _playerIsPeeking: 0
+  doorPeekSpeed: 62
   door1TargetRotation: {x: 0, y: 45, z: 0}
   door2TargetRotation: {x: 0, y: -230, z: 0}
-  doorPeekSpeed: 71
-  PlayerIsPeeking: 0
+  hidingSpot: {fileID: 1500341718}
+  keyToLeave: 324
 --- !u!65 &1590249620
 BoxCollider:
   m_ObjectHideFlags: 0

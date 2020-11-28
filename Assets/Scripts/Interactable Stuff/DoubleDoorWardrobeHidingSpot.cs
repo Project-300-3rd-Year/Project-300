@@ -12,6 +12,8 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
     [Header("Doors")]
     [SerializeField] private GameObject leftDoor;
     [SerializeField] private GameObject rightDoor;
+    private Rigidbody leftDoorRigidBody;
+    private Rigidbody rightDoorRigidBody;
 
     [Header("Door Rotation")] //Fully open / closed.
     [SerializeField] float doorRotationSpeed;
@@ -22,12 +24,15 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
 
     [SerializeField] DoubleDoorPeak doubleDoorPeak;
 
+    //Start.
     public override void Awake()
     {
         base.Awake();
         playerCharacterController = player.GetComponent<CharacterController>();
-    }
 
+        leftDoorRigidBody = leftDoor.GetComponent<Rigidbody>();
+        rightDoorRigidBody = rightDoor.GetComponent<Rigidbody>();
+    }
     public override void Start()
     {
         base.Start();
@@ -43,6 +48,9 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
     {
         if(!IsInHiding)
         {
+            leftDoorRigidBody.isKinematic = true;
+            rightDoorRigidBody.isKinematic = true;
+
             playerCharacterController.detectCollisions = false;
 
             playerMovement.DisableMovement();
@@ -51,24 +59,42 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
             MoveToFirstPosition().setOnComplete(delegate ()
             {
                 MoveToHidingPosition().setOnComplete(OnEnteringHidingSpot);
-
             });
         }   
+        else //Hiding - called from peeking script.
+        {
+            StartCoroutine(LeaveHidingSpot());
+        }
+    }
+
+    private IEnumerator LeaveHidingSpot()
+    {
+        playerCameraRotation.DisableRotation();
+
+        yield return StartCoroutine(RotateDoorsToTarget(Quaternion.Euler(leftDoorOpenRotation),Quaternion.Euler(rightDoorOpenRotation), doorRotationSpeed));
+
+        MoveToLeavingPosition().setOnComplete(delegate()
+        {
+            OnLeftHidingSpot();
+            StartCoroutine(CloseDoorsAtEnd());
+        });
+    }
+
+    private IEnumerator CloseDoorsAtEnd()
+    {
+        yield return StartCoroutine(RotateDoorsToTarget(leftDoorClosedRotation, rightDoorClosedRotation, doorRotationSpeed));
+        leftDoorRigidBody.isKinematic = false;
+        rightDoorRigidBody.isKinematic = false;
     }
 
     protected override LTDescr MoveToFirstPosition()
     {
-        StartCoroutine(RotateTwoObjectsToTargetPosition(leftDoor,rightDoor,Quaternion.Euler(leftDoorOpenRotation),Quaternion.Euler(rightDoorOpenRotation),doorRotationSpeed));
-
-        //StartCoroutine(RotateObjectToTargetRotation(leftDoor, Quaternion.Euler(leftDoorOpenRotation), doorRotationSpeed));
-        //StartCoroutine(RotateObjectToTargetRotation(rightDoor, Quaternion.Euler(rightDoorOpenRotation), doorRotationSpeed));
+        StartCoroutine(RotateDoorsToTarget(Quaternion.Euler(leftDoorOpenRotation),Quaternion.Euler(rightDoorOpenRotation),doorRotationSpeed));
         return base.MoveToFirstPosition();
     }
 
-    public void PlayerIsLookingAtMe()
-    {
-        
-    }
+    public void PlayerIsLookingAtMe() { }
+    public void PlayerStoppedInteraction() { }
 
     public void PlayerLookedAtMe()
     {
@@ -93,68 +119,51 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
         LeanTween.move(interactImage.gameObject, interactImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
     }
 
-    public void PlayerStoppedInteraction()
-    {
-        
-    }
-
     //IHideable.
     public void OnEnteringHidingSpot()
     {
         StartCoroutine(EnteredHidingSpot());
     }
+
     private IEnumerator EnteredHidingSpot()
     {
-        yield return StartCoroutine(RotateTwoObjectsToTargetPosition(leftDoor, rightDoor, leftDoorClosedRotation,rightDoorClosedRotation, doorRotationSpeed));
-
+        yield return StartCoroutine(RotateDoorsToTarget(leftDoorClosedRotation,rightDoorClosedRotation, doorRotationSpeed));
+        OnReachingHidingSpot();
+    }
+    public void OnReachingHidingSpot()
+    {
         IsInHiding = true;
         playerCharacterController.detectCollisions = true;
         playerCameraRotation.EnableRotation();
         doubleDoorPeak.gameObject.SetActive(true);
-
-        //leftDoor.gameObject.SetActive(false);
-        //rightDoor.gameObject.SetActive(false);
     }
-
-
-    public void OnLeavingHidingSpot()
-    {
-        
-    }
-
+    public void OnLeavingHidingSpot() { }
     public void OnLeftHidingSpot()
     {
-        
+        playerCameraRotation.EnableRotation();
+        playerMovement.EnableMovement();
+        IsInHiding = false;
     }
 
-    public void OnReachingHidingSpot()
+    //Door rotating.
+    public void CloseDoorsOverTime(float speed) => RotateDoorsToTargetRotation(leftDoorClosedRotation,rightDoorClosedRotation,speed);
+    public void RotateDoorsToTargetRotation(Quaternion door1TargetRotation, Quaternion door2TargetRotation,float speed)
     {
-        
-    }
-
-    //private IEnumerator RotateObjectToTargetRotation(GameObject gameObject, Quaternion target, float rotationSpeed)
-    //{
-    //    Quaternion rotationAtStart = gameObject.transform.rotation;
-
-    //    while (Quaternion.Angle(gameObject.transform.rotation, target) > 0)
-    //    {
-    //        gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, target, rotationSpeed);
-    //        yield return null;
-    //    }
-    //}
-
-    private IEnumerator RotateTwoObjectsToTargetPosition(GameObject gameObject1, GameObject gameObject2, Quaternion object1TargetRotation, Quaternion object2TargetRotation, float rotationSpeed)
-    {
-        Quaternion obj1RotationAtStart = gameObject1.transform.rotation;
-        Quaternion obj2RotationAtStart = gameObject2.transform.rotation;
-
-        while (Quaternion.Angle(gameObject1.transform.rotation, object1TargetRotation) > 0
-               || Quaternion.Angle(gameObject2.transform.rotation, object2TargetRotation) > 0)
+        if (Quaternion.Angle(leftDoor.transform.rotation, door1TargetRotation) > 0
+               || Quaternion.Angle(rightDoor.transform.rotation, door2TargetRotation) > 0)
         {
-            gameObject1.transform.rotation = Quaternion.RotateTowards(gameObject1.transform.rotation, object1TargetRotation, rotationSpeed);
-            gameObject2.transform.rotation = Quaternion.RotateTowards(gameObject2.transform.rotation, object2TargetRotation, rotationSpeed);
+            leftDoor.transform.rotation = Quaternion.RotateTowards(leftDoor.transform.rotation, door1TargetRotation, speed * Time.deltaTime);
+            rightDoor.transform.rotation = Quaternion.RotateTowards(rightDoor.transform.rotation, door2TargetRotation, speed * Time.deltaTime);
+        }
+    }
+    private IEnumerator RotateDoorsToTarget(Quaternion door1TargetRotation, Quaternion door2TargetRotation, float speed)
+    {
+        while (Quaternion.Angle(leftDoor.transform.rotation, door1TargetRotation) > 0
+               || Quaternion.Angle(rightDoor.transform.rotation, door2TargetRotation) > 0)
+        {
+            leftDoor.transform.rotation = Quaternion.RotateTowards(leftDoor.transform.rotation, door1TargetRotation, speed * Time.deltaTime);
+            rightDoor.transform.rotation = Quaternion.RotateTowards(rightDoor.transform.rotation, door2TargetRotation, speed * Time.deltaTime);
             yield return null;
         }
     }
-
 }
