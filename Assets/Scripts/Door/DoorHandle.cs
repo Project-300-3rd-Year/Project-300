@@ -50,7 +50,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
 
     void Update()
     {
-        print(playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position));
+       // print(playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position));
     }
 
     public void PlayerInteracted()
