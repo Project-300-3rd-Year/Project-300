@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 8232214416584894871}
   - component: {fileID: 8100681908455423803}
   - component: {fileID: 650723383466511457}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: InteractableArea
   m_TagString: InteractableArea
   m_Icon: {fileID: 0}
@@ -219,7 +219,6 @@ MonoBehaviour:
   KeyWasHeldOnLookingAtMe: 0
   UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
   interactableArea: {fileID: 0}
-  PlayerInteractingWithDoor: 0
   doorGameObject: {fileID: 1308280447393225993}
   rotationSpeed: 7.4
   playerRelativePositionChecker: {fileID: 8973791674206667577}

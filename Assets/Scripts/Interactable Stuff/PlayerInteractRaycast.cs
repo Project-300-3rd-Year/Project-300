@@ -98,8 +98,7 @@ public class PlayerInteractRaycast : MonoBehaviour
 
                 if (Physics.Raycast(ray, out hitInfo, interactDistance, layerMask, QueryTriggerInteraction.Collide)) //Looks at interactable.
                 {
-
-                    if ((layersToBlockInteractRaycast & 1 << hitInfo.collider.gameObject.layer ) == 0) //If the hit object's layer isn't one of the layers that blocks interact raycast.
+                    if ((layersToBlockInteractRaycast & 1 << hitInfo.collider.gameObject.layer) == 0) //If the hit object's layer isn't one of the layers that blocks interact raycast.
                     {
                         if (!CheckForRaycastLeavingInteractableObject)
                             CheckForRaycastLeavingInteractableObject = true;

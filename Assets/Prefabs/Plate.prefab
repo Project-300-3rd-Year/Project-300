@@ -127,6 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _IsInteractable: 0
   defaultKeyToInteract: 323
+  currentKeyToInteract: 0
   holdToInteract: 0
   KeyWasHeldOnLookingAtMe: 0
   UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
@@ -150,7 +151,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3772669151422364177}
   - component: {fileID: 3686823720981560472}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Interactable Area
   m_TagString: InteractableArea
   m_Icon: {fileID: 0}

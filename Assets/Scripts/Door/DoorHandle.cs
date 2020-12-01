@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* Encountered an issue where I couldn't interact with door handles randomly - probably as InteractingWithDoor was set to true all the time accidentally.
+ * 
+*/
+
+
+
 public class DoorHandle : PlayerInteractableObject, iInteractable
 {
     //Components.
@@ -73,8 +79,6 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
 
     private IEnumerator InteractWithDoorHandle()
     {
-        //doorRigidbody.isKinematic = false;
-
         Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
         PlayerInteractingWithDoor = true;
 
@@ -111,6 +115,5 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
                 interactWithDoorCoroutine = null;
             }
         }
-        //doorRigidbody.isKinematic = true;
     }
 }
