@@ -22,7 +22,6 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     {
         get
         {
-            _IsInteractable = true;
             return _IsInteractable;
         }
         set
@@ -32,7 +31,6 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     }
 
     public event Action InteractedEvent;
-
 
     public override void Awake()
     {

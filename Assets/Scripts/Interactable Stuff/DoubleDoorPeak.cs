@@ -19,20 +19,19 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
     public bool IsInteractable { get { return true; } set { _IsInteractable = value; } }
     public event Action InteractedEvent;
 
-    [SerializeField] private bool _playerIsPeeking;
-    private bool PlayerIsPeeking
-    {
-        get { return _playerIsPeeking; }
-        set
-        {
-            print("g");
-            _playerIsPeeking = value;
-            if (_playerIsPeeking)
-                HidingSpot.IsInHiding = false;
-            else
-                HidingSpot.IsInHiding = true;
-        }       
-    }
+    [SerializeField] private bool PlayerIsPeeking;
+    //private bool PlayerIsPeeking
+    //{
+    //    get { return _playerIsPeeking; }
+    //    set
+    //    {
+    //        _playerIsPeeking = value;
+    //        if (_playerIsPeeking)
+    //            HidingSpot.IsInHiding = false;
+    //        else
+    //            HidingSpot.IsInHiding = true;
+    //    }       
+    //}
 
     [Header("Door Rotation Speeds")]
     [SerializeField] private float doorPeekSpeed;
@@ -64,9 +63,10 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
             }
         }
 
-        if (Input.GetKeyUp(defaultKeyToInteract))
+        if (Input.GetKeyUp(defaultKeyToInteract)) // Stops peeking;
         {
             PlayerIsPeeking = false;
+            HidingSpot.IsInHiding = true;
         }
     }
 
@@ -74,6 +74,7 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
     public void PlayerInteracted()
     {
         PlayerIsPeeking = true;
+        HidingSpot.IsInHiding = false;
 
         hidingSpot.RotateDoorsToTargetRotation(Quaternion.Euler(door1TargetRotation), Quaternion.Euler(door2TargetRotation),doorPeekSpeed);
     }
@@ -87,8 +88,7 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
     {
         AimDotUI.Instance.ChangeAimDotBackToNormal();
 
-        if(HidingSpot.IsInHiding)
-            PlayerIsPeeking = false; //In case they looked away while peeking.
+        PlayerIsPeeking = false; //In case they looked away while peeking.
     }
 
     public void PlayerStoppedInteraction() { }

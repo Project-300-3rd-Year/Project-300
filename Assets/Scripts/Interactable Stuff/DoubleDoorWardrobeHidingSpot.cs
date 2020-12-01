@@ -23,6 +23,8 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
     private Quaternion rightDoorClosedRotation;
 
     [SerializeField] DoubleDoorPeak doubleDoorPeak;
+    [SerializeField] private DoorHandle leftDoorHandle;
+    [SerializeField] private DoorHandle rightDoorHandle;
 
     //Start.
     public override void Awake()
@@ -46,12 +48,17 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
     //IInteractable.
     public void PlayerInteracted()
     {
-        if(!IsInHiding)
+        if(IsInteractable)
         {
+            leftDoorHandle.gameObject.SetActive(false);
+            rightDoorHandle.gameObject.SetActive(false);
+
             leftDoorRigidBody.isKinematic = true;
             rightDoorRigidBody.isKinematic = true;
 
             playerCharacterController.detectCollisions = false;
+
+            IsMovingIntoPosition = true;
 
             playerMovement.DisableMovement();
             playerCameraRotation.DisableRotation();
@@ -63,7 +70,8 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
         }   
         else //Hiding - called from peeking script.
         {
-            StartCoroutine(LeaveHidingSpot());
+            if(IsInHiding)
+                StartCoroutine(LeaveHidingSpot());
         }
     }
 
@@ -85,6 +93,11 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
         yield return StartCoroutine(RotateDoorsToTarget(leftDoorClosedRotation, rightDoorClosedRotation, doorRotationSpeed));
         leftDoorRigidBody.isKinematic = false;
         rightDoorRigidBody.isKinematic = false;
+
+        leftDoorHandle.gameObject.SetActive(true);
+        rightDoorHandle.gameObject.SetActive(true);
+
+        IsMovingIntoPosition = false;
     }
 
     protected override LTDescr MoveToFirstPosition()

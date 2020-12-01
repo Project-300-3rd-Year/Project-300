@@ -98,8 +98,9 @@ public class PlayerInteractRaycast : MonoBehaviour
 
                 if (Physics.Raycast(ray, out hitInfo, interactDistance, layerMask, QueryTriggerInteraction.Collide)) //Looks at interactable.
                 {
+
                     if ((layersToBlockInteractRaycast & 1 << hitInfo.collider.gameObject.layer ) == 0) //If the hit object's layer isn't one of the layers that blocks interact raycast.
-                    {                                                                                  
+                    {
                         if (!CheckForRaycastLeavingInteractableObject)
                             CheckForRaycastLeavingInteractableObject = true;
 
@@ -116,7 +117,7 @@ public class PlayerInteractRaycast : MonoBehaviour
                             if (interactableObject != null && IinteractableObject != null) //Added extra check here as I added default layer to layermask.
                             {                                                             //In order for default layer to stop raycast - not be able to pick up items through walls etc. It does mean that this get called 
                                 IinteractableObject.PlayerLookedAtMe();
-                                LookedAtInteractableEvent(interactableObject);
+                                LookedAtInteractableEvent?.Invoke(interactableObject);
                             }
                         }
 
@@ -149,7 +150,7 @@ public class PlayerInteractRaycast : MonoBehaviour
     public void LookedAway()
     {
         IinteractableObject.PlayerLookedAwayFromMe();
-        LookedAwayFromInteractableEvent();
+        LookedAwayFromInteractableEvent?.Invoke();
         CheckForRaycastLeavingInteractableObject = false;
         interactableObject = null;
         IinteractableObject = null;
