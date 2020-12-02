@@ -90,9 +90,9 @@ public class PlayerInteractRaycast : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.tag == "InteractableArea")
+        if (checkForInteractableObjects)
         {
-            if (checkForInteractableObjects)
+            if (other.gameObject.tag == "InteractableArea")
             {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -130,7 +130,14 @@ public class PlayerInteractRaycast : MonoBehaviour
                             LookedAway();
                         }
                     }
-                }               
+                }
+                else
+                {
+                    if(interactableObject != null)
+                    {
+                        LookedAway();
+                    }
+                }
             }
         }
     }
@@ -157,7 +164,6 @@ public class PlayerInteractRaycast : MonoBehaviour
 
     public void EnableCheckingForInteractables() => checkForInteractableObjects = true;
     public void DisableCheckingForInteractables() => checkForInteractableObjects = false;
-
 
     public void EnableInteractionWithObjects() => CanInteractWithObjects = true;
     public void DisableInteractionWithObjects() => CanInteractWithObjects = false;
