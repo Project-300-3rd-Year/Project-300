@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1900975203738730182
+--- !u!1 &1289401647359001388
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,57 +8,62 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6873862689996128102}
-  - component: {fileID: 1623449915281498368}
-  - component: {fileID: 7255447868898197468}
-  m_Layer: 12
-  m_Name: Interact Area
-  m_TagString: InteractableArea
+  - component: {fileID: 1289401647359001387}
+  - component: {fileID: 1289401647359001386}
+  - component: {fileID: 1289401647359001385}
+  m_Layer: 9
+  m_Name: DoorHandle
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6873862689996128102
+--- !u!4 &1289401647359001387
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1900975203738730182}
+  m_GameObject: {fileID: 1289401647359001388}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.129, y: -1.289, z: -1.672}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1623449915281498368
+--- !u!65 &1289401647359001386
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1900975203738730182}
+  m_GameObject: {fileID: 1289401647359001388}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3.01, y: 3.1, z: 2.76}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7255447868898197468
+  m_Size: {x: 0.11821553, y: 0.315945, z: 0.33732036}
+  m_Center: {x: 0.007574015, y: -0.018902564, z: 0.075019315}
+--- !u!114 &1289401647359001385
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1900975203738730182}
+  m_GameObject: {fileID: 1289401647359001388}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f205d3b5f3925c4cbbff85b54cb6359, type: 3}
+  m_Script: {fileID: 11500000, guid: 31a796d51205dd749b25b2c71f6f76e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _IsInteractable: 0
-  defaultKeyToInteract: 0
+  defaultKeyToInteract: 323
   currentKeyToInteract: 0
-  holdToInteract: 0
+  holdToInteract: 1
   KeyWasHeldOnLookingAtMe: 0
+  UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
+  interactableArea: {fileID: 0}
+  doorGameObject: {fileID: 0}
+  rotationSpeed: 1
+  playerRelativePositionChecker: {fileID: 0}

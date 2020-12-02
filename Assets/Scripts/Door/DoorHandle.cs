@@ -7,8 +7,6 @@ using UnityEngine;
  * 
 */
 
-
-
 public class DoorHandle : PlayerInteractableObject, iInteractable
 {
     //Components.
