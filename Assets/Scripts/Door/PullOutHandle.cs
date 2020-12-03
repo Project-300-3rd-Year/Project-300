@@ -94,7 +94,6 @@ public class PullOutHandle : PlayerInteractableObject, iInteractable
         base.Start();
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
         closedPosition = pullGameObject.transform.position;
-        print(closedPosition);
     }
 
     public override void Awake()
