@@ -14,10 +14,7 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
     [Header("Other Hiding Spots")]
     [SerializeField] private HideUnderneathObject[] otherHidingSpots;
 
-    public override void Awake()
-    {
-        base.Awake();
-    }
+    public override void Awake() => base.Awake();
 
     //IInteractable.
     public void PlayerInteracted()

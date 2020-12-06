@@ -16,7 +16,10 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     public static bool PlayerInteractingWithDoor; //Static as there was an issue with being able to interact with two hadles at once.
     private Coroutine interactWithDoorCoroutine;
 
-    [Header("Door - Rotation")]
+    [Header("Status")]
+    [SerializeField] private bool IsLocked;
+
+    [Header("Rotation")]
     [SerializeField] private GameObject doorGameObject;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private Transform playerRelativePositionChecker;
@@ -26,7 +29,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     {
         get
         {
-            return _IsInteractable;
+            return IsLocked == false && PlayerInteractingWithDoor == false;
         }
         set
         {
@@ -36,45 +39,46 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
 
     public event Action InteractedEvent;
 
+    //Start.
     public override void Awake()
     {
         base.Awake();
         playerCameraRotation = player.GetComponentInChildren<PlayerCameraRotation>();
         doorRigidbody = doorGameObject.GetComponent<Rigidbody>();
     }
-
     public override void Start()
     {
         base.Start();
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
     }
 
+    //IInteractable.
     public void PlayerInteracted()
     {
-        if(PlayerInteractingWithDoor == false)
+        if(IsInteractable)
         {
             if (interactWithDoorCoroutine == null)
                 interactWithDoorCoroutine = StartCoroutine(InteractWithDoorHandle());
         }
     }
-
     public void PlayerIsLookingAtMe()
     {
         PlayerLookedAtMe();
     }
-
     public void PlayerLookedAtMe()
     {
-        if (PlayerInteractingWithDoor == false)
-            AimDotUI.Instance.ChangeAimDotToGreen(); //Check if can open door - some other criteria maybe - has key etc.
+        if (IsInteractable)
+            AimDotUI.Instance.ChangeAimDotToGreen();
+        else
+            AimDotUI.Instance.ChangeAimDotToRed();
     }
-
     public void PlayerLookedAwayFromMe()
     {
         if(PlayerInteractingWithDoor == false)
             AimDotUI.Instance.ChangeAimDotBackToNormal();
     }
 
+    //Interaction.
     private IEnumerator InteractWithDoorHandle()
     {
         Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
@@ -94,8 +98,6 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
 
         PlayerStoppedInteraction();
     }
-
-
     public void PlayerStoppedInteraction()
     {
         if (PlayerInteractingWithDoor)

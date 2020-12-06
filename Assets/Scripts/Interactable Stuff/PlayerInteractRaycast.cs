@@ -163,7 +163,12 @@ public class PlayerInteractRaycast : MonoBehaviour
     }
 
     public void EnableCheckingForInteractables() => checkForInteractableObjects = true;
-    public void DisableCheckingForInteractables() => checkForInteractableObjects = false;
+    public void DisableCheckingForInteractables()
+    {
+        checkForInteractableObjects = false;
+        interactableObject = null;
+        IinteractableObject = null;
+    }
 
     public void EnableInteractionWithObjects() => CanInteractWithObjects = true;
     public void DisableInteractionWithObjects() => CanInteractWithObjects = false;

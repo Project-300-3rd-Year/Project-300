@@ -19,49 +19,68 @@ public class LightSwitch : PlayerInteractableObject, iInteractable
     public event Action InteractedEvent;
 
     [Header("Status")]
-    [SerializeField] private bool SwitchedOn;
+    [SerializeField] private bool _switchedOn;
+    private bool SwitchedOn
+    {
+        get
+        {
+            return lightSource.enabled == true;
+        }
+    }
 
-    [Header("Light")]
+    [Header("Light That Is Effected")]
     [SerializeField] private Light lightSource;
+    private FlickeringLight flickeringLight;
+    private Action TurnOnLight;
+    private Action TurnOffLight;
 
     //Start.
     public override void Awake() => base.Awake();
-    public override void Start() => base.Start();
+    public override void Start()
+    {
+        base.Start();
 
-    private void TurnOnLight() => lightSource.enabled = true;
-    private void TurnOffLight() => lightSource.enabled = false;
+        TurnOnLight += EnableLightSource;
+        TurnOffLight += DisableLightSource;
 
+        lightSource.TryGetComponent(out flickeringLight); //Is there a flickering light component? 
+                                                         
+        if(flickeringLight)                               //If so, add enable, disable methods to the delegate.
+        {
+            TurnOnLight += EnableFlickeringLight;
+            TurnOffLight += DisableFlickeringLight;
+        }
+    }
+
+    private void EnableLightSource() => lightSource.enabled = true;
+    private void DisableLightSource() => lightSource.enabled = false;
+    private void EnableFlickeringLight() => flickeringLight.enabled = true;
+    private void DisableFlickeringLight() => flickeringLight.enabled = false;
+
+    //IInteractable.
     public void PlayerInteracted()
     {
         if (SwitchedOn)
-        {
             TurnOffLight();
-            SwitchedOn = false;
-        }
         else
-        {
             TurnOnLight();
-            SwitchedOn = true;
-        }
     }
 
-    public void PlayerIsLookingAtMe()
-    {
-      
-    }
-
+    //IInteractable.
     public void PlayerLookedAtMe()
     {
         AimDotUI.Instance.ChangeAimDotToGreen();
     }
-
     public void PlayerLookedAwayFromMe()
     {
         AimDotUI.Instance.ChangeAimDotBackToNormal();
     }
-
     public void PlayerStoppedInteraction()
     {
         
+    }
+    public void PlayerIsLookingAtMe()
+    {
+
     }
 }

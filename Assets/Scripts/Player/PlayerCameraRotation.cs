@@ -9,6 +9,7 @@ public class PlayerCameraRotation : MonoBehaviour
     private PlayerMovement playerMovement;
     private Camera playerCamera;
 
+    [Header("Status")]
     [SerializeField] private bool CanRotate;
 
     private float horizontalRotationInput { get { return Input.GetAxisRaw("Mouse X"); } }
@@ -25,11 +26,8 @@ public class PlayerCameraRotation : MonoBehaviour
     [SerializeField] private float MinXAxisClampValue = -90;
     [SerializeField] private float MaxXAxisClampValue = 90;
 
-    private void Awake()
-    {
-        playerMovement = GetComponentInParent<PlayerMovement>();
-    }
-
+    //Start.
+    private void Awake() => playerMovement = GetComponentInParent<PlayerMovement>();
     void Start()
     {
         defaultMouseSensitivity = mouseSensitivity;
@@ -62,12 +60,7 @@ public class PlayerCameraRotation : MonoBehaviour
             verticalRotationInput = 0;
     }
 
-    public void SetRotation(float rotation)
-    {
-        VerticalRotation = rotation;
-       // transform.localRotation = Quaternion.Euler(-rotation, 0f, 0f);
-    }
-
+    public void SetRotation(float rotation) => VerticalRotation = rotation;
     public void DisableRotation() => CanRotate = false;
     public void EnableRotation() => CanRotate = true;
 }
