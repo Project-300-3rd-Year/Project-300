@@ -5,8 +5,13 @@ using System.Runtime.InteropServices;
 
 public class PlayerMovement : MonoBehaviour
 {
+    enum PlayerMovementState { IDLE, WALKING, RUNNING, JUMPING, CROUCHING, LEANING }
+    PlayerMovementState playerState;
     //Components.
     CharacterController characterController;
+    public Camera playerCamera;
+    PlayerCameraRotation cameraBobbing;
+    float bobbingCounter;
 
     //Properties.
     public float Speed { get { return movementThisFrame.magnitude * currentMovementSpeed * Time.deltaTime; } }
@@ -80,7 +85,10 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Start()
-    {  
+    {
+        cameraBobbing = playerCamera.GetComponent<PlayerCameraRotation>();
+        cameraBobbing.SetBobbingIntensity(0.07f, 0.03f);
+
         defaultRotation = transform.rotation;
 
         currentMovementSpeed = maxWalkSpeed;
@@ -93,6 +101,19 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (IsCrouching)
+            cameraBobbing.SetBobbingIntensity(0.01f, 0.01f);  // HeadBob(bobbingCounter, 0.07f, 0.03f);
+        else if (IsSprinting)
+            cameraBobbing.SetBobbingIntensity(0.5f, 0.05f);  // HeadBob(bobbingCounter, 0.03f, 0.2f);
+        else if (IsGrounded)
+            cameraBobbing.SetBobbingIntensity(0.05f, 0.05f);
+        else if (IsJumping)
+            cameraBobbing.SetBobbingIntensity(0.03f, 0.03f);  // HeadBob(bobbingCounter, 0.03f, 0.03f);
+        else
+            cameraBobbing.SetBobbingIntensity(0.05f, 0.05f);
+
+
+
         if (CanMove)
         {
             CheckIfPlayerIsGrounded();
@@ -100,6 +121,7 @@ public class PlayerMovement : MonoBehaviour
             JumpOnPlayerInput();
             CrouchOnPlayerInput();
             AdjustMovementSpeedOnPlayerInput();
+
         }
     }
 

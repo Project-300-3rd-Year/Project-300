@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class PlayerCameraRotation : MonoBehaviour
 {
+
     //Components.
     [SerializeField] private Transform PlayerBody;
     private PlayerMovement playerMovement;
+
     private Camera playerCamera;
+    private Vector3 cameraOrigin;
+    float headBobCounter;
+    float xIntensity;
+    float yIntensity;
 
     private float horizontalRotationInput { get { return Input.GetAxisRaw("Mouse X"); } }
     private float verticalRotationInput { get { return Input.GetAxisRaw("Mouse Y"); } set { } }
@@ -32,13 +38,20 @@ public class PlayerCameraRotation : MonoBehaviour
     {
         defaultMouseSensitivity = mouseSensitivity;
 
+        playerCamera = GetComponent<Camera>();
+        cameraOrigin = playerCamera.transform.localPosition; 
+
         Cursor.lockState = CursorLockMode.Locked;
         playerCamera = Camera.main;
+        cameraOrigin = playerCamera.transform.localPosition;
     }
 
     void Update()
     {
+        headBobCounter += Time.deltaTime;
+        print(playerCamera.name);
         RotateOnPlayerInput();
+        HeadBob(headBobCounter, xIntensity, yIntensity);
     }
 
     private void RotateOnPlayerInput()
@@ -61,4 +74,15 @@ public class PlayerCameraRotation : MonoBehaviour
 
     public void DisableRotation() => mouseSensitivity = 0;
     public void EnableRotation() => mouseSensitivity = defaultMouseSensitivity;
+
+    public void HeadBob(float p_z, float p_x_intensity, float p_y_intensity)
+    {
+        playerCamera.transform.localPosition = new Vector3(Mathf.Cos(p_z * 6) * p_x_intensity, Mathf.Sin(p_z * 2) * p_y_intensity, 0);
+    }
+
+    public void SetBobbingIntensity(float x, float y)
+    {
+        xIntensity = x;
+        yIntensity = y;
+    }
 }

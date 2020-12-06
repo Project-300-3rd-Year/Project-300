@@ -1333,6 +1333,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 887941604}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!20 &924474006 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2427338531359180056, guid: 84f49077249a1724bb76a959f0c5df4e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2427338531474073707}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &927615239
 GameObject:
   m_ObjectHideFlags: 0
@@ -3392,6 +3398,16 @@ PrefabInstance:
       propertyPath: movementSpeedAdjustSpeed
       value: 0.192
       objectReference: {fileID: 0}
+    - target: {fileID: 2427338532022398578, guid: 84f49077249a1724bb76a959f0c5df4e,
+        type: 3}
+      propertyPath: playerCamaera
+      value: 
+      objectReference: {fileID: 924474006}
+    - target: {fileID: 2427338532022398578, guid: 84f49077249a1724bb76a959f0c5df4e,
+        type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 924474006}
     - target: {fileID: 2427338532022398579, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_Name
@@ -3420,7 +3436,7 @@ PrefabInstance:
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 26.2
+      value: 26.362
       objectReference: {fileID: 0}
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
