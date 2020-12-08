@@ -9,6 +9,9 @@ using UnityEngine;
 
 public class DoorHandle : PlayerInteractableObject, iInteractable
 {
+    //CHANGE WHEN GETTING TIZIANO'S CODE
+    [SerializeField] private string keyName;
+
     //Components.
     private PlayerCameraRotation playerCameraRotation;
     [SerializeField] private PlayerInteractableArea interactableArea;
@@ -28,7 +31,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     public bool IsInteractable
     {
         get
-        {
+        {         
             return IsLocked == false && PlayerInteractingWithDoor == false;
         }
         set
@@ -50,6 +53,21 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     {
         base.Start();
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
+        CheckIfIsLocked();
+    }
+
+    private void CheckIfIsLocked()
+    {
+        if (IsLocked)
+        {
+            ChangeKeyInteractCondition(holdToInteract: false);
+        }
+    }
+
+    private void UnlockDoor()
+    {
+        IsLocked = false;
+        ChangeKeyInteractCondition(holdToInteract: true);
     }
 
     //IInteractable.
@@ -60,10 +78,22 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
             if (interactWithDoorCoroutine == null)
                 interactWithDoorCoroutine = StartCoroutine(InteractWithDoorHandle());
         }
+        else
+        {
+            //if(hasKey)
+            //{
+            //    print("unlocked door");
+            //    UnlockDoor();
+            //}
+
+            MessageNotification.Instance.ActivateNotificationMessage($"Door is locked... seems like I need the {keyName} key...");
+
+
+        }
     }
     public void PlayerIsLookingAtMe()
     {
-        PlayerLookedAtMe();
+
     }
     public void PlayerLookedAtMe()
     {
@@ -71,6 +101,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
             AimDotUI.Instance.ChangeAimDotToGreen();
         else
             AimDotUI.Instance.ChangeAimDotToRed();
+        
     }
     public void PlayerLookedAwayFromMe()
     {
@@ -89,7 +120,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         playerCameraRotation.DisableRotation();
         AimDotUI.Instance.DisableAimDot();
 
-        while (inputDelegate(defaultKeyToInteract))
+        while (inputDelegate(defaultKeyToInteract)) //Should ideally be calling the delegate in base script, but wanted to 
         {
             float desiredMouseInput = Mathf.Abs(Input.GetAxisRaw("Mouse X")) > Mathf.Abs(Input.GetAxisRaw("Mouse Y")) ? Input.GetAxisRaw("Mouse X") : Input.GetAxisRaw("Mouse Y"); //Choose input based on which left / right input is bigger.
             doorRigidbody.AddRelativeTorque(doorGameObject.transform.up * rotationSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime, ForceMode.VelocityChange);
