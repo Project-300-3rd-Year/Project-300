@@ -21,6 +21,8 @@ public class Key : PlayerInteractableObject, iInteractable
     public void PlayerInteracted()
     {
         PickedUpKeyEvent?.Invoke(keyInventoryItem);
+        MessageNotification.Instance.ActivateNotificationMessage($"I picked up the {keyInventoryItem.keyName} key");
+        PlayerLookedAwayFromMe();
         Destroy(gameObject);
     }
     public void PlayerIsLookingAtMe()
@@ -33,5 +35,4 @@ public class Key : PlayerInteractableObject, iInteractable
     {
     }
 
-    private void OnDestroy() => PlayerLookedAwayFromMe();
 }

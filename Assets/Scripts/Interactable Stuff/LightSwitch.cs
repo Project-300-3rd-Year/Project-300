@@ -26,6 +26,11 @@ public class LightSwitch : PlayerInteractableObject, iInteractable
         {
             return lightSource.enabled == true;
         }
+
+        set
+        {
+            _switchedOn = value;
+        }
     }
 
     [Header("Light That Is Effected")]
@@ -39,6 +44,8 @@ public class LightSwitch : PlayerInteractableObject, iInteractable
     public override void Start()
     {
         base.Start();
+
+        DetermineIfSwitchedOn();
 
         TurnOnLight += EnableLightSource;
         TurnOffLight += DisableLightSource;
@@ -61,9 +68,15 @@ public class LightSwitch : PlayerInteractableObject, iInteractable
     public void PlayerInteracted()
     {
         if (SwitchedOn)
+        {
             TurnOffLight();
+            SwitchedOn = false;
+        }
         else
+        {
             TurnOnLight();
+            SwitchedOn = true;
+        }
     }
 
     //IInteractable.
@@ -82,5 +95,13 @@ public class LightSwitch : PlayerInteractableObject, iInteractable
     public void PlayerIsLookingAtMe()
     {
 
+    }
+
+    private void DetermineIfSwitchedOn()
+    {
+        if (SwitchedOn)
+            SwitchedOn = true;
+        else
+            SwitchedOn = false;
     }
 }

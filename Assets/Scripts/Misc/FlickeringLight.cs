@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//NOTE: If you want a light to be turned off at the start and its a flickering light, make sure flickering light 
+//script is disabled or else the timer will run for no reason.
+//The light source component should be disabled also if its turned off by default.
+
 public class FlickeringLight : MonoBehaviour
 {
     private Light myLight;
