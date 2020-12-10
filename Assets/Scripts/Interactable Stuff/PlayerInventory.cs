@@ -8,7 +8,8 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
-        Key[] keysInWorld = FindObjectsOfType<Key>(); //Subscribe events.
+        //Subscribe events. Spawning in the keys or inventory items in general should happen in awake or just before this gets called.
+        Key[] keysInWorld = FindObjectsOfType<Key>(); 
         for (int i = 0; i < keysInWorld.Length; i++)
         {
             keysInWorld[i].PickedUpKeyEvent += AddKeyToInventory;

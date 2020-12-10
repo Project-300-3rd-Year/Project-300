@@ -14,8 +14,11 @@ public class Key : PlayerInteractableObject, iInteractable
     [SerializeField] private KeyInventoryItem keyInventoryItem; //Scriptable object that key represents.
 
     // Start.
-    public override void Start() => base.Start();
     public override void Awake() => base.Awake();
+    public override void Start()
+    {
+        base.Start();
+    }
 
     //IInteractable.
     public void PlayerInteracted()
@@ -23,8 +26,12 @@ public class Key : PlayerInteractableObject, iInteractable
         PickedUpKeyEvent?.Invoke(keyInventoryItem);
         MessageNotification.Instance.ActivateNotificationMessage($"I picked up the {keyInventoryItem.keyName} key");
         PlayerLookedAwayFromMe();
+
+        //UnlockDoorsThatIOpen();
+
         Destroy(gameObject);
     }
+
     public void PlayerIsLookingAtMe()
     {
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /* Encountered an issue where I couldn't interact with door handles randomly - probably as InteractingWithDoor was set to true all the time accidentally.
  * 
@@ -9,9 +10,6 @@ using UnityEngine;
 
 public class DoorHandle : PlayerInteractableObject, iInteractable
 {
-    //CHANGE WHEN GETTING TIZIANO'S CODE
-    [SerializeField] private string keyName;
-
     //Components.
     private PlayerCameraRotation playerCameraRotation;
     [SerializeField] private PlayerInteractableArea interactableArea;
@@ -19,14 +17,27 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     public static bool PlayerInteractingWithDoor; //Static as there was an issue with being able to interact with two hadles at once.
     private Coroutine interactWithDoorCoroutine;
 
+    public bool IsLocked { get { return _IsLocked; } set { _IsLocked = value; } }
+
+
     [Header("Status")]
-    [SerializeField] private bool IsLocked;
+    [SerializeField] private bool _IsLocked;
+    public KeyInventoryItem keyToUnlockMe;
+    [SerializeField] private KeyCode keyCodeToUnlockMe;
 
     [Header("Rotation")]
     [SerializeField] private GameObject doorGameObject;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private Transform playerRelativePositionChecker;
     Rigidbody doorRigidbody;
+
+    [Header("UI")] //CHANGE THIS AFTER DEMO. USE THE SAME THING AS HIDING SPOT UI.
+    [SerializeField] protected Sprite unlockSprite;
+    [SerializeField] protected Image unlockImage;
+    [SerializeField] protected Transform posToMoveTo;
+    [SerializeField] protected float imageMoveSpeed;
+    [SerializeField] protected LeanTweenType imageMoveEase;
+    protected Vector2 unlockImageStartingPosition;
 
     public bool IsInteractable
     {
@@ -52,6 +63,10 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     public override void Start()
     {
         base.Start();
+
+        if(unlockImage != null)
+            unlockImageStartingPosition = unlockImage.transform.position;
+
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
         CheckIfIsLocked();
     }
@@ -61,13 +76,15 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         if (IsLocked)
         {
             ChangeKeyInteractCondition(holdToInteract: false);
+            currentKeyToInteract = keyCodeToUnlockMe;
         }
     }
 
-    private void UnlockDoor()
+    public void UnlockDoor()
     {
         IsLocked = false;
         ChangeKeyInteractCondition(holdToInteract: true);
+        currentKeyToInteract = defaultKeyToInteract;
     }
 
     //IInteractable.
@@ -80,15 +97,23 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         }
         else
         {
-            //if(hasKey)
-            //{
-            //    print("unlocked door");
-            //    UnlockDoor();
-            //}
+            if(player.GetComponent<PlayerInventory>().HasKeyInInventory(keyToUnlockMe)) //Unlock door.
+            {
+                UnlockDoor();
 
-            MessageNotification.Instance.ActivateNotificationMessage($"Door is locked... seems like I need the {keyName} key...");
+                AimDotUI.Instance.ChangeAimDotToGreen();
 
+                if (LeanTween.isTweening(unlockImage.gameObject)) //MAKE BETTER - REALLY BAD
+                    LeanTween.cancel(unlockImage.gameObject);
 
+                LeanTween.move(unlockImage.gameObject, unlockImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
+
+            }
+            else
+            {
+
+                MessageNotification.Instance.ActivateNotificationMessage($"Door is locked... seems like I need the {keyToUnlockMe.keyName} key...");
+            }
         }
     }
     public void PlayerIsLookingAtMe()
@@ -98,15 +123,53 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     public void PlayerLookedAtMe()
     {
         if (IsInteractable)
+        {
             AimDotUI.Instance.ChangeAimDotToGreen();
+        }
         else
+        {
             AimDotUI.Instance.ChangeAimDotToRed();
-        
+            unlockImage.sprite = unlockSprite;
+
+            if (LeanTween.isTweening(unlockImage.gameObject))
+                LeanTween.cancel(unlockImage.gameObject);
+
+            LeanTween.move(unlockImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
+        }
+
+        //if (player.GetComponent<PlayerInventory>().HasKeyInInventory(keyToUnlockMe) && IsLocked == true) //MAKE BETTER - REALLY BAD
+        //{
+        //    unlockImage.sprite = unlockSprite;
+
+        //    if (LeanTween.isTweening(unlockImage.gameObject))
+        //        LeanTween.cancel(unlockImage.gameObject);
+
+        //    LeanTween.move(unlockImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
+        //}
+
     }
     public void PlayerLookedAwayFromMe()
     {
         if(PlayerInteractingWithDoor == false)
             AimDotUI.Instance.ChangeAimDotBackToNormal();
+
+        if(IsLocked)
+        {
+            if (LeanTween.isTweening(unlockImage.gameObject))
+                LeanTween.cancel(unlockImage.gameObject);
+
+            LeanTween.move(unlockImage.gameObject, unlockImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
+        }
+
+
+        //if (player.GetComponent<PlayerInventory>().HasKeyInInventory(keyToUnlockMe)) //MAKE BETTER - REALLY BAD
+        //{
+        //    if (LeanTween.isTweening(unlockImage.gameObject))
+        //        LeanTween.cancel(unlockImage.gameObject);
+
+        //    LeanTween.move(unlockImage.gameObject, unlockImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
+        //}
+
     }
 
     //Interaction.

@@ -45,6 +45,9 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
     {
         AimDotUI.Instance.ChangeAimDotToGreen();
 
+        if(!IsInHiding) //BAD, SHOULDN'T HAVE TO DO THIS.
+            interactImage.sprite = hideSprite; 
+
         if (LeanTween.isTweening(interactImage.gameObject))
             LeanTween.cancel(interactImage.gameObject);
 

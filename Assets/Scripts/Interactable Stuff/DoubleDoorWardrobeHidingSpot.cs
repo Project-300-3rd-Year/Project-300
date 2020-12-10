@@ -113,6 +113,9 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
     {
         if(IsInteractable)
         {
+            if(!IsInHiding)
+                interactImage.sprite = hideSprite; //REMOVE LATER - SHOULDN'T HAVE TO DO THIS.
+
             AimDotUI.Instance.ChangeAimDotToGreen();
 
             if (LeanTween.isTweening(interactImage.gameObject))
