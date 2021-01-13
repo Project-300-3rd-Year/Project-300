@@ -41,7 +41,7 @@ public class PlayerInteractRaycast : MonoBehaviour
     }
 
     //Components.
-    [SerializeField] private PlayerInteractableObject interactableObject;
+    public PlayerInteractableObject interactableObject;
     private iInteractable IinteractableObject;
 
     [Header("Status")]

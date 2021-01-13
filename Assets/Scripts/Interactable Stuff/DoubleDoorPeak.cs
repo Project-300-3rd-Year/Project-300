@@ -44,6 +44,10 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
     [SerializeField] DoubleDoorWardrobeHidingSpot hidingSpot;
     [SerializeField] KeyCode keyToLeave;
 
+    [Header("UI Sprites")]
+    [SerializeField] private Sprite leftSprite;
+    [SerializeField] private Sprite rightSprite;
+
     //Start.
     public override void Awake() => base.Awake();
     public override void Start() => base.Start();
@@ -55,11 +59,12 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
             //If doors aren't fully shut, rotate to close.
             hidingSpot.CloseDoorsOverTime(doorPeekSpeed);
 
-            if(Input.GetKeyDown(keyToLeave)) //Only can leave when the player isn't peeking.
+            if (Input.GetKeyDown(keyToLeave) && IsPlayerLookingAtMe()) //Only can leave when the player isn't peeking.
             {
                 hidingSpot.PlayerInteracted();
                 gameObject.SetActive(false);
                 AimDotUI.Instance.ChangeAimDotBackToNormal();
+                UIManager.Instance.DisableDoubleInteractImage();
             }
         }
 
@@ -82,11 +87,14 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
     public void PlayerLookedAtMe()
     {
         AimDotUI.Instance.ChangeAimDotToGreen();
+
+        UIManager.Instance.ActivateDoubleInteractImage(leftSprite, rightSprite);
     }
 
     public void PlayerLookedAwayFromMe()
     {
         AimDotUI.Instance.ChangeAimDotBackToNormal();
+        UIManager.Instance.DisableDoubleInteractImage();
 
         PlayerIsPeeking = false; //In case they looked away while peeking.
     }

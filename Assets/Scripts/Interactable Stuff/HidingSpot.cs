@@ -26,9 +26,9 @@ public class HidingSpot : PlayerInteractableObject
     [Header("Hiding spot")]
     [SerializeField] protected Transform targetTransformForHiding;
     [SerializeField] private float timeToMoveToHidingPos;
-    [SerializeField] private float timeToRotateToHidingPos;
+    [SerializeField] protected float timeToRotateToHidingPos;
     [SerializeField] private LeanTweenType hidingPosMoveEaseType;
-    [SerializeField] private LeanTweenType hidingPosRotateEaseType;
+    [SerializeField] protected LeanTweenType hidingPosRotateEaseType;
 
     [Header("Leaving hiding spot")]
     [SerializeField] protected Transform targetTransformOnLeaving;

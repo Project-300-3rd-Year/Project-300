@@ -43,13 +43,15 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
         rightDoorClosedRotation = rightDoor.transform.rotation;
 
         doubleDoorPeak.gameObject.SetActive(false);
-    }
+    } 
 
     //IInteractable.
     public void PlayerInteracted()
     {
         if(IsInteractable)
         {
+            AimDotUI.Instance.ChangeAimDotBackToNormal();
+
             leftDoorHandle.gameObject.SetActive(false);
             rightDoorHandle.gameObject.SetActive(false);
 
@@ -75,10 +77,20 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
         }
     }
 
+    //Entering hiding spot.
+    protected override LTDescr MoveToFirstPosition()
+    {
+        StartCoroutine(RotateDoorsToTarget(Quaternion.Euler(leftDoorOpenRotation), Quaternion.Euler(rightDoorOpenRotation), doorRotationSpeed));
+        return base.MoveToFirstPosition();
+    }
+
+
+    //Leaving Hiding Spot.
     private IEnumerator LeaveHidingSpot()
     {
         playerCameraRotation.DisableRotation();
 
+        MoveToHidingPosition();
         yield return StartCoroutine(RotateDoorsToTarget(Quaternion.Euler(leftDoorOpenRotation),Quaternion.Euler(rightDoorOpenRotation), doorRotationSpeed));
 
         MoveToLeavingPosition().setOnComplete(delegate()
@@ -100,48 +112,8 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
         IsMovingIntoPosition = false;
     }
 
-    protected override LTDescr MoveToFirstPosition()
-    {
-        StartCoroutine(RotateDoorsToTarget(Quaternion.Euler(leftDoorOpenRotation),Quaternion.Euler(rightDoorOpenRotation),doorRotationSpeed));
-        return base.MoveToFirstPosition();
-    }
-
-    public void PlayerIsLookingAtMe() { }
-    public void PlayerStoppedInteraction() { }
-
-    public void PlayerLookedAtMe()
-    {
-        if(IsInteractable)
-        {         
-
-            AimDotUI.Instance.ChangeAimDotToGreen();
-
-            //if (!IsInHiding)
-            //    interactImage.sprite = hideSprite; //REMOVE LATER - SHOULDN'T HAVE TO DO THIS.
-
-            //if (LeanTween.isTweening(interactImage.gameObject))
-            //    LeanTween.cancel(interactImage.gameObject);
-
-            //LeanTween.move(interactImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
-        }
-    }
-
-    public void PlayerLookedAwayFromMe()
-    {
-        AimDotUI.Instance.ChangeAimDotBackToNormal();
-
-        //if (LeanTween.isTweening(interactImage.gameObject))
-        //    LeanTween.cancel(interactImage.gameObject);
-
-        //LeanTween.move(interactImage.gameObject, interactImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
-    }
-
     //IHideable.
-    public void OnEnteringHidingSpot()
-    {
-        StartCoroutine(EnteredHidingSpot());
-    }
-
+    public void OnEnteringHidingSpot() => StartCoroutine(EnteredHidingSpot());
     private IEnumerator EnteredHidingSpot()
     {
         yield return StartCoroutine(RotateDoorsToTarget(leftDoorClosedRotation,rightDoorClosedRotation, doorRotationSpeed));
@@ -157,6 +129,7 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
     public void OnLeavingHidingSpot() { }
     public void OnLeftHidingSpot()
     {
+        playerCameraRotation.SetRotation(targetTransformOnLeaving.transform.eulerAngles.x);
         playerCameraRotation.EnableRotation();
         playerMovement.EnableMovement();
         IsInHiding = false;
@@ -183,4 +156,22 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
             yield return null;
         }
     }
+
+    //Iinteractable.
+    public void PlayerLookedAtMe()
+    {
+        if (IsInteractable)
+        {
+            AimDotUI.Instance.ChangeAimDotToGreen();
+            UIManager.Instance.ActivateSingleInteractImage(hideSprite);
+        }
+    }
+    public void PlayerLookedAwayFromMe()
+    {
+        AimDotUI.Instance.ChangeAimDotBackToNormal();
+        UIManager.Instance.DisableSingleInteractImage();
+    }
+    public void PlayerIsLookingAtMe() { }
+    public void PlayerStoppedInteraction() { }
+
 }

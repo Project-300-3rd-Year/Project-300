@@ -89,31 +89,6 @@ public class AimDotUI : MonoBehaviour
 
     public void EnableInteractImage() => interactImage.gameObject.SetActive(true);
     public void DisableInteractImage() => interactImage.gameObject.SetActive(false);
-
-
-
-    //private void ChangeOnLookedAtInteractable(Sprite image)
-    //{
-    //    //if (playerInteractableObject.IsInteractable)
-    //    //{
-    //    //    EITHER DISPLAY AN UI IMAGE THAT THE INTERACTABLE OBJECT WANTS TO SHOW OR JUST CHANGE THE AIM DOT.
-    //    //    if (playerInteractableObject.UIImageToShowIfPlayerLooksAtMe != null)
-    //    //    {
-    //    //        interactImage.gameObject.SetActive(true);
-    //    //        interactImage.sprite = playerInteractableObject.UIImageToShowIfPlayerLooksAtMe;
-    //    //    }
-    //    //    else
-    //    //    {
-    //    //        LeanTween.scale(myRectTransform, sizeLookingAtInteractable, timeToChangeSize);
-    //    //        LeanTween.value(gameObject, a => myImage.color = a, myImage.color, colourLookingAtInteractable, timeToChangeColour);
-    //    //    }
-    //    //}
-    //    //else
-    //    //{
-    //    //    LeanTween.scale(myRectTransform, defaultSize, timeToChangeSize);
-    //    //    LeanTween.value(gameObject, a => myImage.color = a, myImage.color, colourLookingAtNotInteractable, timeToChangeColour);
-    //    //}
-    //}
 }
 
 

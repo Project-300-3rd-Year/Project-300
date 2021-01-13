@@ -34,6 +34,14 @@ public class PlayerInteractableComponent : MonoBehaviour
 
     protected void ChangeCurrentKeyToInteract(KeyCode newKeyCode) => currentKeyToInteract = newKeyCode;
 
+    protected bool IsPlayerLookingAtMe()
+    {
+        if (PlayerInteractRaycast.Instance.interactableObject != null && PlayerInteractRaycast.Instance.interactableObject.gameObject == this.gameObject)
+            return true;
+
+       return false;
+    }
+
     //OLD
 
     //public virtual void PlayerInteracted()
