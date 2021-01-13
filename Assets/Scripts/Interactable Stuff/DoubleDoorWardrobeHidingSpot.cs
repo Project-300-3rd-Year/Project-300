@@ -112,16 +112,17 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
     public void PlayerLookedAtMe()
     {
         if(IsInteractable)
-        {
-            if(!IsInHiding)
-                interactImage.sprite = hideSprite; //REMOVE LATER - SHOULDN'T HAVE TO DO THIS.
+        {         
 
             AimDotUI.Instance.ChangeAimDotToGreen();
 
-            if (LeanTween.isTweening(interactImage.gameObject))
-                LeanTween.cancel(interactImage.gameObject);
+            //if (!IsInHiding)
+            //    interactImage.sprite = hideSprite; //REMOVE LATER - SHOULDN'T HAVE TO DO THIS.
 
-            LeanTween.move(interactImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
+            //if (LeanTween.isTweening(interactImage.gameObject))
+            //    LeanTween.cancel(interactImage.gameObject);
+
+            //LeanTween.move(interactImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
         }
     }
 
@@ -129,10 +130,10 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
     {
         AimDotUI.Instance.ChangeAimDotBackToNormal();
 
-        if (LeanTween.isTweening(interactImage.gameObject))
-            LeanTween.cancel(interactImage.gameObject);
+        //if (LeanTween.isTweening(interactImage.gameObject))
+        //    LeanTween.cancel(interactImage.gameObject);
 
-        LeanTween.move(interactImage.gameObject, interactImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
+        //LeanTween.move(interactImage.gameObject, interactImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
     }
 
     //IHideable.

@@ -1107,10 +1107,6 @@ MonoBehaviour:
   keyToLeaveHidingSpot: 324
   hideSprite: {fileID: 21300000, guid: d7185da6e9caf934da8686b607cd4d3f, type: 3}
   stopHidingSprite: {fileID: 21300000, guid: 999d4f31096bf3a4dbd8b3fba5cb19a1, type: 3}
-  interactImage: {fileID: 939375719}
-  posToMoveTo: {fileID: 1854652543}
-  imageMoveSpeed: 0.77
-  imageMoveEase: 2
   otherHidingSpots:
   - {fileID: 284568905}
   - {fileID: 179827499}
@@ -1691,7 +1687,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1807476569}
   m_HandleRect: {fileID: 1807476568}
   m_Direction: 2
-  m_Value: 0.9999998
+  m_Value: 1
   m_Size: 0.68079954
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2549,7 +2545,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &485244469
 Transform:
   m_ObjectHideFlags: 0
@@ -3585,6 +3581,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4f50e5b6d682b448a732e65891dd427, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactImage: {fileID: 939375719}
+  interactImageTargetTransform: {fileID: 1854652543}
+  interactImageMoveSpeed: 0.8
+  interactImageMoveEase: 2
 --- !u!1 &634138723
 GameObject:
   m_ObjectHideFlags: 0
@@ -5591,10 +5591,6 @@ MonoBehaviour:
   keyToLeaveHidingSpot: 0
   hideSprite: {fileID: 21300000, guid: d7185da6e9caf934da8686b607cd4d3f, type: 3}
   stopHidingSprite: {fileID: 21300000, guid: 999d4f31096bf3a4dbd8b3fba5cb19a1, type: 3}
-  interactImage: {fileID: 939375719}
-  posToMoveTo: {fileID: 1854652543}
-  imageMoveSpeed: 0.77
-  imageMoveEase: 2
   leftDoor: {fileID: 1513208643}
   rightDoor: {fileID: 1513208642}
   doorRotationSpeed: 78.94
@@ -8386,10 +8382,6 @@ MonoBehaviour:
   keyToLeaveHidingSpot: 0
   hideSprite: {fileID: 21300000, guid: d7185da6e9caf934da8686b607cd4d3f, type: 3}
   stopHidingSprite: {fileID: 21300000, guid: 999d4f31096bf3a4dbd8b3fba5cb19a1, type: 3}
-  interactImage: {fileID: 939375719}
-  posToMoveTo: {fileID: 1854652543}
-  imageMoveSpeed: 0.77
-  imageMoveEase: 2
   leftDoor: {fileID: 1083535208}
   rightDoor: {fileID: 31042620}
   doorRotationSpeed: 78.94
@@ -17040,7 +17032,7 @@ PrefabInstance:
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.91
+      value: 11.57
       objectReference: {fileID: 0}
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
@@ -17050,7 +17042,7 @@ PrefabInstance:
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -26.29
+      value: -26.13
       objectReference: {fileID: 0}
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}

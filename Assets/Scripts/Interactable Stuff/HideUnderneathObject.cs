@@ -44,23 +44,12 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
     public void PlayerLookedAtMe()
     {
         AimDotUI.Instance.ChangeAimDotToGreen();
-
-        if(!IsInHiding) //BAD, SHOULDN'T HAVE TO DO THIS.
-            interactImage.sprite = hideSprite; 
-
-        if (LeanTween.isTweening(interactImage.gameObject))
-            LeanTween.cancel(interactImage.gameObject);
-
-        LeanTween.move(interactImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
+        UIManager.Instance.ActivateSingleInteractImage(currentInteractSprite);
     }
     public void PlayerLookedAwayFromMe()
     {
         AimDotUI.Instance.ChangeAimDotBackToNormal();
-
-        if (LeanTween.isTweening(interactImage.gameObject))
-            LeanTween.cancel(interactImage.gameObject);
-
-        LeanTween.move(interactImage.gameObject, interactImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
+        UIManager.Instance.DisableSingleInteractImage();
     }
     public void PlayerStoppedInteraction()
     {
@@ -97,7 +86,7 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
         PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
 
         //UI.
-        interactImage.sprite = stopHidingSprite;
+        currentInteractSprite = stopHidingSprite;
     }
     public void OnLeavingHidingSpot()
     {
@@ -126,6 +115,6 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
         }
 
         //UI.
-        interactImage.sprite = hideSprite;
+        currentInteractSprite = hideSprite;
     }
 }

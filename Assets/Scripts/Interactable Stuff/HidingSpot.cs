@@ -41,11 +41,7 @@ public class HidingSpot : PlayerInteractableObject
     [Header("UI")]
     [SerializeField] protected Sprite hideSprite;
     [SerializeField] protected Sprite stopHidingSprite;
-    [SerializeField] protected Image interactImage;
-    [SerializeField] protected Transform posToMoveTo;
-    [SerializeField] protected float imageMoveSpeed;
-    [SerializeField] protected LeanTweenType imageMoveEase;
-    protected Vector2 interactImageStartingPosition;
+    protected Sprite currentInteractSprite;
 
     public override void Awake()
     {
@@ -57,7 +53,7 @@ public class HidingSpot : PlayerInteractableObject
     public override void Start()
     {
         base.Start();
-        interactImageStartingPosition = interactImage.transform.position;
+        currentInteractSprite = hideSprite;
     }
 
     //Moving to desired locations (returns LTDescr so can call OnComplete after using these methods).

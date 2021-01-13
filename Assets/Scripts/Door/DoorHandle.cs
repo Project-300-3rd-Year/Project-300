@@ -31,13 +31,8 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     [SerializeField] private Transform playerRelativePositionChecker;
     Rigidbody doorRigidbody;
 
-    [Header("UI")] //CHANGE THIS AFTER DEMO. USE THE SAME THING AS HIDING SPOT UI.
-    [SerializeField] protected Sprite unlockSprite;
-    [SerializeField] protected Image unlockImage;
-    [SerializeField] protected Transform posToMoveTo;
-    [SerializeField] protected float imageMoveSpeed;
-    [SerializeField] protected LeanTweenType imageMoveEase;
-    protected Vector2 unlockImageStartingPosition;
+    [Header("UI")]
+    [SerializeField] private Sprite unlockSprite;
 
     public bool IsInteractable
     {
@@ -63,9 +58,6 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     public override void Start()
     {
         base.Start();
-
-        if(unlockImage != null)
-            unlockImageStartingPosition = unlockImage.transform.position;
 
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
         CheckIfIsLocked();
@@ -103,15 +95,11 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
 
                 AimDotUI.Instance.ChangeAimDotToGreen();
 
-                if (LeanTween.isTweening(unlockImage.gameObject)) //MAKE BETTER - REALLY BAD
-                    LeanTween.cancel(unlockImage.gameObject);
-
-                LeanTween.move(unlockImage.gameObject, unlockImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
+                UIManager.Instance.DisableSingleInteractImage();
 
             }
             else
             {
-
                 MessageNotification.Instance.ActivateNotificationMessage($"Door is locked... seems like I need the {keyToUnlockMe.keyName} key...");
             }
         }
@@ -129,24 +117,10 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         else
         {
             AimDotUI.Instance.ChangeAimDotToRed();
-            unlockImage.sprite = unlockSprite;
 
-            if (LeanTween.isTweening(unlockImage.gameObject))
-                LeanTween.cancel(unlockImage.gameObject);
+            UIManager.Instance.ActivateSingleInteractImage(unlockSprite);
 
-            LeanTween.move(unlockImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
         }
-
-        //if (player.GetComponent<PlayerInventory>().HasKeyInInventory(keyToUnlockMe) && IsLocked == true) //MAKE BETTER - REALLY BAD
-        //{
-        //    unlockImage.sprite = unlockSprite;
-
-        //    if (LeanTween.isTweening(unlockImage.gameObject))
-        //        LeanTween.cancel(unlockImage.gameObject);
-
-        //    LeanTween.move(unlockImage.gameObject, posToMoveTo, imageMoveSpeed).setEase(imageMoveEase);
-        //}
-
     }
     public void PlayerLookedAwayFromMe()
     {
@@ -155,21 +129,8 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
 
         if(IsLocked)
         {
-            if (LeanTween.isTweening(unlockImage.gameObject))
-                LeanTween.cancel(unlockImage.gameObject);
-
-            LeanTween.move(unlockImage.gameObject, unlockImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
+            UIManager.Instance.DisableSingleInteractImage();
         }
-
-
-        //if (player.GetComponent<PlayerInventory>().HasKeyInInventory(keyToUnlockMe)) //MAKE BETTER - REALLY BAD
-        //{
-        //    if (LeanTween.isTweening(unlockImage.gameObject))
-        //        LeanTween.cancel(unlockImage.gameObject);
-
-        //    LeanTween.move(unlockImage.gameObject, unlockImageStartingPosition, imageMoveSpeed).setEase(imageMoveEase);
-        //}
-
     }
 
     //Interaction.
