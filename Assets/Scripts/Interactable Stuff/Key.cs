@@ -30,8 +30,8 @@ public class Key : PlayerInteractableObject, iInteractable
     {
 
     }
-    public void PlayerLookedAtMe() => AimDotUI.Instance.ChangeAimDotToGreen();
-    public void PlayerLookedAwayFromMe() => AimDotUI.Instance.ChangeAimDotBackToNormal();
+    public void PlayerLookedAtMe() => UIManager.Instance.aimDot.ChangeToGreen();
+    public void PlayerLookedAwayFromMe() => UIManager.Instance.aimDot.Reset();
     public void PlayerStoppedInteraction()
     {
     }

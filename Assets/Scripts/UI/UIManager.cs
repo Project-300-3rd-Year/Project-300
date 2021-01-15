@@ -21,11 +21,8 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    //Notification message on bottom of screen. 
-    //Interact image at top. 
-    //Double interact image at top.
-    //Aim dot at center.
-
+    [Header("Aim Dot At Center Of Screen")]
+    public AimDot aimDot;
 
     [Header("Single Interact Image")]
     public SingleInteractImage singleInteractImage;

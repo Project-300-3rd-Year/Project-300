@@ -82,11 +82,11 @@ public class LightSwitch : PlayerInteractableObject, iInteractable
     //IInteractable.
     public void PlayerLookedAtMe()
     {
-        AimDotUI.Instance.ChangeAimDotToGreen();
+        UIManager.Instance.aimDot.ChangeToGreen();
     }
     public void PlayerLookedAwayFromMe()
     {
-        AimDotUI.Instance.ChangeAimDotBackToNormal();
+        UIManager.Instance.aimDot.Reset();
     }
     public void PlayerStoppedInteraction()
     {

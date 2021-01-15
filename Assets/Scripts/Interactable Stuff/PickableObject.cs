@@ -211,15 +211,15 @@ public class PickableObject : PlayerInteractableObject,iInteractable
 
     public void PlayerLookedAwayFromMe()
     {
-        AimDotUI.Instance.ChangeAimDotBackToNormal();
+        UIManager.Instance.aimDot.Reset();
     }
 
     public void PlayerLookedAtMe()
     {
         if (IsInteractable)
-            AimDotUI.Instance.ChangeAimDotToGreen();
+            UIManager.Instance.aimDot.ChangeToGreen();
         else
-            AimDotUI.Instance.ChangeAimDotBackToNormal();
+            UIManager.Instance.aimDot.Reset();
     }
 
     public void PlayerIsLookingAtMe()

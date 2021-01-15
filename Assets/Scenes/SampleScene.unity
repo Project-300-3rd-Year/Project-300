@@ -3959,6 +3959,7 @@ GameObject:
   - component: {fileID: 669938876}
   - component: {fileID: 669938875}
   - component: {fileID: 669938877}
+  - component: {fileID: 669938878}
   m_Layer: 5
   m_Name: AimDot
   m_TagString: Untagged
@@ -4028,12 +4029,29 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 669938873}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 79e5ed66908581d4284fb53f5cd3a065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   interactImage: {fileID: 1634236003}
+  colourLookingAtInteractable: {r: 0.6745283, g: 1, b: 0.71933967, a: 0.92156863}
+  colourLookingAtNotInteractable: {r: 1, g: 0, b: 0, a: 1}
+  sizeLookingAtInteractable: {x: 0.1, y: 0.1}
+  timeToChangeSize: 0.2
+  timeToChangeColour: 0.2
+--- !u!114 &669938878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669938873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db247dbd61fdbef459cb6553512856b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   colourLookingAtInteractable: {r: 0.6745283, g: 1, b: 0.71933967, a: 0.92156863}
   colourLookingAtNotInteractable: {r: 1, g: 0, b: 0, a: 1}
   sizeLookingAtInteractable: {x: 0.1, y: 0.1}

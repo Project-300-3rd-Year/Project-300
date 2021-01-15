@@ -60,13 +60,13 @@ public class PullOutHandle : PlayerInteractableObject, iInteractable
     public void PlayerLookedAtMe()
     {
         if (PlayerInteracting == false)
-            AimDotUI.Instance.ChangeAimDotToGreen(); //Check if can open door - some other criteria maybe - has key etc.
+            UIManager.Instance.aimDot.ChangeToGreen();
     }
 
     public void PlayerLookedAwayFromMe()
     {
         if (PlayerInteracting == false)
-            AimDotUI.Instance.ChangeAimDotBackToNormal();
+            UIManager.Instance.aimDot.Reset(); 
     }
 
     public void PlayerStoppedInteraction()
@@ -74,8 +74,9 @@ public class PullOutHandle : PlayerInteractableObject, iInteractable
         if (PlayerInteracting)
         {
             PlayerInteracting = false;
-            AimDotUI.Instance.EnableAimDot();
-            AimDotUI.Instance.ChangeAimDotBackToNormal();
+            UIManager.Instance.aimDot.EnableAimDot();
+            UIManager.Instance.aimDot.Reset();
+
             playerCameraRotation.EnableRotation();
 
             PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
@@ -110,7 +111,7 @@ public class PullOutHandle : PlayerInteractableObject, iInteractable
         PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
 
         playerCameraRotation.DisableRotation();
-        AimDotUI.Instance.DisableAimDot();
+        UIManager.Instance.aimDot.DisableAimDot();
 
         Vector3 pullableObjectPositionAtStartOfInteraction = pullGameObject.transform.position;
 

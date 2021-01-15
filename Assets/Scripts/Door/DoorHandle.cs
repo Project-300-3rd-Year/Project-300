@@ -93,7 +93,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
             {
                 UnlockDoor();
 
-                AimDotUI.Instance.ChangeAimDotToGreen();
+                UIManager.Instance.aimDot.ChangeToGreen();
                 UIManager.Instance.singleInteractImage.Hide();
             }
             else
@@ -111,12 +111,11 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     {
         if (IsInteractable)
         {
-            AimDotUI.Instance.ChangeAimDotToGreen();
+            UIManager.Instance.aimDot.ChangeToGreen();
         }
         else
         {
-            AimDotUI.Instance.ChangeAimDotToRed();
-
+            UIManager.Instance.aimDot.ChangeToRed();
             UIManager.Instance.singleInteractImage.Show(unlockSprite);
 
         }
@@ -124,9 +123,9 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     public void PlayerLookedAwayFromMe()
     {
         if(PlayerInteractingWithDoor == false)
-            AimDotUI.Instance.ChangeAimDotBackToNormal();
+            UIManager.Instance.aimDot.Reset();
 
-        if(IsLocked)
+        if (IsLocked)
         {
             UIManager.Instance.singleInteractImage.Hide();
         }
@@ -141,7 +140,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
 
         playerCameraRotation.DisableRotation();
-        AimDotUI.Instance.DisableAimDot();
+        UIManager.Instance.aimDot.DisableAimDot();
 
         while (inputDelegate(defaultKeyToInteract)) //Should ideally be calling the delegate in base script, but wanted to 
         {
@@ -157,8 +156,8 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         if (PlayerInteractingWithDoor)
         {
             PlayerInteractingWithDoor = false;
-            AimDotUI.Instance.EnableAimDot();
-            AimDotUI.Instance.ChangeAimDotBackToNormal();
+            UIManager.Instance.aimDot.EnableAimDot();
+            UIManager.Instance.aimDot.Reset();
             playerCameraRotation.EnableRotation();
 
             PlayerInteractRaycast.Instance.EnableCheckingForInteractables();

@@ -43,12 +43,13 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
     }
     public void PlayerLookedAtMe()
     {
-        AimDotUI.Instance.ChangeAimDotToGreen();
+        //AimDotUI.Instance.ChangeAimDotToGreen();
+        UIManager.Instance.aimDot.ChangeToGreen();
         UIManager.Instance.singleInteractImage.Show(currentInteractSprite);
     }
     public void PlayerLookedAwayFromMe()
     {
-        AimDotUI.Instance.ChangeAimDotBackToNormal();
+        UIManager.Instance.aimDot.Reset();
         UIManager.Instance.singleInteractImage.Hide();
     }
     public void PlayerStoppedInteraction()
