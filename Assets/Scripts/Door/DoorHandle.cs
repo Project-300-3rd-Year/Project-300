@@ -94,13 +94,12 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
                 UnlockDoor();
 
                 AimDotUI.Instance.ChangeAimDotToGreen();
-
-                UIManager.Instance.DisableSingleInteractImage();
-
+                UIManager.Instance.singleInteractImage.Hide();
             }
             else
             {
-                MessageNotification.Instance.ActivateNotificationMessage($"Door is locked... seems like I need the {keyToUnlockMe.keyName} key...");
+
+                UIManager.Instance.messageNotification.Show($"Door is locked... seems like I need the {keyToUnlockMe.keyName} key...");
             }
         }
     }
@@ -118,7 +117,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         {
             AimDotUI.Instance.ChangeAimDotToRed();
 
-            UIManager.Instance.ActivateSingleInteractImage(unlockSprite);
+            UIManager.Instance.singleInteractImage.Show(unlockSprite);
 
         }
     }
@@ -129,7 +128,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
 
         if(IsLocked)
         {
-            UIManager.Instance.DisableSingleInteractImage();
+            UIManager.Instance.singleInteractImage.Hide();
         }
     }
 

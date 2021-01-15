@@ -163,13 +163,13 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
         if (IsInteractable)
         {
             AimDotUI.Instance.ChangeAimDotToGreen();
-            UIManager.Instance.ActivateSingleInteractImage(hideSprite);
+            UIManager.Instance.singleInteractImage.Show(hideSprite);
         }
     }
     public void PlayerLookedAwayFromMe()
     {
         AimDotUI.Instance.ChangeAimDotBackToNormal();
-        UIManager.Instance.DisableSingleInteractImage();
+        UIManager.Instance.singleInteractImage.Hide();
     }
     public void PlayerIsLookingAtMe() { }
     public void PlayerStoppedInteraction() { }

@@ -4,54 +4,64 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/* UI element that is a message at bottom of screen to notify player of certain events.
+ * UI Manager has a reference to this object and it's called from there.
+ */
+
 public class MessageNotification : MonoBehaviour
 {
-    [SerializeField] private Image _imgBackground; //Black background. 
-    [SerializeField] private TextMeshProUGUI tmProNotificationMessage; //Message that appears.
+    [Header("Status")]
+    [SerializeField] private bool IsActive;
+    [Header("Text Component")]
+    [SerializeField] private TextMeshProUGUI tmProNotificationMessage; 
+    [Header("Positions")]
     [SerializeField] private Transform targetTransform;
     [SerializeField] private Transform startingTransform;
+    [Header("Movement Eases")]
     [SerializeField] LeanTweenType activateEase;
     [SerializeField] LeanTweenType deactivateEase;
-
-    public static MessageNotification Instance;
+    [Header("Speed of movement")]
     [SerializeField] private float moveTime;
-    float dissapearTimer;
+    [Header("Time to stay on screen")]
     [SerializeField] private float timeToDissapear;
 
-    [SerializeField] private bool IsActive;
+    private string currentNotificationMessage;
+    private int hideTweenID;
 
     //Start.
-    private void Awake() => Instance = this;
-    void Start() => transform.position = startingTransform.position;
-
-    void Update()
+    private void Awake() { }
+    void Start()
     {
-        if(IsActive)
-        {
-            dissapearTimer += Time.deltaTime;
-            if (dissapearTimer >= timeToDissapear)
-            {
-                IsActive = false;
-                DeactivateNotificationMessage();
-            }
-        }
+        transform.position = startingTransform.position;
+        currentNotificationMessage = string.Empty;
     }
 
-    public void ActivateNotificationMessage(string message)
+    public void Show(string message)
     {
-        //_imgBackground.gameObject.SetActive(true);
-        //tmProNotificationMessage.gameObject.SetActive(true);
-        if(IsActive == false && LeanTween.isTweening(this.gameObject) == false)
-        {
-            IsActive = true;
-            tmProNotificationMessage.text = message;
-
-            LeanTween.move(this.gameObject, targetTransform, moveTime).setEase(activateEase);
+        if (IsActive && message != currentNotificationMessage) //Player activated another notification message while notification message was on screen.
+        {            
+            ResetMe();
+            MoveMessageOnScreen(message);
         }
+        else if (IsActive == false && LeanTween.isTweening(this.gameObject) == false)
+            MoveMessageOnScreen(message);
     }
+    public void Hide() => LeanTween.move(this.gameObject, startingTransform, moveTime).setEase(deactivateEase).setOnComplete(delegate () { IsActive = false; });
 
-    public void DeactivateNotificationMessage()
+    private void MoveMessageOnScreen(string message)
     {
-        LeanTween.move(this.gameObject, startingTransform, moveTime).setEase(deactivateEase).setOnComplete(delegate() { dissapearTimer = 0; });
+        IsActive = true;
+        tmProNotificationMessage.text = message;
+        currentNotificationMessage = message;
+
+        LeanTween.move(this.gameObject, targetTransform, moveTime).setEase(activateEase);
+        hideTweenID = LeanTween.delayedCall(moveTime + timeToDissapear, Hide).id;
+    } 
+    private void ResetMe()
+    {
+        LeanTween.cancel(this.gameObject);
+        LeanTween.cancel(hideTweenID);
+
+        this.gameObject.transform.position = startingTransform.transform.position;
     }
 }

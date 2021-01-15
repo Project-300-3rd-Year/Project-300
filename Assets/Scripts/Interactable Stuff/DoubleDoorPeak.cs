@@ -64,7 +64,7 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
                 hidingSpot.PlayerInteracted();
                 gameObject.SetActive(false);
                 AimDotUI.Instance.ChangeAimDotBackToNormal();
-                UIManager.Instance.DisableDoubleInteractImage();
+                UIManager.Instance.doubleInteractImage.Hide();
             }
         }
 
@@ -88,13 +88,13 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
     {
         AimDotUI.Instance.ChangeAimDotToGreen();
 
-        UIManager.Instance.ActivateDoubleInteractImage(leftSprite, rightSprite);
+        UIManager.Instance.doubleInteractImage.Show(leftSprite, rightSprite);
     }
 
     public void PlayerLookedAwayFromMe()
     {
         AimDotUI.Instance.ChangeAimDotBackToNormal();
-        UIManager.Instance.DisableDoubleInteractImage();
+        UIManager.Instance.doubleInteractImage.Hide();
 
         PlayerIsPeeking = false; //In case they looked away while peeking.
     }
