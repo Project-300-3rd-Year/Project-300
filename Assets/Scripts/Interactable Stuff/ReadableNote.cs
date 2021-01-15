@@ -8,16 +8,17 @@ using UnityEngine.UI;
 public class ReadableNote : PlayerInteractableObject,iInteractable
 {
     //Components.
-    PlayerMovement playerMovement;
-    PlayerCameraRotation playerCameraRotation;
+    private PlayerMovement playerMovement;
+    private PlayerCameraRotation playerCameraRotation;
 
-    [SerializeField] Note note;
+    [Header("Note To Show")]
+    [SerializeField] private Note note;
 
     //UI.
-    [SerializeField] Image imgBackground;
-    [SerializeField] Image imgNote;
-    [SerializeField] TextMeshProUGUI tmProDate;
-    [SerializeField] TextMeshProUGUI tmProNote;
+    [SerializeField] private Image imgBackground;
+    [SerializeField] private Image imgNote;
+    [SerializeField] private TextMeshProUGUI tmProDate;
+    [SerializeField] private TextMeshProUGUI tmProNote;
 
     private Coroutine readingNoteCoroutine;
 
@@ -53,11 +54,7 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
             playerMovement.DisableMovement();
             playerCameraRotation.DisableRotation();
 
-            imgBackground.gameObject.SetActive(true);
-            imgNote.gameObject.SetActive(true);
-            tmProDate.text = note.date;
-            tmProNote.text = note.text;
-
+            UIManager.Instance.noteUI.Show(note);
         }
     }
 
@@ -95,8 +92,7 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
                 playerMovement.EnableMovement();
                 playerCameraRotation.EnableRotation();
 
-                imgBackground.gameObject.SetActive(false);
-                imgNote.gameObject.SetActive(false);
+                UIManager.Instance.noteUI.Hide();
 
                 break;
             }

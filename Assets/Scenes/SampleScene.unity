@@ -163,7 +163,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 626227814}
-  m_RootOrder: 8
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -290,7 +290,7 @@ RectTransform:
   - {fileID: 119033398}
   - {fileID: 1231355930}
   m_Father: {fileID: 626227814}
-  m_RootOrder: 10
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -342,7 +342,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 626227814}
-  m_RootOrder: 7
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -1194,7 +1194,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 626227814}
-  m_RootOrder: 9
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -1274,7 +1274,6 @@ MonoBehaviour:
   currentKeyToInteract: 0
   holdToInteract: 0
   KeyWasHeldOnLookingAtMe: 0
-  UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
   IsMovingIntoPosition: 0
   targetTransformOnInteraction: {fileID: 2000959012}
   timeToMoveToFirstPos: 1.9
@@ -1874,7 +1873,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1807476569}
   m_HandleRect: {fileID: 1807476568}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0.9999998
   m_Size: 0.68079954
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2654,7 +2653,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 626227814}
-  m_RootOrder: 12
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -3478,14 +3477,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 565082855}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5.7744, y: 6.5868, z: 1}
+  m_LocalScale: {x: 5.7743998, y: 6.5867996, z: 1}
   m_Children:
   - {fileID: 438113574}
   - {fileID: 2031801471}
-  m_Father: {fileID: 626227814}
-  m_RootOrder: 5
+  m_Father: {fileID: 1387001262}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3732,12 +3731,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
+  - {fileID: 1387001262}
   - {fileID: 669938874}
-  - {fileID: 1634236002}
   - {fileID: 1854652543}
   - {fileID: 1884410397}
-  - {fileID: 1572784630}
-  - {fileID: 565082856}
   - {fileID: 634138724}
   - {fileID: 21595702}
   - {fileID: 4852616}
@@ -3765,6 +3762,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4f50e5b6d682b448a732e65891dd427, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  noteUI: {fileID: 1387001263}
+  aimDot: {fileID: 669938878}
   singleInteractImage: {fileID: 1884410398}
   doubleInteractImage: {fileID: 13129131}
   messageNotification: {fileID: 634138725}
@@ -3799,7 +3798,7 @@ RectTransform:
   - {fileID: 1614195393}
   - {fileID: 1582449669}
   m_Father: {fileID: 626227814}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -3958,7 +3957,6 @@ GameObject:
   - component: {fileID: 669938874}
   - component: {fileID: 669938876}
   - component: {fileID: 669938875}
-  - component: {fileID: 669938877}
   - component: {fileID: 669938878}
   m_Layer: 5
   m_Name: AimDot
@@ -3979,7 +3977,7 @@ RectTransform:
   m_LocalScale: {x: 0.07569232, y: 0.07569232, z: 0.07569232}
   m_Children: []
   m_Father: {fileID: 626227814}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4022,24 +4020,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 669938873}
   m_CullTransparentMesh: 0
---- !u!114 &669938877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 669938873}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79e5ed66908581d4284fb53f5cd3a065, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactImage: {fileID: 1634236003}
-  colourLookingAtInteractable: {r: 0.6745283, g: 1, b: 0.71933967, a: 0.92156863}
-  colourLookingAtNotInteractable: {r: 1, g: 0, b: 0, a: 1}
-  sizeLookingAtInteractable: {x: 0.1, y: 0.1}
-  timeToChangeSize: 0.2
-  timeToChangeColour: 0.2
 --- !u!114 &669938878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5576,7 +5556,6 @@ MonoBehaviour:
   currentKeyToInteract: 0
   holdToInteract: 0
   KeyWasHeldOnLookingAtMe: 0
-  UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
   IsMovingIntoPosition: 0
   targetTransformOnInteraction: {fileID: 735153308}
   timeToMoveToFirstPos: 1.7
@@ -7487,6 +7466,60 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 037e8d2099d9cb147b80e796c49a50f9, type: 3}
+--- !u!1 &1387001261
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1387001262}
+  - component: {fileID: 1387001263}
+  m_Layer: 5
+  m_Name: NoteUIGameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1387001262
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387001261}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1572784630}
+  - {fileID: 565082856}
+  m_Father: {fileID: 626227814}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1387001263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387001261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea108da76dcccea43b92531afe3219b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imgBackground: {fileID: 1572784632}
+  imgNote: {fileID: 565082858}
+  tmProDate: {fileID: 438113576}
+  tmProNote: {fileID: 797166782}
 --- !u!1001 &1388398969
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8888,17 +8921,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1572784629}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 626227814}
-  m_RootOrder: 4
+  m_Father: {fileID: 1387001262}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1820, y: 1058.2113}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1572784631
 CanvasRenderer:
@@ -8991,7 +9024,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Door is locked... I need a key of some sort.....
+  m_text: Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cb09eaa509636694c9412196b915a9c5, type: 2}
   m_sharedMaterial: {fileID: 6027996065696878879, guid: cb09eaa509636694c9412196b915a9c5,
@@ -9061,10 +9094,10 @@ MonoBehaviour:
   m_margin: {x: -379.71475, y: 0, z: -396.17896, w: 0}
   m_textInfo:
     textComponent: {fileID: 1582449670}
-    characterCount: 48
+    characterCount: 4
     spriteCount: 0
-    spaceCount: 9
-    wordCount: 10
+    spaceCount: 0
+    wordCount: 1
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -9435,79 +9468,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentObjectInHands: {fileID: 0}
   pickUpPosition: {fileID: 659752689}
---- !u!1 &1634236001
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1634236002}
-  - component: {fileID: 1634236004}
-  - component: {fileID: 1634236003}
-  m_Layer: 5
-  m_Name: InteractImage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &1634236002
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1634236001}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 626227814}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1634236003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1634236001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9deafe546bab45545944eb12b42eb818, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1634236004
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1634236001}
-  m_CullTransparentMesh: 0
 --- !u!1 &1653987861
 GameObject:
   m_ObjectHideFlags: 0
@@ -10183,7 +10143,6 @@ MonoBehaviour:
   currentKeyToInteract: 0
   holdToInteract: 1
   KeyWasHeldOnLookingAtMe: 0
-  UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
   PlayerIsPeeking: 0
   doorPeekSpeed: 62
   door1TargetRotation: {x: 0, y: 45, z: 0}
@@ -10714,7 +10673,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 626227814}
-  m_RootOrder: 11
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -16902,7 +16861,7 @@ PrefabInstance:
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14.083
+      value: 11.58
       objectReference: {fileID: 0}
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
@@ -16912,7 +16871,7 @@ PrefabInstance:
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -28.46
+      value: -21.18
       objectReference: {fileID: 0}
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
@@ -16922,7 +16881,7 @@ PrefabInstance:
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7604182
+      value: 0.73079205
       objectReference: {fileID: 0}
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
@@ -16932,7 +16891,7 @@ PrefabInstance:
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6494338
+      value: 0.68260014
       objectReference: {fileID: 0}
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
@@ -16947,7 +16906,7 @@ PrefabInstance:
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 620.998
+      value: 813.906
       objectReference: {fileID: 0}
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
@@ -17322,7 +17281,6 @@ MonoBehaviour:
   currentKeyToInteract: 0
   holdToInteract: 0
   KeyWasHeldOnLookingAtMe: 0
-  UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
   _switchedOn: 0
   lightSource: {fileID: 760294393}
 --- !u!4 &2549105552744768340

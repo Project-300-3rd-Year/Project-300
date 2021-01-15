@@ -21,6 +21,9 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    [Header("Readable Note UI")]
+    public NoteUI noteUI;
+
     [Header("Aim Dot At Center Of Screen")]
     public AimDot aimDot;
 
