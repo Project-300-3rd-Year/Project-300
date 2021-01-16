@@ -7,8 +7,6 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
 {
     public bool IsInteractable { get { return (IsMovingIntoPosition == false) && (IsInHiding == false); } set { } }
 
-    public event Action InteractedEvent;
-
     [Header("Doors")]
     [SerializeField] private GameObject leftDoor;
     [SerializeField] private GameObject rightDoor;

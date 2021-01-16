@@ -50,8 +50,6 @@ public class AimDot : MonoBehaviour
 
     public void Reset()
     {
-        //EnableAimDot(); Does this make a difference???
-
         LeanTween.scale(myRectTransform, defaultSize, timeToChangeSize);
         LeanTween.value(gameObject, a => aimDotImage.color = a, aimDotImage.color, defaultColour, timeToChangeColour);
     }

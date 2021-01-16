@@ -19,7 +19,6 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
 
     public bool IsLocked { get { return _IsLocked; } set { _IsLocked = value; } }
 
-
     [Header("Status")]
     [SerializeField] private bool _IsLocked;
     public KeyInventoryItem keyToUnlockMe;
@@ -110,14 +109,13 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     public void PlayerLookedAtMe()
     {
         if (IsInteractable)
-        {
+        {        
             UIManager.Instance.aimDot.ChangeToGreen();
         }
         else
         {
             UIManager.Instance.aimDot.ChangeToRed();
             UIManager.Instance.singleInteractImage.Show(unlockSprite);
-
         }
     }
     public void PlayerLookedAwayFromMe()

@@ -17,7 +17,6 @@ using UnityEngine;
 public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
 {
     public bool IsInteractable { get { return true; } set { _IsInteractable = value; } }
-    public event Action InteractedEvent;
 
     [SerializeField] private bool PlayerIsPeeking;
     //private bool PlayerIsPeeking

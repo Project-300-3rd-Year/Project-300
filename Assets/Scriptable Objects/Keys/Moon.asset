@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Moon
   m_EditorClassIdentifier: 
   keyName: Moon
+  UIMessageToShowWhenPickedUp: I picked up the Moon key

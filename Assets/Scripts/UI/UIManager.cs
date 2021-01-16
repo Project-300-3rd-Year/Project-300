@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+//Consider using events to call methods from UI elements. Just calling methods from singleton instance at the moment in lots of different scripts.
 public class UIManager : MonoBehaviour
 {
     private static UIManager _instance;
@@ -37,7 +38,5 @@ public class UIManager : MonoBehaviour
     public MessageNotification messageNotification;
 
     private void Awake() { }
-    private void Start()
-    {
-    }
+    private void Start() { }
 }

@@ -76,7 +76,6 @@ public class FlickeringLight : MonoBehaviour
             {
                 if (timer >= currentFlickerDuration)
                 {
-
                     ResetLightIntensity();
                     FlickerActive = false;
                     ResetTimer();
@@ -97,7 +96,6 @@ public class FlickeringLight : MonoBehaviour
         }
     }
 
-
     private void ChooseRandomFlickerDuration() => currentFlickerDuration = randomFlickerDurations[Random.Range(0, randomFlickerDurations.Length - 1)];
     private void ChooseRandomFlickerTime() => currentTimeToStartFlickering = randomTimesToStartFlickering[Random.Range(0, randomTimesToStartFlickering.Length - 1)];
     private void ChooseRandomFlickerSpeed() => currentFlickerSpeed = randomFlickerSpeeds[Random.Range(0, randomFlickerSpeeds.Length - 1)];
@@ -108,5 +106,4 @@ public class FlickeringLight : MonoBehaviour
     }
     private void ResetTimer() => timer = 0;
     private void ResetLightIntensity() => myLight.intensity = defaultLightIntensity;
-
 }

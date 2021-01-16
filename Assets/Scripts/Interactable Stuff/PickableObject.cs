@@ -13,6 +13,7 @@ using UnityEngine;
  * If in players hands and the object gets into contact with player - it makes the player move a lot. With bigger objects this is a problem.
  * Fix for the moment is making the character controller capsule smaller.
  * Pickup "transform" position should adjust depending on object size (maybe).  
+ * Make a variable for the magnitude of velocity that the player can pick up the item.
  */
 
 [RequireComponent(typeof(Rigidbody))]
@@ -20,7 +21,6 @@ public class PickableObject : PlayerInteractableObject,iInteractable
 {
     public static event Action PlayerPickedUpObject; //Current subscribers - raycast script to enables/disable checking for interactables.
     public static event Action PlayerDroppedObject;
-    public event Action InteractedEvent;
 
     //Components.
     Rigidbody rigidbody;
@@ -56,7 +56,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     {
         get
         {
-            _IsInteractable = rigidbody.velocity == Vector3.zero && CanBePickedUp;
+            _IsInteractable = rigidbody.velocity.magnitude <= 0.5f && CanBePickedUp;
             return _IsInteractable;
         }
         set
@@ -161,6 +161,8 @@ public class PickableObject : PlayerInteractableObject,iInteractable
         ReachedPickupPosition = false;
 
         playerCameraRotation.EnableRotation();
+
+        PlayerLookedAtMe();
     }
 
     public void PlayerPickedMeUp()
@@ -172,6 +174,8 @@ public class PickableObject : PlayerInteractableObject,iInteractable
         rigidbody.isKinematic = true;
 
         InPlayersHands = true;
+
+        PlayerLookedAwayFromMe();
     }
     private void EnterRotationState()
     {
@@ -224,6 +228,6 @@ public class PickableObject : PlayerInteractableObject,iInteractable
 
     public void PlayerIsLookingAtMe()
     {
-        PlayerLookedAtMe();
+        
     }
 }

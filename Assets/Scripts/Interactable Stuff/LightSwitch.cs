@@ -16,8 +16,6 @@ public class LightSwitch : PlayerInteractableObject, iInteractable
         }
     }
 
-    public event Action InteractedEvent;
-
     [Header("Status")]
     [SerializeField] private bool _switchedOn;
     private bool SwitchedOn

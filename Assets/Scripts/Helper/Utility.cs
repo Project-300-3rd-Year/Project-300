@@ -16,7 +16,6 @@ public static class Utility
 
     public static IEnumerator RotateTwoObjectsToTargetPosition(GameObject gameObject1, GameObject gameObject2, Quaternion object1TargetRotation, Quaternion object2TargetRotation, float rotationSpeed)
     {
-
         while (Quaternion.Angle(gameObject1.transform.rotation, object1TargetRotation) > 0
                || Quaternion.Angle(gameObject2.transform.rotation, object2TargetRotation) > 0)
         {

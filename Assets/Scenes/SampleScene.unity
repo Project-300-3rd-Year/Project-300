@@ -16861,7 +16861,7 @@ PrefabInstance:
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.58
+      value: 13.72
       objectReference: {fileID: 0}
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
@@ -16871,7 +16871,7 @@ PrefabInstance:
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -21.18
+      value: -28.55
       objectReference: {fileID: 0}
     - target: {fileID: 2427338532022398581, guid: 84f49077249a1724bb76a959f0c5df4e,
         type: 3}
@@ -30737,6 +30737,11 @@ PrefabInstance:
       propertyPath: tmProNote
       value: 
       objectReference: {fileID: 797166782}
+    - target: {fileID: 8048708506817609084, guid: eb302769e5efdb84391f80a427d103bf,
+        type: 3}
+      propertyPath: keyToStopReadingNote
+      value: 324
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb302769e5efdb84391f80a427d103bf, type: 3}
 --- !u!1 &8070234975595265200

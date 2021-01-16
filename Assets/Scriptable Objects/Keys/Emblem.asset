@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Emblem
   m_EditorClassIdentifier: 
   keyName: Emblem
+  UIMessageToShowWhenPickedUp: I picked up the Emblem key

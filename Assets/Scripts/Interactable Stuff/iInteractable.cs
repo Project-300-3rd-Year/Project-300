@@ -5,7 +5,7 @@ using UnityEngine;
 
 public interface iInteractable
 {
-    event Action InteractedEvent;
+    //event Action InteractedEvent;
 
     bool IsInteractable { get; set; }
 
@@ -14,5 +14,4 @@ public interface iInteractable
     void PlayerLookedAwayFromMe();
     void PlayerLookedAtMe();
     void PlayerIsLookingAtMe();
-
 }

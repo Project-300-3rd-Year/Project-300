@@ -6,5 +6,6 @@ using UnityEngine.UI;
 
 public class PlayerInteractableObject : PlayerInteractableComponent
 {
-
+    //public Action PlayerLookedAtMeInteractable;
+    //public Action PlayerLookedAtMeNotInteractable;
 }

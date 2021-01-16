@@ -7,8 +7,6 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
 {
     public bool IsInteractable { get { return IsMovingIntoPosition == false; } set { } }
 
-    public event Action InteractedEvent;
-
     //If there are multiple hiding spots near each other (example under table and can leave through multiple sides), 
     //need to have a reference to them to change their key to interact (for the purpose of leaving)
     [Header("Other Hiding Spots")]

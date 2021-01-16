@@ -14,17 +14,12 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
     [Header("Note To Show")]
     [SerializeField] private Note note;
 
-    //UI.
-    [SerializeField] private Image imgBackground;
-    [SerializeField] private Image imgNote;
-    [SerializeField] private TextMeshProUGUI tmProDate;
-    [SerializeField] private TextMeshProUGUI tmProNote;
+    [Header("Stopping reading")]
+    [SerializeField] private KeyCode keyToStopReadingNote;
 
     private Coroutine readingNoteCoroutine;
 
     public bool IsInteractable { get { return true; } set { _IsInteractable = value;} }
-
-    public event Action InteractedEvent;
 
     public override void Awake()
     {
@@ -54,6 +49,7 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
             playerMovement.DisableMovement();
             playerCameraRotation.DisableRotation();
 
+            UIManager.Instance.aimDot.DisableAimDot();
             UIManager.Instance.noteUI.Show(note);
         }
     }
@@ -82,7 +78,7 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
     {
         while (true)
         {
-            if(Input.GetKeyDown(KeyCode.Mouse1))
+            if(Input.GetKeyDown(keyToStopReadingNote))
             {
                 PlayerInteractRaycast.Instance.EnableInteractionWithObjects();
                 PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
@@ -92,6 +88,7 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
                 playerMovement.EnableMovement();
                 playerCameraRotation.EnableRotation();
 
+                UIManager.Instance.aimDot.EnableAimDot();
                 UIManager.Instance.noteUI.Hide();
 
                 break;

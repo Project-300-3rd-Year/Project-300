@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* Key object that player interacts with / picks up.
+ * Each key object has a reference to the KeyInventory scriptable object which represents the actual key.
+ * When picking up a key - event is fired which playerinventory and UI Message Notification listens out for.
+ */
+
 public class Key : PlayerInteractableObject, iInteractable
 {
     public bool IsInteractable { get { return true; } set { _IsInteractable = value; } }
-
-    public event Action InteractedEvent;
     public event Action<KeyInventoryItem> PickedUpKeyEvent;
 
     [SerializeField] private KeyInventoryItem keyInventoryItem; //Scriptable object that key represents.
@@ -19,10 +22,9 @@ public class Key : PlayerInteractableObject, iInteractable
     //IInteractable.
     public void PlayerInteracted()
     {
+        //UIManager.Instance.messageNotification.Show($"I picked up the {keyInventoryItem.keyName} key");
         PickedUpKeyEvent?.Invoke(keyInventoryItem);
-        UIManager.Instance.messageNotification.Show($"I picked up the {keyInventoryItem.keyName} key");
         PlayerLookedAwayFromMe();
-
         Destroy(gameObject);
     }
 
