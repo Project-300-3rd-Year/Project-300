@@ -40,8 +40,8 @@ public class PullOutHandle : Handle, iInteractable, iLockable
     private Vector3 closedPosition;
 
     [Header("Pull Object Clamping")]
-    [Range(-1,0)]
-    [SerializeField] private float clampAmount;
+    [Range(0,3)]
+    [SerializeField] private float amountToPullObject;
 
     // Start.
     public override void Awake()
@@ -52,7 +52,8 @@ public class PullOutHandle : Handle, iInteractable, iLockable
     {
         base.Start();
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
-        closedPosition = gameObjectToAffect.transform.position;
+        closedPosition = gameObjectToAffect.transform.localPosition;
+        print("Starting / closed position: " + closedPosition);
 
         if (IsLocked)
             LockMe();
@@ -139,14 +140,14 @@ public class PullOutHandle : Handle, iInteractable, iLockable
 
     private IEnumerator InteractWithHandle()
     {
-        Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
         PlayerInteracting = true;
 
         PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
-
-        playerCameraRotation.DisableRotation();
         UIManager.Instance.aimDot.DisableAimDot();
 
+        playerCameraRotation.DisableRotation();
+
+        Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
         Vector3 pullableObjectPositionAtStartOfInteraction = gameObjectToAffect.transform.position;
 
         while (inputDelegate(defaultKeyToInteract))
@@ -155,8 +156,8 @@ public class PullOutHandle : Handle, iInteractable, iLockable
 
             Vector3 pullVector = pullDirection * affectSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime;
             gameObjectToAffect.transform.Translate(pullVector);
-            Vector3 clampedVector = new Vector3(gameObjectToAffect.transform.position.x, gameObjectToAffect.transform.position.y, Mathf.Clamp(gameObjectToAffect.transform.position.z, closedPosition.z + (clampAmount), closedPosition.z));
-            gameObjectToAffect.transform.position = clampedVector;
+            Vector3 clampedVector = new Vector3(gameObjectToAffect.transform.localPosition.x, gameObjectToAffect.transform.localPosition.y, Mathf.Clamp(gameObjectToAffect.transform.localPosition.z, closedPosition.z - amountToPullObject, closedPosition.z));
+            gameObjectToAffect.transform.localPosition = clampedVector;
             yield return null;
         }
 
