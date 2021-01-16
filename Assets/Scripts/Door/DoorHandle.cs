@@ -4,78 +4,68 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-/* Encountered an issue where I couldn't interact with door handles randomly - probably as InteractingWithDoor was set to true all the time accidentally.
+/* Encountered an issue where I couldn't interact with door handles randomly - probably as "PlayerInteracting" was set to true all the time accidentally.
  * 
 */
 
-public class DoorHandle : PlayerInteractableObject, iInteractable
+public class DoorHandle : Handle, iInteractable, iLockable
 {
-    //Components.
-    private PlayerCameraRotation playerCameraRotation;
-    [SerializeField] private PlayerInteractableArea interactableArea;
-
-    public static bool PlayerInteractingWithDoor; //Static as there was an issue with being able to interact with two hadles at once.
-    private Coroutine interactWithDoorCoroutine;
-
-    public bool IsLocked { get { return _IsLocked; } set { _IsLocked = value; } }
-
-    [Header("Status")]
-    [SerializeField] private bool _IsLocked;
-    public KeyInventoryItem keyToUnlockMe;
-    [SerializeField] private KeyCode keyCodeToUnlockMe;
-
-    [Header("Rotation")]
-    [SerializeField] private GameObject doorGameObject;
-    [SerializeField] private float rotationSpeed;
-    [SerializeField] private Transform playerRelativePositionChecker;
     Rigidbody doorRigidbody;
-
-    [Header("UI")]
-    [SerializeField] private Sprite unlockSprite;
 
     public bool IsInteractable
     {
         get
         {         
-            return IsLocked == false && PlayerInteractingWithDoor == false;
+            return IsLocked == false && PlayerInteracting == false;
         }
         set
         {
             _IsInteractable = value;
         }
     }
-
     public event Action InteractedEvent;
+
+    [Header("Locking")]
+    [SerializeField] private bool _isLocked;
+    public bool IsLocked { get { return _isLocked; } set { _isLocked = value; } }
+
+    [SerializeField] private KeyInventoryItem _keyToUnlockMe;
+    public KeyInventoryItem KeyToUnlockMe { get { return _keyToUnlockMe; } }
+
+    [SerializeField] private KeyCode _keyCodeToUnlockMe;
+    public KeyCode KeyCodeToUnlockMe { get { return _keyCodeToUnlockMe; } }
+
+    [SerializeField] private Sprite _unlockSprite;
+    public Sprite UnlockSprite { get { return _unlockSprite; } }
 
     //Start.
     public override void Awake()
     {
         base.Awake();
-        playerCameraRotation = player.GetComponentInChildren<PlayerCameraRotation>();
-        doorRigidbody = doorGameObject.GetComponent<Rigidbody>();
+        doorRigidbody = gameObjectToAffect.GetComponent<Rigidbody>();
     }
     public override void Start()
     {
         base.Start();
 
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
-        CheckIfIsLocked();
-    }
 
-    private void CheckIfIsLocked()
-    {
         if (IsLocked)
-        {
-            ChangeKeyInteractCondition(holdToInteract: false);
-            currentKeyToInteract = keyCodeToUnlockMe;
-        }
+            LockMe();
     }
 
-    public void UnlockDoor()
+    public void UnlockMe()
     {
         IsLocked = false;
         ChangeKeyInteractCondition(holdToInteract: true);
         currentKeyToInteract = defaultKeyToInteract;
+    }
+
+    public void LockMe()
+    {
+        IsLocked = true;
+        ChangeKeyInteractCondition(holdToInteract: false);
+        currentKeyToInteract = KeyCodeToUnlockMe;
     }
 
     //IInteractable.
@@ -83,29 +73,25 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     {
         if(IsInteractable)
         {
-            if (interactWithDoorCoroutine == null)
-                interactWithDoorCoroutine = StartCoroutine(InteractWithDoorHandle());
+            if (interactCoroutine == null)
+                interactCoroutine = StartCoroutine(InteractWithDoorHandle());
         }
         else
         {
-            if(player.GetComponent<PlayerInventory>().HasKeyInInventory(keyToUnlockMe)) //Unlock door.
+            if(player.GetComponent<PlayerInventory>().HasKeyInInventory(KeyToUnlockMe)) //Unlock.
             {
-                UnlockDoor();
+                UnlockMe();
 
                 UIManager.Instance.aimDot.ChangeToGreen();
                 UIManager.Instance.singleInteractImage.Hide();
             }
             else
             {
-
-                UIManager.Instance.messageNotification.Show($"Door is locked... seems like I need the {keyToUnlockMe.keyName} key...");
+                UIManager.Instance.messageNotification.Show($"Door is locked... seems like I need the {KeyToUnlockMe.keyName} key...");
             }
         }
     }
-    public void PlayerIsLookingAtMe()
-    {
-
-    }
+    public void PlayerIsLookingAtMe() { }
     public void PlayerLookedAtMe()
     {
         if (IsInteractable)
@@ -115,25 +101,23 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         else
         {
             UIManager.Instance.aimDot.ChangeToRed();
-            UIManager.Instance.singleInteractImage.Show(unlockSprite);
+            UIManager.Instance.singleInteractImage.Show(UnlockSprite);
         }
     }
     public void PlayerLookedAwayFromMe()
     {
-        if(PlayerInteractingWithDoor == false)
+        if(PlayerInteracting == false)
             UIManager.Instance.aimDot.Reset();
 
         if (IsLocked)
-        {
             UIManager.Instance.singleInteractImage.Hide();
-        }
     }
 
     //Interaction.
     private IEnumerator InteractWithDoorHandle()
     {
         Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
-        PlayerInteractingWithDoor = true;
+        PlayerInteracting = true;
 
         PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
 
@@ -143,7 +127,7 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
         while (inputDelegate(defaultKeyToInteract)) //Should ideally be calling the delegate in base script, but wanted to 
         {
             float desiredMouseInput = Mathf.Abs(Input.GetAxisRaw("Mouse X")) > Mathf.Abs(Input.GetAxisRaw("Mouse Y")) ? Input.GetAxisRaw("Mouse X") : Input.GetAxisRaw("Mouse Y"); //Choose input based on which left / right input is bigger.
-            doorRigidbody.AddRelativeTorque(doorGameObject.transform.up * rotationSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime, ForceMode.VelocityChange);
+            doorRigidbody.AddRelativeTorque(gameObjectToAffect.transform.up * affectSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime, ForceMode.VelocityChange);
             yield return null;
         }
 
@@ -151,19 +135,19 @@ public class DoorHandle : PlayerInteractableObject, iInteractable
     }
     public void PlayerStoppedInteraction()
     {
-        if (PlayerInteractingWithDoor)
+        if (PlayerInteracting)
         {
-            PlayerInteractingWithDoor = false;
+            PlayerInteracting = false;
             UIManager.Instance.aimDot.EnableAimDot();
             UIManager.Instance.aimDot.Reset();
             playerCameraRotation.EnableRotation();
 
             PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
 
-            if (interactWithDoorCoroutine != null)
+            if (interactCoroutine != null)
             {
-                StopCoroutine(interactWithDoorCoroutine);
-                interactWithDoorCoroutine = null;
+                StopCoroutine(interactCoroutine);
+                interactCoroutine = null;
             }
         }
     }

@@ -7,13 +7,15 @@ using UnityEngine;
  * Code is really bad - only works if object faces certain way. FIX LATER.
  * */
 
-public class PullOutHandle : PlayerInteractableObject, iInteractable
+public class PullOutHandle : Handle, iInteractable, iLockable
 {
+    public event Action InteractedEvent;
+
     public bool IsInteractable
     {
         get
         {
-            return _IsInteractable;
+            return IsLocked == false && PlayerInteracting == false;
         }
         set
         {
@@ -21,19 +23,18 @@ public class PullOutHandle : PlayerInteractableObject, iInteractable
         }
     }
 
-    private bool PlayerInteracting;
-    private Coroutine playerInteractingCoroutine;
+    [Header("Locking")]
+    [SerializeField] private bool _isLocked;
+    public bool IsLocked { get { return _isLocked; } set { _isLocked = value; } }
 
-    public event Action InteractedEvent;
+    [SerializeField] private KeyInventoryItem _keyToUnlockMe;
+    public KeyInventoryItem KeyToUnlockMe { get { return _keyToUnlockMe; } }
 
-    private PlayerCameraRotation playerCameraRotation;
-    [SerializeField] private PlayerInteractableArea interactableArea;
+    [SerializeField] private KeyCode _keyCodeToUnlockMe;
+    public KeyCode KeyCodeToUnlockMe { get { return _keyCodeToUnlockMe; } }
 
-
-    [Header("Pull Object")]
-    [SerializeField] private GameObject pullGameObject;
-    [SerializeField] private float pullSpeed;
-    [SerializeField] private Transform playerRelativePositionChecker;
+    [SerializeField] private Sprite _unlockSprite;
+    public Sprite UnlockSprite { get { return _unlockSprite; } }
 
     [SerializeField] Vector3 pullDirection;
     private Vector3 closedPosition;
@@ -42,31 +43,78 @@ public class PullOutHandle : PlayerInteractableObject, iInteractable
     [Range(-1,0)]
     [SerializeField] private float clampAmount;
 
+    // Start.
+    public override void Awake()
+    {
+        base.Awake();
+    }
+    public override void Start()
+    {
+        base.Start();
+        interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
+        closedPosition = gameObjectToAffect.transform.position;
+
+        if (IsLocked)
+            LockMe();
+    }
+
+    public void UnlockMe()
+    {
+        IsLocked = false;
+        ChangeKeyInteractCondition(holdToInteract: true);
+        currentKeyToInteract = defaultKeyToInteract;
+    }
+
+    public void LockMe()
+    {
+        IsLocked = true;
+        ChangeKeyInteractCondition(holdToInteract: false);
+        currentKeyToInteract = KeyCodeToUnlockMe;
+    }
+
 
     public void PlayerInteracted()
     {
-        if (PlayerInteracting == false)
+        if (IsInteractable)
         {
-            if (playerInteractingCoroutine == null)
-                playerInteractingCoroutine = StartCoroutine(InteractWithDoorHandle());
+            if (interactCoroutine == null)
+                interactCoroutine = StartCoroutine(InteractWithHandle());
+        }
+        else
+        {
+            if (player.GetComponent<PlayerInventory>().HasKeyInInventory(KeyToUnlockMe)) //Unlock.
+            {
+                UnlockMe();
+
+                UIManager.Instance.aimDot.ChangeToGreen();
+                UIManager.Instance.singleInteractImage.Hide();
+            }
+            else
+            {
+                UIManager.Instance.messageNotification.Show($"It's locked... seems like I need the {KeyToUnlockMe.keyName} key...");
+            }
         }
     }
-
-    public void PlayerIsLookingAtMe()
-    {
-     
-    }
-
+    public void PlayerIsLookingAtMe() { }
     public void PlayerLookedAtMe()
     {
-        if (PlayerInteracting == false)
+        if (IsInteractable)
+        {
             UIManager.Instance.aimDot.ChangeToGreen();
+        }
+        else
+        {
+            UIManager.Instance.aimDot.ChangeToRed();
+            UIManager.Instance.singleInteractImage.Show(UnlockSprite);
+        }
     }
-
     public void PlayerLookedAwayFromMe()
     {
         if (PlayerInteracting == false)
-            UIManager.Instance.aimDot.Reset(); 
+            UIManager.Instance.aimDot.Reset();
+
+        if (IsLocked)
+            UIManager.Instance.singleInteractImage.Hide();
     }
 
     public void PlayerStoppedInteraction()
@@ -81,29 +129,15 @@ public class PullOutHandle : PlayerInteractableObject, iInteractable
 
             PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
 
-            if (playerInteractingCoroutine != null)
+            if (interactCoroutine != null)
             {
-                StopCoroutine(playerInteractingCoroutine);
-                playerInteractingCoroutine = null;
+                StopCoroutine(interactCoroutine);
+                interactCoroutine = null;
             }
         }
     }
 
-    // Start is called before the first frame update
-    public override void Start()
-    {
-        base.Start();
-        interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
-        closedPosition = pullGameObject.transform.position;
-    }
-
-    public override void Awake()
-    {
-        base.Awake();
-        playerCameraRotation = player.GetComponentInChildren<PlayerCameraRotation>();
-    }
-
-    private IEnumerator InteractWithDoorHandle()
+    private IEnumerator InteractWithHandle()
     {
         Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
         PlayerInteracting = true;
@@ -113,16 +147,16 @@ public class PullOutHandle : PlayerInteractableObject, iInteractable
         playerCameraRotation.DisableRotation();
         UIManager.Instance.aimDot.DisableAimDot();
 
-        Vector3 pullableObjectPositionAtStartOfInteraction = pullGameObject.transform.position;
+        Vector3 pullableObjectPositionAtStartOfInteraction = gameObjectToAffect.transform.position;
 
         while (inputDelegate(defaultKeyToInteract))
         {
             float desiredMouseInput = Mathf.Abs(Input.GetAxisRaw("Mouse X")) > Mathf.Abs(Input.GetAxisRaw("Mouse Y")) ? Input.GetAxisRaw("Mouse X") : Input.GetAxisRaw("Mouse Y"); //Choose input based on which left / right input is bigger.
 
-            Vector3 pullVector = pullDirection * pullSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime;
-            pullGameObject.transform.Translate(pullVector);
-            Vector3 clampedVector = new Vector3(pullGameObject.transform.position.x, pullGameObject.transform.position.y, Mathf.Clamp(pullGameObject.transform.position.z, closedPosition.z + (clampAmount), closedPosition.z));
-            pullGameObject.transform.position = clampedVector;
+            Vector3 pullVector = pullDirection * affectSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime;
+            gameObjectToAffect.transform.Translate(pullVector);
+            Vector3 clampedVector = new Vector3(gameObjectToAffect.transform.position.x, gameObjectToAffect.transform.position.y, Mathf.Clamp(gameObjectToAffect.transform.position.z, closedPosition.z + (clampAmount), closedPosition.z));
+            gameObjectToAffect.transform.position = clampedVector;
             yield return null;
         }
 

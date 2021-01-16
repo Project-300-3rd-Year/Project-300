@@ -41,7 +41,6 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
     }
     public void PlayerLookedAtMe()
     {
-        //AimDotUI.Instance.ChangeAimDotToGreen();
         UIManager.Instance.aimDot.ChangeToGreen();
         UIManager.Instance.singleInteractImage.Show(currentInteractSprite);
     }
@@ -74,6 +73,7 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
         for (int i = 0; i < otherHidingSpots.Length; i++)
         {
             otherHidingSpots[i].ChangeCurrentKeyToInteract(keyToLeaveHidingSpot);
+            //otherHidingSpots[i].
         }
     }
     public void OnReachingHidingSpot()
@@ -85,7 +85,10 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
         PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
 
         //UI.
-        currentInteractSprite = stopHidingSprite;
+        for (int i = 0; i < otherHidingSpots.Length; i++)
+        {
+            otherHidingSpots[i].currentInteractSprite = stopHidingSprite;
+        }
     }
     public void OnLeavingHidingSpot()
     {
@@ -111,9 +114,7 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
         for (int i = 0; i < otherHidingSpots.Length; i++)
         {
             otherHidingSpots[i].ChangeCurrentKeyToInteract(defaultKeyToInteract);
+            otherHidingSpots[i].currentInteractSprite = hideSprite;
         }
-
-        //UI.
-        currentInteractSprite = hideSprite;
     }
 }
