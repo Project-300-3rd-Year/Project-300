@@ -58,19 +58,19 @@ public class HidingSpot : PlayerInteractableObject
 
     //Moving to desired locations (returns LTDescr so can call OnComplete after using these methods).
     //All hiding spot types can use these methods.
-    protected virtual LTDescr MoveToFirstPosition()
+    protected virtual LTDescr MoveAndRotateToFirstPosition()
     {
         LeanTween.rotate(player.gameObject, targetTransformOnInteraction.transform.eulerAngles, timeToRotateToFirstPos).setEase(firstPosRotateEaseType);
         LeanTween.rotate(Camera.main.gameObject, targetTransformOnInteraction.transform.eulerAngles, timeToRotateToFirstPos).setEase(firstPosRotateEaseType);
         return LeanTween.move(player.gameObject, targetTransformOnInteraction, timeToMoveToFirstPos).setEase(firstPosMoveEaseType);
     }
-    protected virtual LTDescr MoveToHidingPosition()
+    protected virtual LTDescr MoveAndRotateToHidingPosition()
     {
         LeanTween.rotate(player.gameObject, targetTransformForHiding.transform.eulerAngles, timeToRotateToHidingPos).setEase(hidingPosRotateEaseType);
         LeanTween.rotate(Camera.main.gameObject, targetTransformForHiding.transform.eulerAngles, timeToRotateToHidingPos).setEase(hidingPosRotateEaseType);
         return LeanTween.move(player.gameObject, targetTransformForHiding, timeToMoveToHidingPos).setEase(hidingPosMoveEaseType);
     }
-    protected virtual LTDescr MoveToLeavingPosition()
+    protected virtual LTDescr MoveAndRotateToLeavingPosition()
     {
         LeanTween.rotate(player.gameObject, targetTransformOnLeaving.transform.eulerAngles, timeToRotateToLeavingPos).setEase(leavingPosRotateEaseType);
         LeanTween.rotate(Camera.main.gameObject, targetTransformOnLeaving.transform.eulerAngles, timeToRotateToLeavingPos).setEase(leavingPosRotateEaseType);

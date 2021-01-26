@@ -226,8 +226,4 @@ public class PickableObject : PlayerInteractableObject,iInteractable
             UIManager.Instance.aimDot.Reset();
     }
 
-    public void PlayerIsLookingAtMe()
-    {
-        
-    }
 }

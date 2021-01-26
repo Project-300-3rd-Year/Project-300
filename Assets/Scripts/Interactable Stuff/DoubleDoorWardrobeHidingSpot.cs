@@ -64,9 +64,9 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
             playerMovement.DisableMovement();
             playerCameraRotation.DisableRotation();
 
-            MoveToFirstPosition().setOnComplete(delegate ()
+            MoveAndRotateToFirstPosition().setOnComplete(delegate ()
             {
-                MoveToHidingPosition().setOnComplete(OnEnteringHidingSpot);
+                MoveAndRotateToHidingPosition().setOnComplete(OnEnteringHidingSpot);
             });
         }   
         else //Hiding - called from peeking script.
@@ -77,22 +77,21 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
     }
 
     //Entering hiding spot.
-    protected override LTDescr MoveToFirstPosition()
+    protected override LTDescr MoveAndRotateToFirstPosition()
     {
         StartCoroutine(RotateDoorsToTarget(Quaternion.Euler(leftDoorOpenRotation), Quaternion.Euler(rightDoorOpenRotation), doorRotationSpeed));
-        return base.MoveToFirstPosition();
+        return base.MoveAndRotateToFirstPosition();
     }
-
 
     //Leaving Hiding Spot.
     private IEnumerator LeaveHidingSpot()
     {
         playerCameraRotation.DisableRotation();
 
-        MoveToHidingPosition();
+        MoveAndRotateToHidingPosition();
         yield return StartCoroutine(RotateDoorsToTarget(Quaternion.Euler(leftDoorOpenRotation),Quaternion.Euler(rightDoorOpenRotation), doorRotationSpeed));
 
-        MoveToLeavingPosition().setOnComplete(delegate()
+        MoveAndRotateToLeavingPosition().setOnComplete(delegate()
         {
             OnLeftHidingSpot();
             StartCoroutine(CloseDoorsAtEnd());
@@ -170,7 +169,6 @@ public class DoubleDoorWardrobeHidingSpot : HidingSpot, iInteractable,iHideable
         UIManager.Instance.aimDot.Reset();
         UIManager.Instance.singleInteractImage.Hide();
     }
-    public void PlayerIsLookingAtMe() { }
     public void PlayerStoppedInteraction() { }
 
 }

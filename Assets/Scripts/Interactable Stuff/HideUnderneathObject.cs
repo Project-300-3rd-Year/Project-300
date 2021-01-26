@@ -23,18 +23,18 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
             {
                 OnEnteringHidingSpot();
 
-                MoveToFirstPosition().setOnComplete(delegate ()
+                MoveAndRotateToFirstPosition().setOnComplete(delegate ()
                 {
-                    MoveToHidingPosition().setOnComplete(OnReachingHidingSpot);
+                    MoveAndRotateToHidingPosition().setOnComplete(OnReachingHidingSpot);
                 });
             }
             else //In hiding, move away from hiding spot.
             {
                 OnLeavingHidingSpot();
 
-                MoveToFirstPosition().setOnComplete(delegate ()
+                MoveAndRotateToFirstPosition().setOnComplete(delegate ()
                 {
-                    MoveToLeavingPosition().setOnComplete(OnLeftHidingSpot);
+                    MoveAndRotateToLeavingPosition().setOnComplete(OnLeftHidingSpot);
                 });
             }
         }
@@ -52,10 +52,6 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
     public void PlayerStoppedInteraction()
     {
         
-    }
-    public void PlayerIsLookingAtMe()
-    {
-
     }
 
     //IHideable.

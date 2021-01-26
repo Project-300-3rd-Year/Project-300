@@ -28,10 +28,6 @@ public class Key : PlayerInteractableObject, iInteractable
         Destroy(gameObject);
     }
 
-    public void PlayerIsLookingAtMe()
-    {
-
-    }
     public void PlayerLookedAtMe() => UIManager.Instance.aimDot.ChangeToGreen();
     public void PlayerLookedAwayFromMe() => UIManager.Instance.aimDot.Reset();
     public void PlayerStoppedInteraction()

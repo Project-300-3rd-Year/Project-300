@@ -3,10 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/* Fix for later - make handle a base script and door handle and this script inherit from it. Too much repeated code.
- * Code is really bad - only works if object faces certain way. FIX LATER.
- * */
-
 public class PullOutHandle : Handle, iInteractable, iLockable
 {
     public event Action InteractedEvent;
@@ -36,12 +32,21 @@ public class PullOutHandle : Handle, iInteractable, iLockable
     [SerializeField] private Sprite _unlockSprite;
     public Sprite UnlockSprite { get { return _unlockSprite; } }
 
-    [SerializeField] Vector3 pullDirection;
+    [SerializeField] private Vector3 pullDirection = new Vector3(0,0,-1);
     private Vector3 closedPosition;
 
     [Header("Pull Object Clamping")]
     [Range(0,3)]
     [SerializeField] private float amountToPullObject;
+
+    private float clampMinX;
+    private float clampMinY;
+    private float clampMinZ;
+    private float clampMaxX;
+    private float clampMaxY;
+    private float clampMaxZ;
+
+    private Vector3 gameObjectsClampedVector;
 
     // Start.
     public override void Awake()
@@ -53,10 +58,42 @@ public class PullOutHandle : Handle, iInteractable, iLockable
         base.Start();
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
         closedPosition = gameObjectToAffect.transform.localPosition;
-        print("Starting / closed position: " + closedPosition);
 
         if (IsLocked)
             LockMe();
+
+        //Improve later.
+        if (pullDirection.x <= 0)
+        {
+            clampMinX = closedPosition.x - amountToPullObject;
+            clampMaxX = closedPosition.x;
+        }
+        else
+        {
+            clampMinX = closedPosition.x;
+            clampMaxX = closedPosition.x + amountToPullObject;
+        }
+        if (pullDirection.y <= 0)
+        {
+            clampMinY = closedPosition.y - amountToPullObject;
+            clampMaxY = closedPosition.y;
+        }
+        else
+        {
+            clampMinY = closedPosition.y;
+            clampMaxY = closedPosition.y + amountToPullObject;
+        }
+        if(pullDirection.z <= 0)
+        {
+            clampMinZ = closedPosition.z - amountToPullObject;
+            clampMaxZ = closedPosition.z;
+        }
+        else
+        {
+            clampMinZ = closedPosition.z;
+            clampMaxZ = closedPosition.z + amountToPullObject;
+        }
+
     }
 
     public void UnlockMe()
@@ -96,7 +133,7 @@ public class PullOutHandle : Handle, iInteractable, iLockable
             }
         }
     }
-    public void PlayerIsLookingAtMe() { }
+
     public void PlayerLookedAtMe()
     {
         if (IsInteractable)
@@ -156,8 +193,13 @@ public class PullOutHandle : Handle, iInteractable, iLockable
 
             Vector3 pullVector = pullDirection * affectSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime;
             gameObjectToAffect.transform.Translate(pullVector);
-            Vector3 clampedVector = new Vector3(gameObjectToAffect.transform.localPosition.x, gameObjectToAffect.transform.localPosition.y, Mathf.Clamp(gameObjectToAffect.transform.localPosition.z, closedPosition.z - amountToPullObject, closedPosition.z));
-            gameObjectToAffect.transform.localPosition = clampedVector;
+            Vector3 clampedPosition = new Vector3(
+                Mathf.Clamp(gameObjectToAffect.transform.localPosition.x, clampMinX, clampMaxX),
+                Mathf.Clamp(gameObjectToAffect.transform.localPosition.y, clampMinY, clampMaxY), 
+                Mathf.Clamp(gameObjectToAffect.transform.localPosition.z, clampMinZ, clampMaxZ));
+
+
+            gameObjectToAffect.transform.localPosition = clampedPosition;
             yield return null;
         }
 

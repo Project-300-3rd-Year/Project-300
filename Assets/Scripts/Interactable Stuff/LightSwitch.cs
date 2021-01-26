@@ -90,10 +90,6 @@ public class LightSwitch : PlayerInteractableObject, iInteractable
     {
         
     }
-    public void PlayerIsLookingAtMe()
-    {
-
-    }
 
     private void DetermineIfSwitchedOn()
     {

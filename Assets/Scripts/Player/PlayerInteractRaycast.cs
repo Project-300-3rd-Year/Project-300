@@ -48,13 +48,13 @@ public class PlayerInteractRaycast : MonoBehaviour
     [SerializeField] public bool checkForInteractableObjects;
 
     [Header("Ray")]
-    [SerializeField] private bool CheckForRaycastLeavingInteractableObject;
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private LayerMask layersToBlockInteractRaycast;
     [SerializeField] private float interactDistance = 200;
     private Ray ray;
     private RaycastHit hitInfo;
 
+    //Start.
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
@@ -62,7 +62,8 @@ public class PlayerInteractRaycast : MonoBehaviour
 
     private void Start()
     {
-        PickableObject.PlayerPickedUpObject += DisableCheckingForInteractables; //Consider just calling methods instead of listening for event - not sure which is better.
+        //Consider just calling methods instead of listening for event - not sure which is better.
+        PickableObject.PlayerPickedUpObject += DisableCheckingForInteractables; 
         PickableObject.PlayerDroppedObject += EnableCheckingForInteractables;
     }
 
@@ -70,20 +71,13 @@ public class PlayerInteractRaycast : MonoBehaviour
     {
         if(CanInteractWithObjects)
         {
-            if (interactableObject != null)//Looking at interactable.
+            //Looking at interactable? Check for interaction.
+            if (interactableObject != null)
             {
-                if (interactableObject.inputDelegate(interactableObject.currentKeyToInteract)) //Player interacts.
+                if (interactableObject.inputDelegate(interactableObject.currentKeyToInteract) && interactableObject.KeyWasHeldOnLookingAtMe == false) 
                 {
                     IinteractableObject.PlayerInteracted();
                 }
-
-                //if (interactableObject != null) //After interacting an object might destroy itself.
-                //{
-                //    if (Input.GetKeyUp(interactableObject.defaultKeyToInteract))
-                //    {
-                //        IinteractableObject.PlayerStoppedInteraction();
-                //    }
-                //}
             }
         }
     }
@@ -92,42 +86,41 @@ public class PlayerInteractRaycast : MonoBehaviour
     {
         if (checkForInteractableObjects)
         {
-            if (other.gameObject.tag == "InteractableArea")
+            if (other.gameObject.tag == "InteractableArea")   //Player enters the vicinity of an interactable object.
             {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                if (Physics.Raycast(ray, out hitInfo, interactDistance, layerMask, QueryTriggerInteraction.Collide)) //Looks at interactable.
+                if(Physics.Raycast(ray, out hitInfo, interactDistance, layerMask, QueryTriggerInteraction.Collide)) //Looks at interactable.
                 {
-                    if ((layersToBlockInteractRaycast & 1 << hitInfo.collider.gameObject.layer) == 0) //If the hit object's layer isn't one of the layers that blocks interact raycast.
+                    if(HitObjectBlocksRaycast == false)
                     {
-                        if (!CheckForRaycastLeavingInteractableObject)
-                            CheckForRaycastLeavingInteractableObject = true;
-
-                        if (interactableObject == null || hitInfo.collider.gameObject != interactableObject.gameObject)
+                        if (interactableObject == null || hitInfo.collider.gameObject != interactableObject.gameObject) //Looked at a new interactable object.
                         {
                             if (interactableObject != null) //If player looked at another object and the raycast didn't leave any interactable - this "deselects" the old object.
                             {
-                                LookedAway();
+                                LookedAwayFromInteractable();
                             }
 
-                            hitInfo.collider.gameObject.TryGetComponent<PlayerInteractableObject>(out interactableObject);
+                            hitInfo.collider.gameObject.TryGetComponent<PlayerInteractableObject>(out interactableObject); //Get components from object.
                             hitInfo.collider.gameObject.TryGetComponent<iInteractable>(out IinteractableObject);
 
-                            if (interactableObject != null && IinteractableObject != null) //Added extra check here as I added default layer to layermask.
-                            {                                                             //In order for default layer to stop raycast - not be able to pick up items through walls etc. It does mean that this get called 
-                                IinteractableObject.PlayerLookedAtMe();
-                                LookedAtInteractableEvent?.Invoke(interactableObject);
+                            if (interactableObject != null && IinteractableObject != null) //If object has the components.
+                            {
+                                if (interactableObject.inputDelegate(interactableObject.currentKeyToInteract)) //If interact key was held at the moment the player looked at object.
+                                    LookedAwayFromInteractable();                                              //Set object to null (calling "lookedaway")
+                                else                                                                           //Otherwise inform the object that the player looked at it.
+                                {
+                                    IinteractableObject.PlayerLookedAtMe();
+                                    LookedAtInteractableEvent?.Invoke(interactableObject);
+                                }
                             }
                         }
-
-                        if (IinteractableObject != null)
-                            IinteractableObject.PlayerIsLookingAtMe();
                     }
-                    else //Looks away from interactable.
+                    else 
                     {
                         if (interactableObject != null)
                         {
-                            LookedAway();
+                            LookedAwayFromInteractable();
                         }
                     }
                 }
@@ -135,12 +128,15 @@ public class PlayerInteractRaycast : MonoBehaviour
                 {
                     if(interactableObject != null)
                     {
-                        LookedAway();
+                        LookedAwayFromInteractable();
                     }
                 }
             }
         }
     }
+
+    //Check if an object's layer is one of the layers that blocks the interact raycast.
+    private bool HitObjectBlocksRaycast => (layersToBlockInteractRaycast & 1 << hitInfo.collider.gameObject.layer) != 0; 
 
     private void OnTriggerExit(Collider other) //If leaves interactable area but is still looking at object.
     {
@@ -148,16 +144,15 @@ public class PlayerInteractRaycast : MonoBehaviour
         {
             if (interactableObject != null)
             {
-                LookedAway();
+                LookedAwayFromInteractable();
             }
         }
     }
 
-    public void LookedAway()
+    public void LookedAwayFromInteractable()
     {
         IinteractableObject.PlayerLookedAwayFromMe();
         LookedAwayFromInteractableEvent?.Invoke();
-        CheckForRaycastLeavingInteractableObject = false;
         interactableObject = null;
         IinteractableObject = null;
     }

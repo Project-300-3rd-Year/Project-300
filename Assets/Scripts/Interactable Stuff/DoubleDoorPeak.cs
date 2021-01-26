@@ -99,5 +99,5 @@ public class DoubleDoorPeak : PlayerInteractableObject, iInteractable
     }
 
     public void PlayerStoppedInteraction() { }
-    public void PlayerIsLookingAtMe() { }
+
 }

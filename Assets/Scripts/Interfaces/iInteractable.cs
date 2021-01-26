@@ -13,5 +13,4 @@ public interface iInteractable
     void PlayerStoppedInteraction();
     void PlayerLookedAwayFromMe();
     void PlayerLookedAtMe();
-    void PlayerIsLookingAtMe();
 }

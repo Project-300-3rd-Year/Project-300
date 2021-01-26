@@ -54,11 +54,6 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
         }
     }
 
-    public void PlayerIsLookingAtMe()
-    {
-
-    }
-
     public void PlayerLookedAtMe()
     {
         UIManager.Instance.aimDot.ChangeToGreen();

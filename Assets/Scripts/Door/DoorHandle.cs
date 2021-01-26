@@ -91,7 +91,7 @@ public class DoorHandle : Handle, iInteractable, iLockable
             }
         }
     }
-    public void PlayerIsLookingAtMe() { }
+
     public void PlayerLookedAtMe()
     {
         if (IsInteractable)
