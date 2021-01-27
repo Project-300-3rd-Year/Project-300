@@ -3,10 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PullOutHandle : Handle, iInteractable, iLockable
+/* Handle which can move an object in any desired direction up to a certain amount (clamping).
+ * Works for a pullable drawer, sliding door etc.
+ * 
+ * 
+ */
+
+public class DirectionalHandle : Handle, iInteractable, iLockable
 {
     public event Action InteractedEvent;
-
     public bool IsInteractable
     {
         get
@@ -21,16 +26,15 @@ public class PullOutHandle : Handle, iInteractable, iLockable
 
     [Header("Locking")]
     [SerializeField] private bool _isLocked;
-    public bool IsLocked { get { return _isLocked; } set { _isLocked = value; } }
-
     [SerializeField] private KeyInventoryItem _keyToUnlockMe;
-    public KeyInventoryItem KeyToUnlockMe { get { return _keyToUnlockMe; } }
-
     [SerializeField] private KeyCode _keyCodeToUnlockMe;
-    public KeyCode KeyCodeToUnlockMe { get { return _keyCodeToUnlockMe; } }
-
     [SerializeField] private Sprite _unlockSprite;
+
+    public bool IsLocked { get { return _isLocked; } set { _isLocked = value; } }
+    public KeyInventoryItem KeyToUnlockMe { get { return _keyToUnlockMe; } }
+    public KeyCode KeyCodeToUnlockMe { get { return _keyCodeToUnlockMe; } }
     public Sprite UnlockSprite { get { return _unlockSprite; } }
+
 
     [SerializeField] private Vector3 pullDirection = new Vector3(0,0,-1);
     private Vector3 closedPosition;
@@ -49,10 +53,7 @@ public class PullOutHandle : Handle, iInteractable, iLockable
     private Vector3 gameObjectsClampedVector;
 
     // Start.
-    public override void Awake()
-    {
-        base.Awake();
-    }
+    public override void Awake() => base.Awake();
     public override void Start()
     {
         base.Start();
