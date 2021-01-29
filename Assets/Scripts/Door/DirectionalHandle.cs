@@ -36,7 +36,7 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
     public Sprite UnlockSprite { get { return _unlockSprite; } }
 
 
-    [SerializeField] private Vector3 pullDirection = new Vector3(0,0,-1);
+    [SerializeField] private Vector3 pullDirection;
     private Vector3 closedPosition;
 
     [Header("Pull Object Clamping")]
@@ -50,8 +50,6 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
     private float clampMaxY;
     private float clampMaxZ;
 
-    private Vector3 gameObjectsClampedVector;
-
     // Start.
     public override void Awake() => base.Awake();
     public override void Start()
@@ -64,32 +62,32 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
             LockMe();
 
         //Improve later.
-        if (pullDirection.x <= 0)
+        if (pullDirection.x < 0)
         {
             clampMinX = closedPosition.x - amountToPullObject;
             clampMaxX = closedPosition.x;
         }
-        else
+        else 
         {
             clampMinX = closedPosition.x;
             clampMaxX = closedPosition.x + amountToPullObject;
         }
-        if (pullDirection.y <= 0)
+        if (pullDirection.y < 0)
         {
             clampMinY = closedPosition.y - amountToPullObject;
             clampMaxY = closedPosition.y;
         }
-        else
+        else 
         {
             clampMinY = closedPosition.y;
             clampMaxY = closedPosition.y + amountToPullObject;
         }
-        if(pullDirection.z <= 0)
+        if (pullDirection.z < 0)
         {
             clampMinZ = closedPosition.z - amountToPullObject;
             clampMaxZ = closedPosition.z;
         }
-        else
+        else 
         {
             clampMinZ = closedPosition.z;
             clampMaxZ = closedPosition.z + amountToPullObject;
@@ -196,11 +194,12 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
             gameObjectToAffect.transform.Translate(pullVector);
             Vector3 clampedPosition = new Vector3(
                 Mathf.Clamp(gameObjectToAffect.transform.localPosition.x, clampMinX, clampMaxX),
-                Mathf.Clamp(gameObjectToAffect.transform.localPosition.y, clampMinY, clampMaxY), 
+                Mathf.Clamp(gameObjectToAffect.transform.localPosition.y, clampMinY, clampMaxY),
                 Mathf.Clamp(gameObjectToAffect.transform.localPosition.z, clampMinZ, clampMaxZ));
 
 
             gameObjectToAffect.transform.localPosition = clampedPosition;
+
             yield return null;
         }
 
