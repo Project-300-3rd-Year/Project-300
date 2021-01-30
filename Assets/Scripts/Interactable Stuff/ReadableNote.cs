@@ -27,10 +27,7 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
         playerMovement = player.GetComponent<PlayerMovement>();
         playerCameraRotation = player.GetComponentInChildren<PlayerCameraRotation>();
     }
-    public override void Start()
-    {
-        base.Start();
-    }
+    public override void Start() => base.Start();
 
     public void PlayerInteracted()
     {

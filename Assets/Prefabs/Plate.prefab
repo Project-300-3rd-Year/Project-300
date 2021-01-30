@@ -128,9 +128,8 @@ MonoBehaviour:
   _IsInteractable: 0
   defaultKeyToInteract: 323
   currentKeyToInteract: 0
-  holdToInteract: 0
+  holdToInteract: 1
   KeyWasHeldOnLookingAtMe: 0
-  UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
   InPlayersHands: 0
   IsBeingRotated: 0
   CanBePickedUp: 1
@@ -140,6 +139,7 @@ MonoBehaviour:
   throwForce: 5
   playerHorizontalRotationSpeedToDrop: 15
   playerVerticalRotationSpeedToDrop: 15
+  collisionVelocityToDrop: 0
   targetTransform: {fileID: 0}
 --- !u!1 &8991244432855914390
 GameObject:

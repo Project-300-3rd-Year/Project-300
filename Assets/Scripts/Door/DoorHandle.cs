@@ -59,6 +59,7 @@ public class DoorHandle : Handle, iInteractable, iLockable
         IsLocked = false;
         ChangeKeyInteractCondition(holdToInteract: true);
         currentKeyToInteract = defaultKeyToInteract;
+        doorRigidbody.isKinematic = false;
     }
 
     public void LockMe()
@@ -66,6 +67,7 @@ public class DoorHandle : Handle, iInteractable, iLockable
         IsLocked = true;
         ChangeKeyInteractCondition(holdToInteract: false);
         currentKeyToInteract = KeyCodeToUnlockMe;
+        doorRigidbody.isKinematic = true;
     }
 
     //IInteractable.

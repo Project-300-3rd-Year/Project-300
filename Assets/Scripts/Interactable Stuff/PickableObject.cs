@@ -14,6 +14,7 @@ using UnityEngine;
  * Fix for the moment is making the character controller capsule smaller.
  * Pickup "transform" position should adjust depending on object size (maybe).  
  * Make a variable for the magnitude of velocity that the player can pick up the item.
+ * 
  */
 
 [RequireComponent(typeof(Rigidbody))]
@@ -23,7 +24,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     public static event Action PlayerDroppedObject;
 
     //Components.
-    Rigidbody rigidbody;
+    Rigidbody rigidBody;
     PlayerMovement playerMovement;
     PlayerCameraRotation playerCameraRotation;
 
@@ -33,7 +34,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     [SerializeField] private bool InPlayersHands;
     [SerializeField] private bool IsBeingRotated;
     [SerializeField] private bool CanBePickedUp;
-    [SerializeField] private bool ReachedPickupPosition;
+    //[SerializeField] private bool ReachedPickupPosition;
 
     [Header("Speed")]
     [SerializeField] private float moveSpeed;
@@ -45,6 +46,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     [Header("Dropping")]
     [SerializeField] private float playerHorizontalRotationSpeedToDrop; //This could be a static var for all pickable objects - not sure yet.
     [SerializeField] private float playerVerticalRotationSpeedToDrop; //This could be a static var for all pickable objects - not sure yet.
+    [SerializeField] private float collisionVelocityToDrop; //This could be a static var for all pickable objects - not sure yet.
 
     [Header("Position To Move To")]
     [SerializeField] private Transform targetTransform;
@@ -56,7 +58,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     {
         get
         {
-            _IsInteractable = rigidbody.velocity.magnitude <= 0.5f && CanBePickedUp;
+            _IsInteractable = rigidBody.velocity.magnitude <= 0.5f && CanBePickedUp;
             return _IsInteractable;
         }
         set
@@ -69,15 +71,12 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     {
         base.Awake();
 
-        rigidbody = GetComponent<Rigidbody>();
+        rigidBody = GetComponent<Rigidbody>();
         playerMovement = player.GetComponent<PlayerMovement>();
         playerCameraRotation = player.GetComponentInChildren<PlayerCameraRotation>();
     }
 
-    public override void Start()
-    {
-        base.Start();
-    }
+    public override void Start() => base.Start();
 
     public virtual void PlayerInteracted()
     {
@@ -86,26 +85,21 @@ public class PickableObject : PlayerInteractableObject,iInteractable
             if (HandleInputCoroutine != null)
                 StopCoroutine(HandleInputCoroutine);
 
-            HandleInputCoroutine = StartCoroutine(HandlePlayerInputInPlayerHands());
+            HandleInputCoroutine = StartCoroutine(HandleInputInPlayerHands());
         }
     }
 
-    private IEnumerator HandlePlayerInputInPlayerHands()
+    private IEnumerator HandleInputInPlayerHands()
     {
         PlayerPickedMeUp();
 
-        while (Input.GetKey(defaultKeyToInteract))
+        while (inputDelegate(defaultKeyToInteract))
         {
             //Move towards target and check if it reached the position.
             transform.position = Vector3.MoveTowards(transform.position, targetTransform.transform.position, moveSpeed + playerMovement.Speed);
-            if (!ReachedPickupPosition)
-            {
-                if (Vector3.Distance(transform.position, targetTransform.transform.position) <= 0.001f)
-                {
-                    ReachedPickupPosition = true;
-                }
-            }
 
+            //Vector3 moveVector =  Vector3.MoveTowards(transform.position, targetTransform.transform.position, moveSpeed + playerMovement.Speed * Time.deltaTime);
+            //rigidBody.MovePosition(moveVector);
 
             //Drop from hands if player rotated too fast.
             if(!IsBeingRotated)
@@ -152,26 +146,28 @@ public class PickableObject : PlayerInteractableObject,iInteractable
         if (HandleInputCoroutine != null)
             StopCoroutine(HandleInputCoroutine);
 
-        rigidbody.useGravity = true;
-        rigidbody.freezeRotation = false;
-        rigidbody.isKinematic = false;
+        rigidBody.useGravity = true;
+        rigidBody.freezeRotation = false;
+        //rigidbody.isKinematic = false;
 
         InPlayersHands = false;
         IsBeingRotated = false;
-        ReachedPickupPosition = false;
+        //ReachedPickupPosition = false;
 
         playerCameraRotation.EnableRotation();
 
-        PlayerLookedAtMe();
+        //PlayerLookedAtMe();
     }
 
     public void PlayerPickedMeUp()
     {
+        transform.position = targetTransform.position;
+
         PlayerPickedUpObject?.Invoke();
 
-        rigidbody.useGravity = false;
-        rigidbody.freezeRotation = true;
-        rigidbody.isKinematic = true;
+        rigidBody.useGravity = false;
+        rigidBody.freezeRotation = true;
+        //rigidbody.isKinematic = true;
 
         InPlayersHands = true;
 
@@ -181,7 +177,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     {
         IsBeingRotated = true;
         playerCameraRotation.DisableRotation();
-        rigidbody.freezeRotation = false;
+        rigidBody.freezeRotation = false;
     }
     private void LeaveRotationState()
     {
@@ -197,12 +193,12 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     {
         DropFromPlayersHands();
         Vector3 forceToThrowAt = (transform.position - player.transform.position).normalized * throwForce;
-        rigidbody.AddForce(forceToThrowAt, ForceMode.Impulse);
+        rigidBody.AddForce(forceToThrowAt, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (InPlayersHands && collision.gameObject.tag != "Ground" && ReachedPickupPosition) //Maybe change this to check layer of ground instead.
+        if (InPlayersHands && collision.gameObject.tag != "Ground" && collision.gameObject.layer != LayerMask.NameToLayer("Pickable")) //Maybe change this to check layer of ground instead.
         {
             DropFromPlayersHands();
         }

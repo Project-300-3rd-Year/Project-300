@@ -36,12 +36,12 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
     public Sprite UnlockSprite { get { return _unlockSprite; } }
 
 
-    [SerializeField] private Vector3 pullDirection;
+    [SerializeField] private Vector3 moveDirection;
     private Vector3 closedPosition;
 
-    [Header("Pull Object Clamping")]
+    [Header("Object Move Clamping")]
     [Range(0,3)]
-    [SerializeField] private float amountToPullObject;
+    [SerializeField] private float maxAmountToMoveObject;
 
     private float clampMinX;
     private float clampMinY;
@@ -62,35 +62,35 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
             LockMe();
 
         //Improve later.
-        if (pullDirection.x < 0)
+        if (moveDirection.x < 0)
         {
-            clampMinX = closedPosition.x - amountToPullObject;
+            clampMinX = closedPosition.x - maxAmountToMoveObject;
             clampMaxX = closedPosition.x;
         }
         else 
         {
             clampMinX = closedPosition.x;
-            clampMaxX = closedPosition.x + amountToPullObject;
+            clampMaxX = closedPosition.x + maxAmountToMoveObject;
         }
-        if (pullDirection.y < 0)
+        if (moveDirection.y < 0)
         {
-            clampMinY = closedPosition.y - amountToPullObject;
+            clampMinY = closedPosition.y - maxAmountToMoveObject;
             clampMaxY = closedPosition.y;
         }
         else 
         {
             clampMinY = closedPosition.y;
-            clampMaxY = closedPosition.y + amountToPullObject;
+            clampMaxY = closedPosition.y + maxAmountToMoveObject;
         }
-        if (pullDirection.z < 0)
+        if (moveDirection.z < 0)
         {
-            clampMinZ = closedPosition.z - amountToPullObject;
+            clampMinZ = closedPosition.z - maxAmountToMoveObject;
             clampMaxZ = closedPosition.z;
         }
         else 
         {
             clampMinZ = closedPosition.z;
-            clampMaxZ = closedPosition.z + amountToPullObject;
+            clampMaxZ = closedPosition.z + maxAmountToMoveObject;
         }
 
     }
@@ -190,7 +190,7 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
         {
             float desiredMouseInput = Mathf.Abs(Input.GetAxisRaw("Mouse X")) > Mathf.Abs(Input.GetAxisRaw("Mouse Y")) ? Input.GetAxisRaw("Mouse X") : Input.GetAxisRaw("Mouse Y"); //Choose input based on which left / right input is bigger.
 
-            Vector3 pullVector = pullDirection * affectSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime;
+            Vector3 pullVector = moveDirection * affectSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime;
             gameObjectToAffect.transform.Translate(pullVector);
             Vector3 clampedPosition = new Vector3(
                 Mathf.Clamp(gameObjectToAffect.transform.localPosition.x, clampMinX, clampMaxX),

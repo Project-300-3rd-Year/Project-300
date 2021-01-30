@@ -38,11 +38,11 @@ public class MessageNotification : MonoBehaviour
         Key[] keysInGame = FindObjectsOfType<Key>();
         for (int i = 0; i < keysInGame.Length; i++)
         {
-            keysInGame[i].PickedUpKeyEvent += MessageNotification_PickedUpKeyEvent;
+            keysInGame[i].PickedUpKeyEvent += OnPickingUpKey;
         }
     }
 
-    private void MessageNotification_PickedUpKeyEvent(KeyInventoryItem key)
+    private void OnPickingUpKey(KeyInventoryItem key)
     {
         Show(key.UIMessageToShowWhenPickedUp);
     }
