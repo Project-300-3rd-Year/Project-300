@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-/* Encountered an issue where I couldn't interact with door handles randomly - probably as "PlayerInteracting" was set to true all the time accidentally.
+/* 
  * 
 */
 
@@ -75,8 +75,7 @@ public class DoorHandle : Handle, iInteractable, iLockable
     {
         if(IsInteractable)
         {
-            if (interactCoroutine == null)
-                interactCoroutine = StartCoroutine(InteractWithDoorHandle());
+            StartCoroutine(InteractWithDoorHandle());
         }
         else
         {
@@ -119,6 +118,7 @@ public class DoorHandle : Handle, iInteractable, iLockable
     private IEnumerator InteractWithDoorHandle()
     {
         Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
+        print(playerRelativePosition);
         PlayerInteracting = true;
 
         PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
@@ -126,10 +126,11 @@ public class DoorHandle : Handle, iInteractable, iLockable
         playerCameraRotation.DisableRotation();
         UIManager.Instance.aimDot.DisableAimDot();
 
-        while (inputDelegate(defaultKeyToInteract)) //Should ideally be calling the delegate in base script, but wanted to 
+        while (inputDelegate(defaultKeyToInteract)) 
         {
             float desiredMouseInput = Mathf.Abs(Input.GetAxisRaw("Mouse X")) > Mathf.Abs(Input.GetAxisRaw("Mouse Y")) ? Input.GetAxisRaw("Mouse X") : Input.GetAxisRaw("Mouse Y"); //Choose input based on which left / right input is bigger.
             doorRigidbody.AddRelativeTorque(gameObjectToAffect.transform.up * affectSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime, ForceMode.VelocityChange);
+
             yield return null;
         }
 
@@ -145,12 +146,6 @@ public class DoorHandle : Handle, iInteractable, iLockable
             playerCameraRotation.EnableRotation();
 
             PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
-
-            if (interactCoroutine != null)
-            {
-                StopCoroutine(interactCoroutine);
-                interactCoroutine = null;
-            }
         }
     }
 }

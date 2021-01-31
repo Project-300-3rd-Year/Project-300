@@ -93,6 +93,7 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
             clampMaxZ = closedPosition.z + maxAmountToMoveObject;
         }
 
+        moveDirection = moveDirection.normalized;
     }
 
     public void UnlockMe()
@@ -114,8 +115,7 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
     {
         if (IsInteractable)
         {
-            if (interactCoroutine == null)
-                interactCoroutine = StartCoroutine(InteractWithHandle());
+             StartCoroutine(InteractWithHandle());
         }
         else
         {
@@ -136,9 +136,7 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
     public void PlayerLookedAtMe()
     {
         if (IsInteractable)
-        {
             UIManager.Instance.aimDot.ChangeToGreen();
-        }
         else
         {
             UIManager.Instance.aimDot.ChangeToRed();
@@ -165,12 +163,6 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
             playerCameraRotation.EnableRotation();
 
             PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
-
-            if (interactCoroutine != null)
-            {
-                StopCoroutine(interactCoroutine);
-                interactCoroutine = null;
-            }
         }
     }
 
@@ -190,7 +182,7 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
         {
             float desiredMouseInput = Mathf.Abs(Input.GetAxisRaw("Mouse X")) > Mathf.Abs(Input.GetAxisRaw("Mouse Y")) ? Input.GetAxisRaw("Mouse X") : Input.GetAxisRaw("Mouse Y"); //Choose input based on which left / right input is bigger.
 
-            Vector3 pullVector = moveDirection * affectSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime;
+            Vector3 pullVector = moveDirection * affectSpeed * (desiredMouseInput = playerRelativePosition.z < 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime;
             gameObjectToAffect.transform.Translate(pullVector);
             Vector3 clampedPosition = new Vector3(
                 Mathf.Clamp(gameObjectToAffect.transform.localPosition.x, clampMinX, clampMaxX),
