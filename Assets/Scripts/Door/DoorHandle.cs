@@ -118,7 +118,6 @@ public class DoorHandle : Handle, iInteractable, iLockable
     private IEnumerator InteractWithDoorHandle()
     {
         Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
-        print(playerRelativePosition);
         PlayerInteracting = true;
 
         PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
