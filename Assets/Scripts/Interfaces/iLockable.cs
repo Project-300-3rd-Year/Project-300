@@ -14,6 +14,6 @@ public interface iLockable
     KeyCode KeyCodeToUnlockMe { get; }
     Sprite UnlockSprite { get; }
 
-    void UnlockMe();
-    void LockMe();
+    void Unlock();
+    void Lock();
 }

@@ -27,15 +27,13 @@ public class DoorHandle : Handle, iInteractable, iLockable
 
     [Header("Locking")]
     [SerializeField] private bool _isLocked;
-    public bool IsLocked { get { return _isLocked; } set { _isLocked = value; } }
-
     [SerializeField] private KeyInventoryItem _keyToUnlockMe;
-    public KeyInventoryItem KeyToUnlockMe { get { return _keyToUnlockMe; } }
-
     [SerializeField] private KeyCode _keyCodeToUnlockMe;
-    public KeyCode KeyCodeToUnlockMe { get { return _keyCodeToUnlockMe; } }
-
     [SerializeField] private Sprite _unlockSprite;
+
+    public bool IsLocked { get { return _isLocked; } set { _isLocked = value; } }
+    public KeyInventoryItem KeyToUnlockMe { get { return _keyToUnlockMe; } }
+    public KeyCode KeyCodeToUnlockMe { get { return _keyCodeToUnlockMe; } }
     public Sprite UnlockSprite { get { return _unlockSprite; } }
 
     //Start.
@@ -51,10 +49,10 @@ public class DoorHandle : Handle, iInteractable, iLockable
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
 
         if (IsLocked)
-            LockMe();
+            Lock();
     }
 
-    public void UnlockMe()
+    public void Unlock()
     {
         IsLocked = false;
         ChangeKeyInteractCondition(holdToInteract: true);
@@ -62,7 +60,7 @@ public class DoorHandle : Handle, iInteractable, iLockable
         doorRigidbody.isKinematic = false;
     }
 
-    public void LockMe()
+    public void Lock()
     {
         IsLocked = true;
         ChangeKeyInteractCondition(holdToInteract: false);
@@ -81,7 +79,7 @@ public class DoorHandle : Handle, iInteractable, iLockable
         {
             if(player.GetComponent<PlayerInventory>().HasKeyInInventory(KeyToUnlockMe)) //Unlock.
             {
-                UnlockMe();
+                Unlock();
 
                 UIManager.Instance.aimDot.ChangeToGreen();
                 UIManager.Instance.singleInteractImage.Hide();
@@ -146,5 +144,43 @@ public class DoorHandle : Handle, iInteractable, iLockable
 
             PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
         }
+    }
+
+
+
+    //Leaving this here for now, when enemy ai reaches a closed door this is code that could be called to force it open.
+    IEnumerator EnemyHittingDoorSequence()
+    {
+        //Variables that would be needed for this -
+        //public AudioClip[] possibleSmashDoorSounds;
+        //public AudioClip[] possibleHitDoorSounds;
+        //AudioSource audioSource;
+
+        System.Random rng = new System.Random();
+        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 10f, 0)), affectSpeed));
+        //AudioSource.PlayClipAtPoint(possibleHitDoorSounds[rng.Next(0,possibleHitDoorSounds.Length)], transform.position);
+        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 0, 0)), -affectSpeed));
+        yield return new WaitForSeconds(rng.Next(2, 3));
+        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 15f, 0)), affectSpeed));
+        //AudioSource.PlayClipAtPoint(possibleHitDoorSounds[rng.Next(0, possibleHitDoorSounds.Length)], transform.position);
+        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 0, 0)), -affectSpeed));
+        yield return new WaitForSeconds(rng.Next(2, 3));
+        //AudioSource.PlayClipAtPoint(possibleSmashDoorSounds[rng.Next(0, possibleSmashDoorSounds.Length)], transform.position);
+        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 90f, 0)), affectSpeed));
+    }
+
+    //Make sure to apply a negative or positive force depending on which way you want the door to move.
+    IEnumerator ApplyForceToDoorUntilItReachesAngle(Quaternion targetRotation, float forceToApply)
+    {
+        doorRigidbody.isKinematic = false;
+
+        while (Quaternion.Angle(gameObjectToAffect.transform.localRotation, targetRotation) > 4f) //Anything less tends to overshoot if the open speed is fast.
+        {
+            print(Quaternion.Angle(gameObjectToAffect.transform.localRotation, targetRotation));
+            doorRigidbody.AddRelativeTorque(gameObjectToAffect.transform.up * forceToApply, ForceMode.VelocityChange);
+            yield return null;
+        }
+
+        doorRigidbody.isKinematic = true;
     }
 }

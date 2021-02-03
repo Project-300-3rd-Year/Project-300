@@ -59,7 +59,7 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
         closedPosition = gameObjectToAffect.transform.localPosition;
 
         if (IsLocked)
-            LockMe();
+            Lock();
 
         //Improve later.
         if (moveDirection.x < 0)
@@ -96,14 +96,14 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
         moveDirection = moveDirection.normalized;
     }
 
-    public void UnlockMe()
+    public void Unlock()
     {
         IsLocked = false;
         ChangeKeyInteractCondition(holdToInteract: true);
         currentKeyToInteract = defaultKeyToInteract;
     }
 
-    public void LockMe()
+    public void Lock()
     {
         IsLocked = true;
         ChangeKeyInteractCondition(holdToInteract: false);
@@ -121,7 +121,7 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
         {
             if (player.GetComponent<PlayerInventory>().HasKeyInInventory(KeyToUnlockMe)) //Unlock.
             {
-                UnlockMe();
+                Unlock();
 
                 UIManager.Instance.aimDot.ChangeToGreen();
                 UIManager.Instance.singleInteractImage.Hide();

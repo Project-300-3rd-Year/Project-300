@@ -24,4 +24,24 @@ public static class Utility
             yield return null;
         }
     }
+
+
+    //public static IEnumerator RotateObjectToTargetPosition(GameObject gameObject, Quaternion objectTargetRotation, float rotationSpeed)
+    //{
+    //    //Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+
+
+    //    //while (Quaternion.Angle(gameObject.transform.rotation, objectTargetRotation) > 0)
+    //    //{
+    //    //    //gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, objectTargetRotation, rotationSpeed * Time.deltaTime);
+    //    //    Debug.Log("rotating");
+    //    //    rb.AddRelativeTorque(Vector3.up * rotationSpeed, ForceMode.VelocityChange);
+    //    //    //doorRigidbody.AddRelativeTorque(gameObjectToAffect.transform.up * affectSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime, ForceMode.VelocityChange);
+
+
+
+    //    //    //gameObject.transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+    //    //    yield return null;
+    //    //}
+    //}
 }
