@@ -46,7 +46,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     [Header("Dropping")]
     [SerializeField] private float playerHorizontalRotationSpeedToDrop; //This could be a static var for all pickable objects - not sure yet.
     [SerializeField] private float playerVerticalRotationSpeedToDrop; //This could be a static var for all pickable objects - not sure yet.
-    [SerializeField] private float collisionVelocityToDrop; //This could be a static var for all pickable objects - not sure yet.
+    [SerializeField] private float collisionVelocityToDrop; 
 
     [Header("Position To Move To")]
     [SerializeField] private Transform targetTransform;
