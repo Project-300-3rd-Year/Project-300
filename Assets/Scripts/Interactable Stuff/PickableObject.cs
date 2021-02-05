@@ -48,8 +48,9 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     [SerializeField] private float playerVerticalRotationSpeedToDrop; //This could be a static var for all pickable objects - not sure yet.
     [SerializeField] private float collisionVelocityToDrop; 
 
-    [Header("Position To Move To")]
-    [SerializeField] private Transform targetTransform;
+
+    //Target position in front of player - assigned in playermovement script.
+    private Transform targetTransform;
 
     private float horizontalMouseRotationInput { get { return Input.GetAxisRaw("Mouse X"); } }
     private float verticalMouseRotationInput { get { return Input.GetAxisRaw("Mouse Y"); } }
