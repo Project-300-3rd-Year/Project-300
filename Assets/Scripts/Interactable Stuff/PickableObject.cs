@@ -76,7 +76,12 @@ public class PickableObject : PlayerInteractableObject,iInteractable
         playerCameraRotation = player.GetComponentInChildren<PlayerCameraRotation>();
     }
 
-    public override void Start() => base.Start();
+    public override void Start()
+    {
+        base.Start();
+
+        targetTransform = playerMovement.objectHoldPosition;
+    }
 
     public virtual void PlayerInteracted()
     {

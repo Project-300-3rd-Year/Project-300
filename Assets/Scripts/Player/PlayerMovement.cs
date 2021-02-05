@@ -74,6 +74,8 @@ public class PlayerMovement : MonoBehaviour
     private Quaternion defaultRotation;
     private Quaternion rotationAtStartOfLean;
 
+    public Transform objectHoldPosition;
+
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();

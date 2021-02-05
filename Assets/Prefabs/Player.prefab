@@ -158,6 +158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerBody: {fileID: 2427338532022398581}
+  CanRotate: 0
   mouseSensitivity: 2
   VerticalRotation: 0
   MinXAxisClampValue: -90
@@ -321,6 +322,7 @@ MonoBehaviour:
   leanRotateAmount: 0
   leanMoveAmount: 0
   leanSpeed: 0
+  objectHoldPosition: {fileID: 2030728270188041807}
 --- !u!114 &2427338532022398580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,8 +337,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactableObject: {fileID: 0}
   checkForInteractableObjects: 0
-  CheckForRaycastLeavingInteractableObject: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 512
+  layersToBlockInteractRaycast:
+    serializedVersion: 2
+    m_Bits: 0
   interactDistance: 200
