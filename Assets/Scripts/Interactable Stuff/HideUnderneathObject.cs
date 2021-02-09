@@ -69,7 +69,6 @@ public class HideUnderneathObject : HidingSpot, iInteractable, iHideable
         for (int i = 0; i < otherHidingSpots.Length; i++)
         {
             otherHidingSpots[i].ChangeCurrentKeyToInteract(keyToLeaveHidingSpot);
-            //otherHidingSpots[i].
         }
     }
     public void OnReachingHidingSpot()
