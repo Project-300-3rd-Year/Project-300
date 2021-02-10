@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5973724054310669251}
   - component: {fileID: 4687737551688480654}
   - component: {fileID: 3663677370435398826}
+  - component: {fileID: 3485368566825687039}
   m_Layer: 10
   m_Name: Toilet Roll
   m_TagString: Untagged
@@ -124,6 +125,19 @@ MonoBehaviour:
   playerHorizontalRotationSpeedToDrop: 15
   playerVerticalRotationSpeedToDrop: 15
   collisionVelocityToDrop: 0
+--- !u!65 &3485368566825687039
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2588320387469374907}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.668336, y: 3.307598, z: 3.668335}
+  m_Center: {x: 0.08697599, y: 0.20679599, z: -0.042428493}
 --- !u!1001 &7878494825897188336
 PrefabInstance:
   m_ObjectHideFlags: 0

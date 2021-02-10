@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6973181361277623647}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 14.89, y: 1.722, z: -22.568}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.098971, y: 0.098971, z: 0.098971}
   m_Children:
   - {fileID: 7461384498633522342}
@@ -113,7 +113,6 @@ MonoBehaviour:
   currentKeyToInteract: 0
   holdToInteract: 0
   KeyWasHeldOnLookingAtMe: 0
-  UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
   keyInventoryItem: {fileID: 11400000, guid: cc4170f4b651f1846b72286b506387c0, type: 2}
 --- !u!54 &3584459926782944730
 Rigidbody:
