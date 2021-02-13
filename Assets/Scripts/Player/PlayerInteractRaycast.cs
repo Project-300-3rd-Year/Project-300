@@ -78,6 +78,16 @@ public class PlayerInteractRaycast : MonoBehaviour
                 {
                     IinteractableObject.PlayerInteracted();
                 }
+
+                if(interactableObject != null)
+                {
+                    if (Input.GetKeyUp(interactableObject.currentKeyToInteract))
+                    {
+                        interactableObject.KeyWasHeldOnLookingAtMe = false;
+                        IinteractableObject.PlayerLookedAtMe();
+                    }
+                }
+
             }
         }
     }
@@ -106,9 +116,10 @@ public class PlayerInteractRaycast : MonoBehaviour
 
                             if (interactableObject != null && IinteractableObject != null) //If object has the components.
                             {
-                                if (interactableObject.inputDelegate(interactableObject.currentKeyToInteract)) //If interact key was held at the moment the player looked at object.
-                                    LookedAwayFromInteractable();                                              //Set object to null (calling "lookedaway")
-                                else                                                                           //Otherwise inform the object that the player looked at it.
+                                if (Input.GetKey(interactableObject.currentKeyToInteract)) //If interact key was held at the moment the player looked at object. 
+                                    interactableObject.KeyWasHeldOnLookingAtMe = true;
+                                                                                                                                                                                                                                              
+                                else                                                       //Otherwise inform the object that the player looked at it.
                                 {
                                     IinteractableObject.PlayerLookedAtMe();
                                     LookedAtInteractableEvent?.Invoke(interactableObject);
@@ -151,6 +162,9 @@ public class PlayerInteractRaycast : MonoBehaviour
 
     public void LookedAwayFromInteractable()
     {
+        if (interactableObject.KeyWasHeldOnLookingAtMe)
+            interactableObject.KeyWasHeldOnLookingAtMe = false;
+
         IinteractableObject.PlayerLookedAwayFromMe();
         LookedAwayFromInteractableEvent?.Invoke();
         interactableObject = null;
