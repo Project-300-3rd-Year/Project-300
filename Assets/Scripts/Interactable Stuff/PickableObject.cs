@@ -200,6 +200,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
         DropFromPlayersHands();
         Vector3 forceToThrowAt = (transform.position - player.transform.position).normalized * throwForce;
         rigidBody.AddForce(forceToThrowAt, ForceMode.Impulse);
+        rigidBody.AddRelativeTorque(UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(1,throwForce), ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision collision)
