@@ -129,17 +129,16 @@ MonoBehaviour:
   currentKeyToInteract: 0
   holdToInteract: 0
   KeyWasHeldOnLookingAtMe: 0
-  UIImageToShowIfPlayerLooksAtMe: {fileID: 0}
   InPlayersHands: 0
   IsBeingRotated: 0
   CanBePickedUp: 1
-  ReachedPickupPosition: 0
+  velocityThresholdToPickup: 0.5
   moveSpeed: 0.02
   rotateSpeed: 10
   throwForce: 5
   playerHorizontalRotationSpeedToDrop: 15
   playerVerticalRotationSpeedToDrop: 15
-  targetTransform: {fileID: 0}
+  collisionVelocityToDrop: 0
 --- !u!1001 &6345800292531777697
 PrefabInstance:
   m_ObjectHideFlags: 0

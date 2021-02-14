@@ -24,17 +24,21 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     public static event Action PlayerDroppedObject;
 
     //Components.
-    Rigidbody rigidBody;
-    PlayerMovement playerMovement;
-    PlayerCameraRotation playerCameraRotation;
+    private Rigidbody rigidBody;
+    private PlayerMovement playerMovement;
+    private PlayerCameraRotation playerCameraRotation;
 
-    Coroutine HandleInputCoroutine;
+    private Coroutine HandleInputCoroutine;
 
     [Header("Status")]
     [SerializeField] private bool InPlayersHands;
     [SerializeField] private bool IsBeingRotated;
     [SerializeField] private bool CanBePickedUp;
     //[SerializeField] private bool ReachedPickupPosition;
+
+    [Header("Picking Up")]
+    [Tooltip("If velocity of item is less than this threshold it can be picked up")]
+    [SerializeField] private float velocityThresholdToPickup;
 
     [Header("Speed")]
     [SerializeField] private float moveSpeed;
@@ -59,7 +63,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     {
         get
         {
-            _IsInteractable = rigidBody.velocity.magnitude <= 0.5f && CanBePickedUp;
+            _IsInteractable = rigidBody.velocity.magnitude <= velocityThresholdToPickup && CanBePickedUp;
             return _IsInteractable;
         }
         set
@@ -167,6 +171,8 @@ public class PickableObject : PlayerInteractableObject,iInteractable
 
     public void PlayerPickedMeUp()
     {
+        rigidBody.velocity = Vector3.zero;
+
         transform.position = targetTransform.position;
 
         PlayerPickedUpObject?.Invoke();
@@ -198,7 +204,8 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     private void ThrowMe()
     {
         DropFromPlayersHands();
-        Vector3 forceToThrowAt = (transform.position - player.transform.position).normalized * throwForce;
+        //Vector3 forceToThrowAt = (transform.position - player.transform.position).normalized * throwForce;
+        Vector3 forceToThrowAt = Camera.main.ScreenPointToRay(Input.mousePosition).direction.normalized * throwForce;
         rigidBody.AddForce(forceToThrowAt, ForceMode.Impulse);
         rigidBody.AddRelativeTorque(UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(1,throwForce), ForceMode.Impulse);
     }

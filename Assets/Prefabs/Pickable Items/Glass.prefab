@@ -132,14 +132,13 @@ MonoBehaviour:
   InPlayersHands: 0
   IsBeingRotated: 0
   CanBePickedUp: 1
-  ReachedPickupPosition: 0
+  velocityThresholdToPickup: 0.5
   moveSpeed: 0.1
   rotateSpeed: 9
   throwForce: 9
   playerHorizontalRotationSpeedToDrop: 15
   playerVerticalRotationSpeedToDrop: 15
   collisionVelocityToDrop: 0
-  targetTransform: {fileID: 0}
 --- !u!1 &5047411566533146053
 GameObject:
   m_ObjectHideFlags: 0

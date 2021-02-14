@@ -132,6 +132,7 @@ MonoBehaviour:
   InPlayersHands: 0
   IsBeingRotated: 0
   CanBePickedUp: 1
+  velocityThresholdToPickup: 0.5
   moveSpeed: 0.02
   rotateSpeed: 10
   throwForce: 5
