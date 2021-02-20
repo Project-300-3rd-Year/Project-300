@@ -25,6 +25,14 @@ public static class Utility
         }
     }
 
+    public static IEnumerator RotateGameObjectToTarget(GameObject gameObject, Quaternion targetRotation, float speed)
+    {
+        while (Quaternion.Angle(gameObject.transform.rotation, targetRotation) > 0)
+        {
+            gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, targetRotation, speed * Time.deltaTime);
+            yield return null;
+        }
+    }
 
     //public static IEnumerator RotateObjectToTargetPosition(GameObject gameObject, Quaternion objectTargetRotation, float rotationSpeed)
     //{
