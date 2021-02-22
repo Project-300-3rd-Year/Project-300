@@ -57,8 +57,9 @@ public class SingleDoorWardrobeHidingSpot : HidingSpot, iInteractable, iHideable
         playerCharacterController.detectCollisions = true;
         playerCameraRotation.EnableRotation();
 
-        StartCoroutine(CheckForPlayerLeaving());
+        UIManager.Instance.singleInteractImage.Show(stopHidingSprite);
 
+        StartCoroutine(CheckForPlayerLeaving());
     }
 
     private IEnumerator CheckForPlayerLeaving()
@@ -78,6 +79,8 @@ public class SingleDoorWardrobeHidingSpot : HidingSpot, iInteractable, iHideable
     private IEnumerator LeaveHidingSpot()
     {
         IsMovingIntoPosition = true;
+
+        UIManager.Instance.singleInteractImage.Hide();
 
         playerCameraRotation.DisableRotation();
 
@@ -103,7 +106,6 @@ public class SingleDoorWardrobeHidingSpot : HidingSpot, iInteractable, iHideable
     {
         if (IsInteractable)
         {
-            //AimDotUI.Instance.ChangeAimDotBackToNormal();
             UIManager.Instance.aimDot.Reset();
 
             doorRigidBody.isKinematic = true;
@@ -140,8 +142,11 @@ public class SingleDoorWardrobeHidingSpot : HidingSpot, iInteractable, iHideable
     }
     public void PlayerLookedAwayFromMe()
     {
-        UIManager.Instance.aimDot.Reset();
-        UIManager.Instance.singleInteractImage.Hide();
+        if(!IsInHiding)
+        {
+           UIManager.Instance.aimDot.Reset();
+           UIManager.Instance.singleInteractImage.Hide();
+        }
     }
     public void PlayerStoppedInteraction()
     {
