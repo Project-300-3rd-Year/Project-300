@@ -713,7 +713,7 @@ GameObject:
   - component: {fileID: 4401373147694534206}
   - component: {fileID: 1203550311656685419}
   m_Layer: 0
-  m_Name: LightBuldObject
+  m_Name: LightBulbObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
