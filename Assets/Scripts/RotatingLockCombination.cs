@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RotatingLockCombination : MonoBehaviour
 {
+    public int CurrentNumber { get { return combinationRotations.TakeWhile(q => q != combinationNode.Value).Count(); } }
+
     int numberAmount = 10;
+    [SerializeField] private float rotationAmountPerNumber = 37.1f;
     private LinkedList<Quaternion> combinationRotations = new LinkedList<Quaternion>();
     private LinkedListNode<Quaternion> combinationNode;
-    [SerializeField] private float rotationAmountPerNumber = 37.1f;
 
     private void Start()
     {
@@ -20,24 +23,21 @@ public class RotatingLockCombination : MonoBehaviour
 
     }
 
-    private void Update()
+    public void RotateRight()
     {
-        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            combinationNode = combinationNode.Previous;
-            if (combinationNode == null)
-                combinationNode = combinationRotations.Last;
+        combinationNode = combinationNode.Next;
+        if (combinationNode == null)
+            combinationNode = combinationRotations.First;
 
-            transform.rotation = combinationNode.Value;
-
-        }
-        else if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            combinationNode = combinationNode.Next;
-            if (combinationNode == null)
-                combinationNode = combinationRotations.First;
-
-            transform.rotation = combinationNode.Value;
-        }
+        transform.rotation = combinationNode.Value;
     }
+    public void RotateLeft()
+    {
+        combinationNode = combinationNode.Previous;
+        if (combinationNode == null)
+            combinationNode = combinationRotations.Last;
+
+        transform.rotation = combinationNode.Value;
+    }
+
 }
