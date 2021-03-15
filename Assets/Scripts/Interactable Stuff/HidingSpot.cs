@@ -18,14 +18,14 @@ public class HidingSpot : PlayerInteractableObject
 
     [Header("First target position")]
     [SerializeField] private Transform targetTransformOnInteraction;
-    [SerializeField] private float timeToMoveToFirstPos;
-    [SerializeField] private float timeToRotateToFirstPos;
-    [SerializeField] private LeanTweenType firstPosMoveEaseType;
-    [SerializeField] private LeanTweenType firstPosRotateEaseType;
+    [SerializeField] private float timeToMoveToFirstPosition;
+    [SerializeField] private float timeToRotateToFirstPosition;
+    [SerializeField] private LeanTweenType firstPositionMoveEaseType;
+    [SerializeField] private LeanTweenType firstPositionRotateEaseType;
 
     [Header("Hiding spot")]
     [SerializeField] protected Transform targetTransformForHiding;
-    [SerializeField] private float timeToMoveToHidingPos;
+    [SerializeField] private float timeToMoveToHidingPosition;
     [SerializeField] protected float timeToRotateToHidingPos;
     [SerializeField] private LeanTweenType hidingPosMoveEaseType;
     [SerializeField] protected LeanTweenType hidingPosRotateEaseType;
@@ -60,15 +60,15 @@ public class HidingSpot : PlayerInteractableObject
     //All hiding spot types can use these methods.
     protected virtual LTDescr MoveAndRotateToFirstPosition()
     {
-        LeanTween.rotate(player.gameObject, targetTransformOnInteraction.transform.eulerAngles, timeToRotateToFirstPos).setEase(firstPosRotateEaseType);
-        LeanTween.rotate(Camera.main.gameObject, targetTransformOnInteraction.transform.eulerAngles, timeToRotateToFirstPos).setEase(firstPosRotateEaseType);
-        return LeanTween.move(player.gameObject, targetTransformOnInteraction, timeToMoveToFirstPos).setEase(firstPosMoveEaseType);
+        LeanTween.rotate(player.gameObject, targetTransformOnInteraction.transform.eulerAngles, timeToRotateToFirstPosition).setEase(firstPositionRotateEaseType);
+        LeanTween.rotate(Camera.main.gameObject, targetTransformOnInteraction.transform.eulerAngles, timeToRotateToFirstPosition).setEase(firstPositionRotateEaseType);
+        return LeanTween.move(player.gameObject, targetTransformOnInteraction, timeToMoveToFirstPosition).setEase(firstPositionMoveEaseType);
     }
     protected virtual LTDescr MoveAndRotateToHidingPosition()
     {
         LeanTween.rotate(player.gameObject, targetTransformForHiding.transform.eulerAngles, timeToRotateToHidingPos).setEase(hidingPosRotateEaseType);
         LeanTween.rotate(Camera.main.gameObject, targetTransformForHiding.transform.eulerAngles, timeToRotateToHidingPos).setEase(hidingPosRotateEaseType);
-        return LeanTween.move(player.gameObject, targetTransformForHiding, timeToMoveToHidingPos).setEase(hidingPosMoveEaseType);
+        return LeanTween.move(player.gameObject, targetTransformForHiding, timeToMoveToHidingPosition).setEase(hidingPosMoveEaseType);
     }
     protected virtual LTDescr MoveAndRotateToLeavingPosition()
     {

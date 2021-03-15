@@ -76,6 +76,11 @@ public class PlayerMovement : MonoBehaviour
 
     public Transform objectHoldPosition;
 
+
+
+    //TESTING DOOR SMASH
+    public DoorHandle doorHandleToTest;
+
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -91,6 +96,8 @@ public class PlayerMovement : MonoBehaviour
         crouchHeight = characterController.height / 2;
 
         CapsLockIsActive = (((ushort)GetKeyState(0x14)) & 0xffff) != 0;
+
+        Cursor.visible = false;
     }
 
     void Update()
@@ -102,6 +109,13 @@ public class PlayerMovement : MonoBehaviour
             JumpOnPlayerInput();
             CrouchOnPlayerInput();
             AdjustMovementSpeedOnPlayerInput();
+
+
+
+            if(Input.GetKeyDown(KeyCode.L))
+            {
+                doorHandleToTest.EnemyBreakDownDoorSequence();
+            }
         }
     }
 

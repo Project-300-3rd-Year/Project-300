@@ -214,6 +214,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     {
         if (InPlayersHands && collision.gameObject.tag != "Ground" && collision.gameObject.layer != LayerMask.NameToLayer("Pickable")) //Maybe change this to check layer of ground instead.
         {
+            print("called");
             DropFromPlayersHands();
         }
     }

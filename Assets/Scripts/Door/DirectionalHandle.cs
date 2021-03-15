@@ -40,7 +40,7 @@ public class DirectionalHandle : Handle, iInteractable, iLockable
     private Vector3 closedPosition;
 
     [Header("Object Move Clamping")]
-    [Range(0,3)]
+    [Range(0,6)]
     [SerializeField] private float maxAmountToMoveObject;
 
     private float clampMinX;

@@ -146,7 +146,10 @@ public class DoorHandle : Handle, iInteractable, iLockable
         }
     }
 
-
+    public void EnemyBreakDownDoorSequence()
+    {
+        StartCoroutine(EnemyHittingDoorSequence());
+    }
 
     //Leaving this here for now, when enemy ai reaches a closed door this is code that could be called to force it open.
     IEnumerator EnemyHittingDoorSequence()
@@ -157,11 +160,11 @@ public class DoorHandle : Handle, iInteractable, iLockable
         //AudioSource audioSource;
 
         System.Random rng = new System.Random();
-        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 10f, 0)), affectSpeed));
+        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 4f, 0)), affectSpeed));
         //AudioSource.PlayClipAtPoint(possibleHitDoorSounds[rng.Next(0,possibleHitDoorSounds.Length)], transform.position);
         yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 0, 0)), -affectSpeed));
         yield return new WaitForSeconds(rng.Next(2, 3));
-        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 15f, 0)), affectSpeed));
+        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 4f, 0)), affectSpeed));
         //AudioSource.PlayClipAtPoint(possibleHitDoorSounds[rng.Next(0, possibleHitDoorSounds.Length)], transform.position);
         yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 0, 0)), -affectSpeed));
         yield return new WaitForSeconds(rng.Next(2, 3));
