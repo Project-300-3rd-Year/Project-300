@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-//Consider using events to call methods from UI elements. Just calling methods from singleton instance at the moment in lots of different scripts.
+//Script which deals with all the possible UI elements on screen during gameplay / main scene.
 public class UIManager : MonoBehaviour
 {
     private static UIManager _instance;
@@ -36,6 +36,17 @@ public class UIManager : MonoBehaviour
 
     [Header("Message Notification")] 
     public MessageNotification messageNotification;
+
+    [Header("Pause Screen")]
+    public PauseScreen pauseScreen;
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape))
+        {
+            pauseScreen.ActivateOrDeactivate();
+        }
+    }
 
     private void Awake() { }
     private void Start() { }

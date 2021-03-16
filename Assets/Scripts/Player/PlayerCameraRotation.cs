@@ -38,6 +38,9 @@ public class PlayerCameraRotation : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+            return;
+
         if(CanRotate)
             RotateOnPlayerInput();
     }

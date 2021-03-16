@@ -110,8 +110,6 @@ public class PlayerMovement : MonoBehaviour
             CrouchOnPlayerInput();
             AdjustMovementSpeedOnPlayerInput();
 
-
-
             if(Input.GetKeyDown(KeyCode.L))
             {
                 doorHandleToTest.EnemyBreakDownDoorSequence();
