@@ -76,11 +76,6 @@ public class PlayerMovement : MonoBehaviour
 
     public Transform objectHoldPosition;
 
-
-
-    //TESTING DOOR SMASH
-    public DoorHandle doorHandleToTest;
-
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -109,11 +104,6 @@ public class PlayerMovement : MonoBehaviour
             JumpOnPlayerInput();
             CrouchOnPlayerInput();
             AdjustMovementSpeedOnPlayerInput();
-
-            if(Input.GetKeyDown(KeyCode.L))
-            {
-                doorHandleToTest.EnemyBreakDownDoorSequence();
-            }
         }
     }
 
@@ -263,6 +253,14 @@ public class PlayerMovement : MonoBehaviour
     //TEMPORARY TEST FOR COLLIDING WITH OTHER RIGIDBODIES - FIX UP LATER.
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        BreakDownDoor hitDoor;
+        if(hit.gameObject.TryGetComponent(out hitDoor))
+        {
+            hitDoor.StartBreakingDownSequence();
+        }
+
+
+
         //if (hit.rigidbody != null)
         //{
         //    print("added force");

@@ -4,19 +4,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-/* 
- * 
+/* Should have made seperate scripts for door handles and just regular handles for cubbards etc. but ran out of time.
 */
 
 public class DoorHandle : Handle, iInteractable, iLockable
 {
-    Rigidbody doorRigidbody;
+    private Rigidbody doorRigidbody;
+    private BreakDownDoor breakDownDoor; //Might not have one.
 
     public bool IsInteractable
     {
         get
-        {         
-            return IsLocked == false && PlayerInteracting == false;
+        {
+            bool returnValue = IsLocked == false && PlayerInteracting == false;
+
+            if (breakDownDoor != null)
+                returnValue = !breakDownDoor.SequenceIsActive;
+
+            return returnValue;
+
         }
         set
         {
@@ -41,6 +47,7 @@ public class DoorHandle : Handle, iInteractable, iLockable
     {
         base.Awake();
         doorRigidbody = gameObjectToAffect.GetComponent<Rigidbody>();
+        gameObjectToAffect.TryGetComponent(out breakDownDoor);
     }
     public override void Start()
     {
@@ -99,8 +106,11 @@ public class DoorHandle : Handle, iInteractable, iLockable
         }
         else
         {
-            UIManager.Instance.aimDot.ChangeToRed();
-            UIManager.Instance.singleInteractImage.Show(UnlockSprite);
+            if(IsLocked)
+            {
+                UIManager.Instance.aimDot.ChangeToRed();
+                UIManager.Instance.singleInteractImage.Show(UnlockSprite);
+            }
         }
     }
     public void PlayerLookedAwayFromMe()
@@ -144,46 +154,5 @@ public class DoorHandle : Handle, iInteractable, iLockable
 
             PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
         }
-    }
-
-    public void EnemyBreakDownDoorSequence()
-    {
-        StartCoroutine(EnemyHittingDoorSequence());
-    }
-
-    //Leaving this here for now, when enemy ai reaches a closed door this is code that could be called to force it open.
-    IEnumerator EnemyHittingDoorSequence()
-    {
-        //Variables that would be needed for this -
-        //public AudioClip[] possibleSmashDoorSounds;
-        //public AudioClip[] possibleHitDoorSounds;
-        //AudioSource audioSource;
-
-        System.Random rng = new System.Random();
-        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 4f, 0)), affectSpeed));
-        //AudioSource.PlayClipAtPoint(possibleHitDoorSounds[rng.Next(0,possibleHitDoorSounds.Length)], transform.position);
-        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 0, 0)), -affectSpeed));
-        yield return new WaitForSeconds(rng.Next(2, 3));
-        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 4f, 0)), affectSpeed));
-        //AudioSource.PlayClipAtPoint(possibleHitDoorSounds[rng.Next(0, possibleHitDoorSounds.Length)], transform.position);
-        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 0, 0)), -affectSpeed));
-        yield return new WaitForSeconds(rng.Next(2, 3));
-        //AudioSource.PlayClipAtPoint(possibleSmashDoorSounds[rng.Next(0, possibleSmashDoorSounds.Length)], transform.position);
-        yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 90f, 0)), affectSpeed));
-    }
-
-    //Make sure to apply a negative or positive force depending on which way you want the door to move.
-    IEnumerator ApplyForceToDoorUntilItReachesAngle(Quaternion targetRotation, float forceToApply)
-    {
-        doorRigidbody.isKinematic = false;
-
-        while (Quaternion.Angle(gameObjectToAffect.transform.localRotation, targetRotation) > 4f) //Anything less tends to overshoot if the open speed is fast.
-        {
-            print(Quaternion.Angle(gameObjectToAffect.transform.localRotation, targetRotation));
-            doorRigidbody.AddRelativeTorque(gameObjectToAffect.transform.up * forceToApply, ForceMode.VelocityChange);
-            yield return null;
-        }
-
-        doorRigidbody.isKinematic = true;
     }
 }
