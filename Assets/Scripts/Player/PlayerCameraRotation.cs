@@ -15,11 +15,8 @@ public class PlayerCameraRotation : MonoBehaviour
     private float horizontalRotationInput { get { return Input.GetAxisRaw("Mouse X"); } }
     private float verticalRotationInput { get { return Input.GetAxisRaw("Mouse Y"); } set { } }
 
-    [Header("Rotation Speed")]
-    [SerializeField] private float mouseSensitivity;
-    private float defaultMouseSensitivity;
-    public float currentHorizontalRotationSpeed { get { return Mathf.Abs(horizontalRotationInput * mouseSensitivity); } }
-    public float currentVerticalRotationSpeed { get { return Mathf.Abs(verticalRotationInput * mouseSensitivity); } }
+    public float currentHorizontalRotationSpeed { get { return Mathf.Abs(horizontalRotationInput * Settings.cameraSensitivity); } }
+    public float currentVerticalRotationSpeed { get { return Mathf.Abs(verticalRotationInput * Settings.cameraSensitivity); } }
 
     [Header("Looking Up and Down")]
     [SerializeField] private float VerticalRotation = 0;
@@ -30,8 +27,6 @@ public class PlayerCameraRotation : MonoBehaviour
     private void Awake() => playerMovement = GetComponentInParent<PlayerMovement>();
     void Start()
     {
-        defaultMouseSensitivity = mouseSensitivity;
-
         Cursor.lockState = CursorLockMode.Locked;
         playerCamera = Camera.main;
     }
@@ -48,12 +43,12 @@ public class PlayerCameraRotation : MonoBehaviour
     private void RotateOnPlayerInput()
     {
         //Get rotation amount for looking down and up and clamp it.
-        VerticalRotation += verticalRotationInput * mouseSensitivity;
+        VerticalRotation += verticalRotationInput * Settings.cameraSensitivity;
         ClampVerticalRotation();
 
         //Rotate player camera and player.
         transform.localRotation = Quaternion.Euler(-VerticalRotation, 0f, 0f);
-        PlayerBody.Rotate(Vector3.up * horizontalRotationInput * mouseSensitivity);
+        PlayerBody.Rotate(Vector3.up * horizontalRotationInput * Settings.cameraSensitivity);
     }
     private void ClampVerticalRotation()
     {

@@ -13,7 +13,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private CanvasGroup mainMenuCanvasGroup;
     [SerializeField] private CanvasGroup settingsCanvasGroup;
     [SerializeField] private CanvasGroup howToPlayCanvasGroup;
-    private CanvasGroup currentCanvasGroup;
+    [SerializeField] private CanvasGroup currentCanvasGroup;
 
     [Header("Settings UI Elements")]
     [SerializeField] private Slider cameraSensitivitySlider;
@@ -54,13 +54,13 @@ public class MainMenuManager : MonoBehaviour
     //Start.
     private void Start()
     {
-        cameraSensitivitySlider.value = 3f; //READ FROM SETTINGS.
+        cameraSensitivitySlider.value = Settings.cameraSensitivity; 
         UpdateCameraSensitivityValue();
 
-        masterVolumeSlider.value = 5f; //READ FROM SETTINGS.
+        masterVolumeSlider.value = Settings.volume;
         UpdateMasterVolumeValue();
 
-        currentCanvasGroup = mainMenuCanvasGroup;
+        OnCameraArrivingAtUIScreen(mainMenuCanvasGroup);
     }
 
     //Main Menu.
@@ -105,6 +105,10 @@ public class MainMenuManager : MonoBehaviour
     }
     public void OnReturnToMainMenuPressed()
     {
+        //Update Settings.
+        Settings.UpdateVolumeSettings(masterVolumeSlider.value);
+        Settings.UpdateCameraSensitivity(cameraSensitivitySlider.value);
+
         OnCameraLeavingUIScreen();
 
         LeanTween.rotate(Camera.main.gameObject, camTargetMainMenu.transform.rotation.eulerAngles, timeToRotateToMainMenu).setEase(rotateToMainMenuEase);
@@ -137,16 +141,10 @@ public class MainMenuManager : MonoBehaviour
     }
 
     //Camera fade to black exit transition.
-    public void FadeCameraOutToPlayGame()
-    { 
-        StartCameraFadeTransition(()=> SceneManager.LoadScene(1));    
-    }
-    public void FadeCameraOutToQuitGame() 
-    {
-        StartCameraFadeTransition(()=> Application.Quit(0));
-    }
+    public void FadeCameraOutToPlayGame() => StartCameraFadeTransition(() => SceneManager.LoadScene(1));
+    public void FadeCameraOutToQuitGame() => StartCameraFadeTransition(() => Application.Quit(0));
 
-    public void StartCameraFadeTransition(Action delegateCalledAtEnd)
+    public void StartCameraFadeTransition(Action delegateCalledAtEndOfSequence)
     {
         OnCameraLeavingUIScreen();
 
@@ -155,7 +153,7 @@ public class MainMenuManager : MonoBehaviour
         {
             LeanTween.rotate(Camera.main.gameObject, cameraTargetPosition2.transform.eulerAngles, 0.8f);
             LeanTween.move(Camera.main.gameObject, cameraTargetPosition2, 3f);
-            LeanTween.color(imgBlackBackground.rectTransform, new Color(imgBlackBackground.color.a, imgBlackBackground.color.g, imgBlackBackground.color.b, 1f), 2f).setOnComplete(delegateCalledAtEnd);
+            LeanTween.color(imgBlackBackground.rectTransform, new Color(imgBlackBackground.color.a, imgBlackBackground.color.g, imgBlackBackground.color.b, 1f), 2f).setOnComplete(delegateCalledAtEndOfSequence);
         });
     }
 }
