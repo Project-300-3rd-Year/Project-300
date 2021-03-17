@@ -40,6 +40,8 @@ public class UIManager : MonoBehaviour
     [Header("Pause Screen")]
     public PauseScreen pauseScreen;
 
+    //[Header("")]
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape))
