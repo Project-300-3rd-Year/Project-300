@@ -40,11 +40,12 @@ public class UIManager : MonoBehaviour
     [Header("Pause Screen")]
     public PauseScreen pauseScreen;
 
-    //[Header("")]
+    [Header("Fade To Black Image")]
+    public FadeToBlackImage imgFadeToBlack;
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape)) 
         {
             pauseScreen.pauseScreenDelegate?.Invoke();
         }

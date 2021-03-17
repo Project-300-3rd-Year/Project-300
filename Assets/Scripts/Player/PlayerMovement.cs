@@ -82,7 +82,9 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Start()
-    {  
+    {
+        GameManager.Instance.currentGameSessionState = GameSessonState.InGame;
+
         defaultRotation = transform.rotation;
 
         currentMovementSpeed = maxWalkSpeed;
@@ -93,6 +95,8 @@ public class PlayerMovement : MonoBehaviour
         CapsLockIsActive = (((ushort)GetKeyState(0x14)) & 0xffff) != 0;
 
         Cursor.visible = false;
+
+        GameManager.Instance.onGameEnd += DisableMovement;
     }
 
     void Update()

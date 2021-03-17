@@ -17,6 +17,8 @@ public class LoadingScene : MonoBehaviour
 
     private void Start()
     {
+        GameManager.Instance.currentGameSessionState = GameSessonState.Loading;
+
         loadSceneAsyncOperation = SceneManager.LoadSceneAsync(2);
         loadSceneAsyncOperation.allowSceneActivation = true;
     }

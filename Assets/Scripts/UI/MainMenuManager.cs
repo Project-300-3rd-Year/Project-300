@@ -54,6 +54,8 @@ public class MainMenuManager : MonoBehaviour
     //Start.
     private void Start()
     {
+        GameManager.Instance.currentGameSessionState = GameSessonState.InMainMenu;
+
         cameraSensitivitySlider.value = Settings.cameraSensitivity; 
         UpdateCameraSensitivityValue();
 

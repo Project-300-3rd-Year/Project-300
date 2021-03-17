@@ -9,8 +9,13 @@ public class EndGameTrigger : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
-            SceneManager.LoadScene(0);
+        {
+            GameManager.Instance.onGameEnd();
+            UIManager.Instance.imgFadeToBlack.FadeToBlack(delegate() 
+            {
+                GameManager.Instance.currentGameSessionState = GameSessonState.GameOverWin;
+                SceneManager.LoadScene(3);
+            });
+        }
     }
-
-
 }

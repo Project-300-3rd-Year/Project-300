@@ -29,6 +29,8 @@ public class PlayerCameraRotation : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         playerCamera = Camera.main;
+
+        GameManager.Instance.onGameEnd += DisableRotation;
     }
 
     void Update()
