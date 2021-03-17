@@ -12,10 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 205b6c969ccd37b44abfa708e620e6ed, type: 3}
   m_Name: 1st Floor West
   m_EditorClassIdentifier: 
-  keyName: First Floor West Key
+  keyName: First Floor West
   keyPrefab: {fileID: 6973181361277623644, guid: a3abbc43a9ef7e24cb024bd198445a7e,
     type: 3}
-  positionSpawns:
-  - {fileID: 0}
-  - {fileID: 0}
   UIMessageToShowWhenPickedUp: 'Picked up the First Floor West Key '

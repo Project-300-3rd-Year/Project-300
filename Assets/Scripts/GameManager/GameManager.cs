@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     public Action onGameEnd;
 
     public GameSessonState currentGameSessionState;
-    //public GameSessonState CurrentGameSessionState { get { return _currentGameSessionState; } set { _currentGameSessionState = value; } }
+
 
     private void Awake()
     {

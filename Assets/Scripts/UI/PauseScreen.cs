@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 /* Pause screen that gets activated on pressing P or ESC - checked for in UI Manager script.
  * pauseScreenDelegate gets updated depending on what screen you're on - so pressing P or ESC is same as pressing return / or back buttons etc.
- * Pause screen gameobject must be active in order for delegate to get set at start. 
+ * Pause screen gameobject must be active in order for delegate to get set at start, but immediately gets disabled.
  */
 
 public class PauseScreen : MonoBehaviour
@@ -38,7 +38,10 @@ public class PauseScreen : MonoBehaviour
     {
         pauseScreenDelegate = EnablePauseScreen;
 
+        volumeSlider.maxValue = Settings.maxVolume;
         volumeSlider.value = Settings.volume;
+
+        cameraSensitivitySlider.maxValue = Settings.maxCameraSensitivity;
         cameraSensitivitySlider.value = Settings.cameraSensitivity;
 
         UpdateVolumeTextDisplay();
@@ -52,8 +55,10 @@ public class PauseScreen : MonoBehaviour
     {
         gameObject.SetActive(true);
         Time.timeScale = 0;
+
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.Confined;
 
         pauseScreenDelegate = DisablePauseScreen;
     }
@@ -91,6 +96,7 @@ public class PauseScreen : MonoBehaviour
     public void UpdateVolumeTextDisplay()
     {
         txtVolumeDisplay.text = volumeSlider.value.ToString();
+        Settings.UpdateAudioListener(volumeSlider.value);
     }
 
     public void UpdateCameraSensitivityTextDisplay()

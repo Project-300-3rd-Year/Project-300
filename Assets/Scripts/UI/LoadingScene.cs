@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 //Set up to just load the main scene, nothing else. Works for now.
 //Text saying "loading scene" flashes during.
 public class LoadingScene : MonoBehaviour

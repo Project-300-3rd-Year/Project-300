@@ -50,7 +50,6 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] Transform cameraTargetPosition1;
     [SerializeField] Transform cameraTargetPosition2;
 
-
     //Start.
     private void Start()
     {
@@ -59,6 +58,7 @@ public class MainMenuManager : MonoBehaviour
         cameraSensitivitySlider.value = Settings.cameraSensitivity; 
         UpdateCameraSensitivityValue();
 
+        masterVolumeSlider.maxValue = Settings.maxVolume;
         masterVolumeSlider.value = Settings.volume;
         UpdateMasterVolumeValue();
 
@@ -66,7 +66,6 @@ public class MainMenuManager : MonoBehaviour
     }
 
     //Main Menu.
-    public void OnPlayButtonPressed() { }
     public void OnSettingsButtonPressed()
     {
         OnCameraLeavingUIScreen();
@@ -104,6 +103,7 @@ public class MainMenuManager : MonoBehaviour
     public void UpdateMasterVolumeValue()
     {
         txtMasterVolumeSliderValue.text = masterVolumeSlider.value.ToString();
+        Settings.UpdateAudioListener(masterVolumeSlider.value);
     }
     public void OnReturnToMainMenuPressed()
     {
@@ -137,8 +137,9 @@ public class MainMenuManager : MonoBehaviour
 
         LeanTween.alphaCanvas(canvasGroupToFadeIn, 1f, timeToFadeCanvasGroups).setOnComplete(delegate() 
         {
-            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Confined;
         });
     }
 
@@ -146,9 +147,14 @@ public class MainMenuManager : MonoBehaviour
     public void FadeCameraOutToPlayGame() => StartCameraFadeTransition(() => SceneManager.LoadScene(1));
     public void FadeCameraOutToQuitGame() => StartCameraFadeTransition(() => Application.Quit(0));
 
+    //For this transition I didn't bother making variables for move / rotate time etc.
+    //Should make some if you wanted to customise the it more.
     public void StartCameraFadeTransition(Action delegateCalledAtEndOfSequence)
     {
         OnCameraLeavingUIScreen();
+
+        //Fade out audio listener, seems to work fine for now - had to pass in a callOnUpdate Action to make the volume property change.
+        LeanTween.value(this.gameObject, (float test) => AudioListener.volume = test, AudioListener.volume, 0f, 3f);
 
         LeanTween.rotate(Camera.main.gameObject, cameraTargetPosition1.transform.eulerAngles, 0.5f);
         LeanTween.move(Camera.main.gameObject, cameraTargetPosition1, 0.6f).setOnComplete(delegate ()

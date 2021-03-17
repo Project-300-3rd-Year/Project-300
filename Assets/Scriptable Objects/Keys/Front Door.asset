@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 205b6c969ccd37b44abfa708e620e6ed, type: 3}
   m_Name: Front Door
   m_EditorClassIdentifier: 
-  keyName: Front Door Key
+  keyName: Front Door
   keyPrefab: {fileID: 6973181361277623644, guid: 0cd2b6c3231b9e649b41a583fb9516be,
     type: 3}
   UIMessageToShowWhenPickedUp: 'Picked up the Front Door Key '
