@@ -1,12 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Treats this as though combination wheels of padlock starts from 0.
+// Treats this as though combination wheels of padlock starts from 0.
+// Created this near the end of the project and didn't have enough time to expand on it to make it better - like spawning in random places to unlock a variety of different things. 
+// Player finds the combination through reading a note that is in the building. Note is always in the same place and not spawned in a random place which we would have liked to do.
 
 [RequireComponent(typeof(Animator))]
 public class Padlock : PlayerInteractableObject, iInteractable
 {
+    public event Action unlockedEvent;
+
     Animator animator;
 
     PlayerMovement playerMovement;
@@ -112,6 +117,7 @@ public class Padlock : PlayerInteractableObject, iInteractable
 
         if(Unlocked)
         {
+            unlockedEvent?.Invoke();
             Destroy(gameObject);
         }
     }

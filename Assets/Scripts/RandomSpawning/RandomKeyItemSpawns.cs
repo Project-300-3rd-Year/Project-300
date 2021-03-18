@@ -24,8 +24,8 @@ public class RandomKeyItemSpawns : MonoBehaviour
                 spawnPositions.Add(keySpawnPositionsHolder[k].GetChild(i));
             }
 
-            Transform randomTransform = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Count)];
-            //Transform randomTransform = spawnPositions[spawnPositions.Count - 1];
+            //Transform randomTransform = spawnPositions[UnityEngine.Random.Range(0, spawnPositions.Count)];
+            Transform randomTransform = spawnPositions[spawnPositions.Count - 1];
             GameObject go = Instantiate(allKeyInventoryItems[k].keyPrefab.gameObject, randomTransform.transform.position, randomTransform.rotation);
             go.transform.SetParent(keySpawnPositionsHolder[k]);
         }
