@@ -4,13 +4,77 @@ using UnityEngine;
 
 public class PlayerCameraRotation : MonoBehaviour
 {
+    ////Components.
+    //[SerializeField] private Transform PlayerBody;
+    //private PlayerMovement playerMovement;
+    //private Camera playerCamera;
+
+    //[Header("Status")]
+    //[SerializeField] private bool CanRotate;
+
+    //private float horizontalRotationInput { get { return Input.GetAxisRaw("Mouse X"); } }
+    //private float verticalRotationInput { get { return Input.GetAxisRaw("Mouse Y"); } set { } }
+
+    //public float currentHorizontalRotationSpeed { get { return Mathf.Abs(horizontalRotationInput * Settings.cameraSensitivity); } }
+    //public float currentVerticalRotationSpeed { get { return Mathf.Abs(verticalRotationInput * Settings.cameraSensitivity); } }
+
+    //[Header("Looking Up and Down")]
+    //[SerializeField] private float VerticalRotation = 0;
+    //[SerializeField] private float MinXAxisClampValue = -90;
+    //[SerializeField] private float MaxXAxisClampValue = 90;
+
+    ////Start.
+    //private void Awake() => playerMovement = GetComponentInParent<PlayerMovement>();
+    //void Start()
+    //{
+    //    Cursor.lockState = CursorLockMode.Locked;
+    //    playerCamera = Camera.main;
+
+    //    GameManager.Instance.onGameEnd += DisableRotation;
+    //}
+
+    //void Update()
+    //{
+    //    if (Time.timeScale == 0)
+    //        return;
+
+    //    if (CanRotate)
+    //        RotateOnPlayerInput();
+    //}
+
+    //private void RotateOnPlayerInput()
+    //{
+    //    //Get rotation amount for looking down and up and clamp it.
+    //    VerticalRotation += verticalRotationInput * Settings.cameraSensitivity;
+    //    ClampVerticalRotation();
+
+    //    //Rotate player camera and player.
+    //    transform.localRotation = Quaternion.Euler(-VerticalRotation, 0f, 0f);
+    //    PlayerBody.Rotate(Vector3.up * horizontalRotationInput * Settings.cameraSensitivity);
+    //}
+    //private void ClampVerticalRotation()
+    //{
+    //    VerticalRotation = Mathf.Clamp(VerticalRotation, MinXAxisClampValue, MaxXAxisClampValue);
+
+    //    if (VerticalRotation >= MaxXAxisClampValue || VerticalRotation <= MinXAxisClampValue)
+    //        verticalRotationInput = 0;
+    //}
+
+    //public void SetRotation(float rotation) => VerticalRotation = rotation;
+    //public void DisableRotation() => CanRotate = false;
+    //public void EnableRotation() => CanRotate = true;
+
+
+
     //Components.
     [SerializeField] private Transform PlayerBody;
-    private PlayerMovement playerMovement;
-    private Camera playerCamera;
+    [SerializeField] private float tiltAngle = -10f;
+    [SerializeField] private float tiltSpeed = 10f;
 
     [Header("Status")]
     [SerializeField] private bool CanRotate;
+
+    private Camera playerCamera;
 
     private float horizontalRotationInput { get { return Input.GetAxisRaw("Mouse X"); } }
     private float verticalRotationInput { get { return Input.GetAxisRaw("Mouse Y"); } set { } }
@@ -22,11 +86,12 @@ public class PlayerCameraRotation : MonoBehaviour
     [SerializeField] private float VerticalRotation = 0;
     [SerializeField] private float MinXAxisClampValue = -90;
     [SerializeField] private float MaxXAxisClampValue = 90;
+    private void Awake() { }
 
-    //Start.
-    private void Awake() => playerMovement = GetComponentInParent<PlayerMovement>();
     void Start()
     {
+        playerCamera = GetComponent<Camera>();
+
         Cursor.lockState = CursorLockMode.Locked;
         playerCamera = Camera.main;
 
@@ -38,8 +103,9 @@ public class PlayerCameraRotation : MonoBehaviour
         if (Time.timeScale == 0)
             return;
 
-        if(CanRotate)
+        if (CanRotate)
             RotateOnPlayerInput();
+
     }
 
     private void RotateOnPlayerInput()
@@ -48,8 +114,13 @@ public class PlayerCameraRotation : MonoBehaviour
         VerticalRotation += verticalRotationInput * Settings.cameraSensitivity;
         ClampVerticalRotation();
 
-        //Rotate player camera and player.
-        transform.localRotation = Quaternion.Euler(-VerticalRotation, 0f, 0f);
+
+        float leanThrow = Input.GetAxis("Lean");
+        float angleDueToControl = leanThrow * tiltSpeed;
+        angleDueToControl = Mathf.Clamp(angleDueToControl, tiltAngle, -tiltAngle);
+
+        // Rotate player camera and player.
+        transform.localRotation = Quaternion.Euler(-VerticalRotation, 0f, -angleDueToControl);
         PlayerBody.Rotate(Vector3.up * horizontalRotationInput * Settings.cameraSensitivity);
     }
     private void ClampVerticalRotation()
@@ -64,3 +135,4 @@ public class PlayerCameraRotation : MonoBehaviour
     public void DisableRotation() => CanRotate = false;
     public void EnableRotation() => CanRotate = true;
 }
+

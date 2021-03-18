@@ -34,6 +34,7 @@ public class PauseScreen : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+
     private void Start()
     {
         pauseScreenDelegate = EnablePauseScreen;
@@ -64,6 +65,7 @@ public class PauseScreen : MonoBehaviour
     }
     public void DisablePauseScreen()
     {
+
         gameObject.SetActive(false);
         Time.timeScale = 1f;
         Cursor.visible = false;
