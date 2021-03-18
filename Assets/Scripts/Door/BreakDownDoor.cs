@@ -15,6 +15,7 @@ public class BreakDownDoor : MonoBehaviour
 
     [Header("Breaking Open Door Sequence By Enemy")]
     [SerializeField] private float doorAffectSpeed;
+    public Transform enemyTransformTargetDuringSequence;
     public bool SequenceIsActive;
 
     [Header("Audio To Play When Door Is Hit")]
@@ -46,16 +47,23 @@ public class BreakDownDoor : MonoBehaviour
     private bool IsClosed() => gameObject.transform.rotation.eulerAngles.y > negativeClosedAngle && gameObject.transform.rotation.eulerAngles.y < positiveClosedAngle;
     private bool PlayerInRoom()=> roomTriggerCheck.bounds.Contains(player.transform.position);
 
-    public void StartBreakingDownSequence()
+    public IEnumerator StartBreakingDownSequence(AI_Movement_V2 elizabeth)
     {
         if(!SequenceIsActive && IsClosed() && PlayerInRoom())
-            StartCoroutine(EnemyHittingDoorSequence());
+        {
+            //Reset elizabeths position.
+            elizabeth.transform.position = enemyTransformTargetDuringSequence.transform.position;
+            elizabeth.transform.rotation = enemyTransformTargetDuringSequence.transform.rotation;
+
+            yield return StartCoroutine(EnemyHittingDoorSequence());
+        }
     }
 
     //Leaving this here for now, when enemy ai reaches a closed door this is code that could be called to force it open.
     IEnumerator EnemyHittingDoorSequence()
     {
         SequenceIsActive = true;
+        rb.isKinematic = true;
 
         System.Random rng = new System.Random();
         yield return StartCoroutine(ApplyForceToDoorUntilItReachesAngle((Quaternion.Euler(0, 15f, 0)), doorAffectSpeed));

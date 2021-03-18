@@ -10,7 +10,9 @@ using UnityEngine.UI;
 public class DoorHandle : Handle, iInteractable, iLockable
 {
     private Rigidbody doorRigidbody;
+
     private BreakDownDoor breakDownDoor; //Might not have one.
+    public List<GameObject> enemyPathsToActivateOnUnlocking; //Might not have any. Should have made a seperate script.
 
     public bool IsInteractable
     {
@@ -29,7 +31,7 @@ public class DoorHandle : Handle, iInteractable, iLockable
             _IsInteractable = value;
         }
     }
-    public event Action InteractedEvent;
+    public event Action<DoorHandle> UnlockEvent;
 
     [Header("Locking")]
     [SerializeField] private bool _isLocked;
@@ -61,6 +63,8 @@ public class DoorHandle : Handle, iInteractable, iLockable
 
     public void Unlock()
     {
+        UnlockEvent?.Invoke(this);
+
         IsLocked = false;
         ChangeKeyInteractCondition(holdToInteract: true);
         currentKeyToInteract = defaultKeyToInteract;
@@ -84,7 +88,10 @@ public class DoorHandle : Handle, iInteractable, iLockable
         }
         else
         {
-            if(player.GetComponent<PlayerInventory>().HasKeyInInventory(KeyToUnlockMe)) //Unlock.
+            if(breakDownDoor != null && breakDownDoor.SequenceIsActive)
+                UIManager.Instance.aimDot.Reset();
+
+            else if(player.GetComponent<PlayerInventory>().HasKeyInInventory(KeyToUnlockMe)) //Unlock.
             {
                 Unlock();
 

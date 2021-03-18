@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class AI_Movement_V2 : MonoBehaviour
@@ -11,7 +12,6 @@ public class AI_Movement_V2 : MonoBehaviour
     private AudioSource audio_source;
     public bool heard;
     [SerializeField] private float step_lenght = 1;
-    //public Animation search_animation;
     public Animator animator;
     public bool Ended;
 
@@ -25,19 +25,25 @@ public class AI_Movement_V2 : MonoBehaviour
     }
     [Header("AI State")]
     public EnemyState current_state;
-    private EnemyState last_state;    
-       
+    private EnemyState last_state;
+
+    [Header("Paths")]
+    public List<GameObject> paths_list;
+    public DoorHandle[] lockedDoors;
+
     [Header("Pathfinding")]
     public Vector3 last_node;    
     public Vector3 current_node;
     public Vector3[] array_of_nodes;
     public GameObject selected_path;
     public GameObject path_object;
-    private List<GameObject> paths_list;
     [SerializeField] private NavMeshAgent pawn_agent;    
     private Vector3 pawn_last_pos;
 
     [Header("Target Data/Detection")]
+    public Light detectionSpotLight;
+    private float detectionViewAngle;
+    private float detectionViewDistance;
     public GameObject Player;    
     private Vector3 playerlastposition;
     public Vector3 heard_position;
@@ -45,9 +51,9 @@ public class AI_Movement_V2 : MonoBehaviour
     [SerializeField]private LayerMask layersToBlock;
     RaycastHit hitInfo;    
     public float spotrange;
-    
-    
 
+    //Breaking down door sequence.
+    private Coroutine breakDownDoorCoroutine;
 
     // Start is called before the first frame update
     void Start()
@@ -56,30 +62,35 @@ public class AI_Movement_V2 : MonoBehaviour
         current_state = EnemyState.calm;
         heard = false;
         pawn_agent.isStopped = true;
-        paths_list = new List<GameObject>();
+        //paths_list = new List<GameObject>();
         audio_source = GetComponent<AudioSource>();
         //search_animation = GetComponent<Animation>();
         animator = GetComponent<Animator>();
         pawn_last_pos = pawn_agent.transform.position;
-        GameObject[] PathArray = GameObject.FindGameObjectsWithTag("Path");
+        //GameObject[] PathArray = GameObject.FindGameObjectsWithTag("Path");
 
-        if (PathArray!=null)
+        detectionViewAngle = detectionSpotLight.spotAngle;
+        detectionViewDistance = detectionSpotLight.range;
+
+
+        //Subscribe to door unlock events to add paths that are behind the locked doors.
+        for (int i = 0; i < lockedDoors.Length; i++)
         {
-            for (int i = 0; i < PathArray.Length; i++)
-            {
-                paths_list.Add(PathArray[i]);
-                
-            }
-        }
-        
+            lockedDoors[i].UnlockEvent += OnPlayerUnlockingDoor;
+        }     
+    }
+
+    private void OnPlayerUnlockingDoor(DoorHandle doorUnlocked)
+    {
+        paths_list.AddRange(doorUnlocked.enemyPathsToActivateOnUnlocking);
     }
 
     // Update is called once per frame
     void Update()
     {
         StepSound();
-        CheckForSpotted();        
-        //Debug.Log(paths_list.FindIndex(s => s == selected_path)+"Selected Path");                
+        CheckForSpotted();
+        //Debug.Log(paths_list.FindIndex(s => s == selected_path)+"Selected Path");        
         if (current_state==EnemyState.engaged)
         {
             Attack();
@@ -100,10 +111,24 @@ public class AI_Movement_V2 : MonoBehaviour
 
     public void Attack()
     {
+        pawn_agent.isStopped = false;
         last_state = EnemyState.engaged;
         //Debug.DrawLine(transform.position, playerlastposition,Color.red);
         pawn_agent.speed = 2f;        
         MoveTo(playerlastposition);
+
+        if(Vector3.Distance(transform.position,Player.transform.position) <= 1.5f && CanSeePlayer())
+        {
+            GameManager.Instance.onGameEnd();
+            pawn_agent.isStopped = true;
+            UIManager.Instance.imgFadeToBlack.FadeToBlack(delegate ()
+            {
+                SceneManager.LoadScene(3);
+                GameManager.Instance.currentGameSessionState = GameSessonState.GameOverLose;
+            });
+        }
+
+
         if (pawn_agent.remainingDistance<=0.1f)
         {
             current_state = EnemyState.searching;
@@ -115,15 +140,12 @@ public class AI_Movement_V2 : MonoBehaviour
         pawn_agent.speed = 1f;
         if (current_state==EnemyState.calm)
         {
-            pawn_agent.isStopped = false;
             if (selected_path == null)
             {                
                 selected_path = PickAPath(paths_list);
                 array_of_nodes = selected_path.GetComponent<AI_Path>().array_of_Nodes;
                 StartCoroutine(Set_Move_Path(array_of_nodes));
-            }
-            
-
+            }           
         }
     }
     public void MoveToNoise()
@@ -138,17 +160,16 @@ public class AI_Movement_V2 : MonoBehaviour
     public void Search() 
     {
         animator.SetBool("Search", true);
-        if (Physics.Raycast(transform.position, Player.transform.position - transform.position, out hitInfo, spotrange, ignore)
-            &&
-            (layersToBlock & 1 << hitInfo.collider.gameObject.layer) == 0)
+
+        if(CanSeePlayer())
         {
             animator.SetBool("Search", false);
             playerlastposition = Player.transform.position;
-            current_state = EnemyState.engaged;            
+            current_state = EnemyState.engaged;
         }
+
         else if (Ended)
-        {
-            
+        {     
             animator.SetBool("Search", false);
             pawn_agent.isStopped = true;
             current_state = EnemyState.calm;
@@ -156,53 +177,100 @@ public class AI_Movement_V2 : MonoBehaviour
         }
     }
 
+    private bool HitObjectBlocksRaycast => (layersToBlock & 1 << hitInfo.collider.gameObject.layer) != 0;
+
+
+    private bool CanSeePlayer()
+    {
+        if (Vector3.Distance(transform.position, Player.transform.position) < detectionViewDistance)
+        {
+            Vector3 directionToPlayer = (Player.transform.position - transform.position).normalized;
+            float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+            if (angleToPlayer < detectionViewAngle / 2f)
+            {
+                if (Physics.Raycast(transform.position, Player.transform.position - transform.position, out hitInfo, detectionViewDistance, ignore))
+                {
+
+                    if (HitObjectBlocksRaycast == false)
+                    {
+                        if(HidingSpot.IsInHiding == false)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+
     public void CheckForSpotted() 
     {
-            if(Physics.Raycast(transform.position, Player.transform.position - transform.position, out hitInfo, spotrange, ignore)
-            &&
-            (layersToBlock & 1 << hitInfo.collider.gameObject.layer) == 0)
-            {
+        if(CanSeePlayer())
+        {
             playerlastposition = Player.transform.position;
             current_state = EnemyState.engaged;
             StopAllCoroutines();
             selected_path = null;
-            }
+        }
         else if (heard)
         {
             current_state = EnemyState.heard;
         }
-        
-        else if(last_state==EnemyState.searching&&pawn_agent.isStopped==true) 
+
+        else if (last_state == EnemyState.searching && pawn_agent.isStopped == true)
         {
             current_state = EnemyState.calm;
-            
+
         }
+
+
+        //if (Physics.Raycast(transform.position, Player.transform.position - transform.position, out hitInfo, spotrange, ignore)
+        //    &&
+        //    (layersToBlock & 1 << hitInfo.collider.gameObject.layer) == 0)
+        //    {
+        //    playerlastposition = Player.transform.position;
+        //    current_state = EnemyState.engaged;
+        //    StopAllCoroutines();
+        //    selected_path = null;
+        //    }
+        //else if (heard)
+        //{
+        //    current_state = EnemyState.heard;
+        //}
+        
+        //else if(last_state==EnemyState.searching&&pawn_agent.isStopped==true) 
+        //{
+        //    current_state = EnemyState.calm;
+            
+        //}
     }
     public void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag=="Door")
         {
-            //print("hit door");
-            //Rigidbody rbOfDoor;
-            //collision.gameObject.TryGetComponent(out rbOfDoor);
+            BreakDownDoor breakDownDoor;
+            collision.gameObject.TryGetComponent(out breakDownDoor);
 
-            //if (rbOfDoor != null)
-            //{
-            //    print("Applied Force");
-            //    rbOfDoor.AddForce(transform.forward * 0.05f);
-            //}
-
-
-            //DoorKnockDownScript door = collision.rigidbody.gameObject.GetComponent<DoorKnockDownScript>();
-            //if (door.colsed&&right_door)
-            //{
-            //pawn_agent.isStopped = true;
-            //door.KnockDownMethod();
-            //pawn_agent.isStopped = false;
-            //}
+            if(breakDownDoor)
+            {
+                if (breakDownDoorCoroutine == null)
+                    breakDownDoorCoroutine = StartCoroutine(BreakDownDoor(breakDownDoor));
+            }
         }
 
     }
+
+    private IEnumerator BreakDownDoor(BreakDownDoor breakDownDoor)
+    {
+        pawn_agent.isStopped = true;
+        yield return StartCoroutine(breakDownDoor.StartBreakingDownSequence(this));
+        pawn_agent.isStopped = false;
+        breakDownDoorCoroutine = null;
+    }
+
     public void StepSound() 
     {
         Vector3 step_dis = pawn_agent.transform.position - pawn_last_pos;
@@ -242,7 +310,7 @@ public class AI_Movement_V2 : MonoBehaviour
     {
         pawn_agent.destination=target;        
     }
-    
+  
     public GameObject PickAPath(List<GameObject> paths) 
     {
         int selected_path_index = Random.Range(0, paths.Count);
