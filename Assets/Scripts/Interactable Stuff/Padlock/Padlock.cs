@@ -6,6 +6,7 @@ using UnityEngine;
 // Treats this as though combination wheels of padlock starts from 0.
 // Created this near the end of the project and didn't have enough time to expand on it to make it better - like spawning in random places to unlock a variety of different things. 
 // Player finds the combination through reading a note that is in the building. Note is always in the same place and not spawned in a random place which we would have liked to do.
+// Padlock generates random combination and updates the note text to be the combination (actual scriptable object gets altered) - bad way of setting it up but ran out of time. 
 
 [RequireComponent(typeof(Animator))]
 public class Padlock : PlayerInteractableObject, iInteractable
@@ -40,8 +41,7 @@ public class Padlock : PlayerInteractableObject, iInteractable
 
     [Header("Combination To Unlock")]
     public int[] combinationToUnlock;
-
-    //Animations.
+    [SerializeField] private ReadableNote combinationNote;
 
     public override void Awake()
     {
@@ -222,9 +222,13 @@ public class Padlock : PlayerInteractableObject, iInteractable
     {
         System.Random rng = new System.Random();
         combinationToUnlock = new int[rotatingLockCombinationsList.Count];
+
+        combinationNote.note.text = string.Empty;
+
         for (int i = 0; i < combinationToUnlock.Length; i++)
         {
             combinationToUnlock[i] = rng.Next(0, rotatingLockCombinationsList[i].numberAmount);
+            combinationNote.note.text += combinationToUnlock[i];
         }
     }
 

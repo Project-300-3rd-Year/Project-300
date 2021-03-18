@@ -12,7 +12,7 @@ public class ReadableNote : PlayerInteractableObject,iInteractable
     private PlayerCameraRotation playerCameraRotation;
 
     [Header("Note To Show")]
-    [SerializeField] private Note note;
+    public Note note;
 
     [Header("Stopping reading")]
     [SerializeField] private KeyCode keyToStopReadingNote;
