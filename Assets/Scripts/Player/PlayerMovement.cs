@@ -257,15 +257,14 @@ public class PlayerMovement : MonoBehaviour
     //TEMPORARY TEST FOR COLLIDING WITH OTHER RIGIDBODIES - FIX UP LATER.
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        //BreakDownDoor hitDoor;
-        //if (hit.gameObject.TryGetComponent(out hitDoor))
-        //{
-        //    hitDoor.StartBreakingDownSequence();
-        //}
+        BreakDownDoor hitDoor;
+        if (hit.gameObject.TryGetComponent(out hitDoor))
+        {
+            hitDoor.StartBreakingDownSequence();
+        }
 
         if (hit.rigidbody != null)
         {
-            print("added force");
             hit.rigidbody.AddForce(hit.moveDirection * 5f);
         }
     }
