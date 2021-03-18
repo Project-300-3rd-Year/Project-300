@@ -10,6 +10,7 @@ public class AI_Movement_V2 : MonoBehaviour
 {
     [Header("AI Misc")]
     private AudioSource audio_source;
+    public AudioClip chainNoise;
     public bool heard;
     [SerializeField] private float step_lenght = 1;
     public Animator animator;
@@ -138,7 +139,7 @@ public class AI_Movement_V2 : MonoBehaviour
     {
         last_state = EnemyState.calm;
         pawn_agent.speed = 1f;
-        if (current_state==EnemyState.calm)
+        if (current_state == EnemyState.calm)
         {
             if (selected_path == null)
             {                
@@ -151,7 +152,7 @@ public class AI_Movement_V2 : MonoBehaviour
     public void MoveToNoise()
     {
         MoveTo(heard_position);
-        if (Vector3.Distance(pawn_agent.transform.position, heard_position) <= 0.1f)
+        if (Vector3.Distance(pawn_agent.transform.position, heard_position) <= 1.5f)
         {
             current_state = EnemyState.searching;
             heard = false;
@@ -225,27 +226,6 @@ public class AI_Movement_V2 : MonoBehaviour
             current_state = EnemyState.calm;
 
         }
-
-
-        //if (Physics.Raycast(transform.position, Player.transform.position - transform.position, out hitInfo, spotrange, ignore)
-        //    &&
-        //    (layersToBlock & 1 << hitInfo.collider.gameObject.layer) == 0)
-        //    {
-        //    playerlastposition = Player.transform.position;
-        //    current_state = EnemyState.engaged;
-        //    StopAllCoroutines();
-        //    selected_path = null;
-        //    }
-        //else if (heard)
-        //{
-        //    current_state = EnemyState.heard;
-        //}
-        
-        //else if(last_state==EnemyState.searching&&pawn_agent.isStopped==true) 
-        //{
-        //    current_state = EnemyState.calm;
-            
-        //}
     }
     public void OnCollisionEnter(Collision collision)
     {
@@ -276,7 +256,7 @@ public class AI_Movement_V2 : MonoBehaviour
         Vector3 step_dis = pawn_agent.transform.position - pawn_last_pos;
         if (Vector3.Distance(pawn_agent.transform.position, pawn_last_pos) >= step_lenght)
         {
-            audio_source.Play();
+            AudioSource.PlayClipAtPoint(chainNoise,transform.position);
             pawn_last_pos = pawn_agent.transform.position;
         }
     }

@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class NoiseMaker : MonoBehaviour
 {
-    private float radius=10;
+    private float radius=1f;
     private RaycastHit HitInfo;
-    private LayerMask ignore;
+    public LayerMask layerMask;
     private AI_Movement_V2 AI;
     private AudioSource audioSource;
     public AudioClip audioClip;
     public void Start()
     {
-
         audioSource = gameObject.GetComponent<AudioSource>();
         audioSource.playOnAwake = false;
     }
@@ -20,16 +20,22 @@ public class NoiseMaker : MonoBehaviour
 
     public void MakeNoise(float speed) 
     {
-        audioSource.clip = audioClip;
-        audioSource.Play();
+        GameObject debugSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        debugSphere.transform.position = transform.position;
+        //debugSphere.GetComponent<MeshRenderer>().enabled = false;
+        debugSphere.GetComponent<SphereCollider>().radius = radius * speed;
+        debugSphere.GetComponent<SphereCollider>().isTrigger = true;
 
-
-        if (Physics.SphereCast(transform.position, radius*speed,transform.position+new Vector3(0,-2,0),out HitInfo,ignore))
+         
+        Collider[] colliders = Physics.OverlapSphere(transform.position, radius * speed, layerMask, QueryTriggerInteraction.Ignore);
+        for (int i = 0; i < colliders.Length; i++)
         {
-            AI = HitInfo.collider.gameObject.GetComponent<AI_Movement_V2>();
-            AI.heard = true;
-            AI.heard_position = transform.position;
+            AI = colliders[i].gameObject.GetComponent<AI_Movement_V2>();
+            if (AI != null)
+            {
+                AI.heard = true;
+                AI.heard_position = transform.position;
+            }
         }
-        
     }
 }

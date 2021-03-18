@@ -18,11 +18,4 @@ public class AI_Path : MonoBehaviour
         }
         array_of_Nodes = List_Of_Nodes.ToArray();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    
 }

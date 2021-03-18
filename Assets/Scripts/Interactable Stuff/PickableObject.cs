@@ -18,6 +18,7 @@ using UnityEngine;
  */
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(NoiseMaker))]
 public class PickableObject : PlayerInteractableObject,iInteractable
 {
     public static event Action PlayerPickedUpObject; //Current subscribers - raycast script to enables/disable checking for interactables.
@@ -27,6 +28,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     private Rigidbody rigidBody;
     private PlayerMovement playerMovement;
     private PlayerCameraRotation playerCameraRotation;
+    private NoiseMaker noiseMaker;
 
     private Coroutine HandleInputCoroutine;
 
@@ -79,6 +81,7 @@ public class PickableObject : PlayerInteractableObject,iInteractable
         rigidBody = GetComponent<Rigidbody>();
         playerMovement = player.GetComponent<PlayerMovement>();
         playerCameraRotation = player.GetComponentInChildren<PlayerCameraRotation>();
+        noiseMaker = GetComponent<NoiseMaker>();
     }
 
     public override void Start()
@@ -212,6 +215,15 @@ public class PickableObject : PlayerInteractableObject,iInteractable
 
     private void OnCollisionEnter(Collision collision)
     {
+       // print(collision.relativeVelocity.magnitude);
+        if(collision.relativeVelocity.magnitude > 3f)
+        {
+            print("play noise");
+            noiseMaker.MakeNoise(collision.relativeVelocity.magnitude);
+        }
+
+
+
         if (InPlayersHands && collision.gameObject.tag != "Ground" && collision.gameObject.layer != LayerMask.NameToLayer("Pickable")) //Maybe change this to check layer of ground instead.
         {
             DropFromPlayersHands();
