@@ -123,7 +123,7 @@ public class AI_Movement_V2 : MonoBehaviour
         pawn_agent.speed = 2f;        
         MoveTo(playerlastposition);
 
-        if(Vector3.Distance(transform.position,Player.transform.position) <= 1.5f && CanSeePlayer())
+        if(Vector3.Distance(transform.position,Player.transform.position) <= 1.6f && CanSeePlayer())
         {
             GameManager.Instance.onGameEnd();
             pawn_agent.isStopped = true;
@@ -201,7 +201,6 @@ public class AI_Movement_V2 : MonoBehaviour
             {
                 if (Physics.Raycast(transform.position, Player.transform.position - transform.position, out hitInfo, detectionViewDistance, ignore))
                 {
-
                     if (HitObjectBlocksRaycast == false)
                     {
                         if(HidingSpot.IsInHiding == false)
