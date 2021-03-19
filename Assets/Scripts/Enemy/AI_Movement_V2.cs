@@ -61,7 +61,6 @@ public class AI_Movement_V2 : MonoBehaviour
     //Breaking down door sequence.
     private Coroutine breakDownDoorCoroutine;
 
-    // Start is called before the first frame update
     void Start()
     {
         Ended = false;
@@ -73,10 +72,9 @@ public class AI_Movement_V2 : MonoBehaviour
         PlayBackgroundAudio(backgroundAudioNormal);
 
 
-        //search_animation = GetComponent<Animation>();
         animator = GetComponent<Animator>();
         pawn_last_pos = pawn_agent.transform.position;
-        //GameObject[] PathArray = GameObject.FindGameObjectsWithTag("Path");
+
 
         detectionViewAngle = detectionSpotLight.spotAngle;
         detectionViewDistance = detectionSpotLight.range;
@@ -99,7 +97,7 @@ public class AI_Movement_V2 : MonoBehaviour
     {
         StepSound();
         CheckForSpotted();
-        //Debug.Log(paths_list.FindIndex(s => s == selected_path)+"Selected Path");        
+        
         if (current_state==EnemyState.engaged)
         {
             Attack();
@@ -115,7 +113,7 @@ public class AI_Movement_V2 : MonoBehaviour
         else if (current_state == EnemyState.heard)
         {
             MoveToNoise();
-        } 
+        }
     }
 
     public void Attack()
@@ -184,7 +182,7 @@ public class AI_Movement_V2 : MonoBehaviour
         else if (Ended)
         {     
             animator.SetBool("Search", false);
-            pawn_agent.isStopped = true;
+            pawn_agent.isStopped = false;
             current_state = EnemyState.calm;
             Ended = false;
         }
