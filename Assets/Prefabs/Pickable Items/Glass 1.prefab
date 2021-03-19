@@ -252,7 +252,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 16384
-  audioClip: {fileID: 0}
+  audioClip: {fileID: 8300000, guid: dcb344f4a42787941ae75d5540dd2630, type: 3}
 --- !u!1001 &1145123614611980579
 PrefabInstance:
   m_ObjectHideFlags: 0

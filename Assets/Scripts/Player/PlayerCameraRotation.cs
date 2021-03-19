@@ -117,7 +117,16 @@ public class PlayerCameraRotation : MonoBehaviour
 
         float leanThrow = Input.GetAxis("Lean");
         float angleDueToControl = leanThrow * tiltSpeed;
-        angleDueToControl = Mathf.Clamp(angleDueToControl, tiltAngle, -tiltAngle);
+        Ray ray = new Ray(PlayerBody.position, transform.TransformDirection(Vector3.right * leanThrow));
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(ray, out hitInfo, 1.5f))
+            transform.localRotation = Quaternion.Euler(-VerticalRotation, 0f, 0f);
+        else
+        {
+            angleDueToControl = Mathf.Clamp(angleDueToControl, tiltAngle, -tiltAngle);
+            transform.localRotation = Quaternion.Euler(-VerticalRotation, 0f, -angleDueToControl);
+        }
 
         // Rotate player camera and player.
         transform.localRotation = Quaternion.Euler(-VerticalRotation, 0f, -angleDueToControl);

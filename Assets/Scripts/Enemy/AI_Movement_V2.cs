@@ -9,8 +9,6 @@ using Random = UnityEngine.Random;
 public class AI_Movement_V2 : MonoBehaviour
 {
     [Header("AI Misc")]
-    private AudioSource audio_source;
-    public AudioClip chainNoise;
     public bool heard;
     [SerializeField] private float step_lenght = 1;
     public Animator animator;
@@ -53,6 +51,13 @@ public class AI_Movement_V2 : MonoBehaviour
     RaycastHit hitInfo;    
     public float spotrange;
 
+
+    [Header("Audio")]
+    private AudioSource audio_source;
+    public AudioClip[] possibleChainNoises;
+    public AudioClip backgroundAudioNormal;
+    public AudioClip backgroundAudioChasing;
+
     //Breaking down door sequence.
     private Coroutine breakDownDoorCoroutine;
 
@@ -65,6 +70,9 @@ public class AI_Movement_V2 : MonoBehaviour
         pawn_agent.isStopped = true;
         //paths_list = new List<GameObject>();
         audio_source = GetComponent<AudioSource>();
+        PlayBackgroundAudio(backgroundAudioNormal);
+
+
         //search_animation = GetComponent<Animation>();
         animator = GetComponent<Animator>();
         pawn_last_pos = pawn_agent.transform.position;
@@ -114,7 +122,6 @@ public class AI_Movement_V2 : MonoBehaviour
     {
         pawn_agent.isStopped = false;
         last_state = EnemyState.engaged;
-        //Debug.DrawLine(transform.position, playerlastposition,Color.red);
         pawn_agent.speed = 2f;        
         MoveTo(playerlastposition);
 
@@ -122,6 +129,7 @@ public class AI_Movement_V2 : MonoBehaviour
         {
             GameManager.Instance.onGameEnd();
             pawn_agent.isStopped = true;
+          
             UIManager.Instance.imgFadeToBlack.FadeToBlack(delegate ()
             {
                 SceneManager.LoadScene(3);
@@ -133,6 +141,8 @@ public class AI_Movement_V2 : MonoBehaviour
         if (pawn_agent.remainingDistance<=0.1f)
         {
             current_state = EnemyState.searching;
+
+            PlayBackgroundAudio(backgroundAudioNormal);
         }
     }
     public void Patrol() 
@@ -167,6 +177,8 @@ public class AI_Movement_V2 : MonoBehaviour
             animator.SetBool("Search", false);
             playerlastposition = Player.transform.position;
             current_state = EnemyState.engaged;
+
+            PlayBackgroundAudio(backgroundAudioChasing);
         }
 
         else if (Ended)
@@ -215,6 +227,8 @@ public class AI_Movement_V2 : MonoBehaviour
             current_state = EnemyState.engaged;
             StopAllCoroutines();
             selected_path = null;
+
+            PlayBackgroundAudio(backgroundAudioChasing);
         }
         else if (heard)
         {
@@ -256,7 +270,8 @@ public class AI_Movement_V2 : MonoBehaviour
         Vector3 step_dis = pawn_agent.transform.position - pawn_last_pos;
         if (Vector3.Distance(pawn_agent.transform.position, pawn_last_pos) >= step_lenght)
         {
-            AudioSource.PlayClipAtPoint(chainNoise,transform.position);
+            
+            AudioSource.PlayClipAtPoint(possibleChainNoises[Random.Range(0,possibleChainNoises.Length -1)],transform.position);
             pawn_last_pos = pawn_agent.transform.position;
         }
     }
@@ -307,5 +322,15 @@ public class AI_Movement_V2 : MonoBehaviour
     public void AnimationEnded() 
     {
         Ended = true;
+    }
+
+    private void PlayBackgroundAudio(AudioClip audioClip)
+    {
+        if (audioClip == audio_source.clip)
+            return;
+
+        audio_source.Stop();
+        audio_source.clip = audioClip;
+        audio_source.Play();
     }
 }

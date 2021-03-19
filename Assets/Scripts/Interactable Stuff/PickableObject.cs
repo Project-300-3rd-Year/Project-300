@@ -207,7 +207,6 @@ public class PickableObject : PlayerInteractableObject,iInteractable
     private void ThrowMe()
     {
         DropFromPlayersHands();
-        //Vector3 forceToThrowAt = (transform.position - player.transform.position).normalized * throwForce;
         Vector3 forceToThrowAt = Camera.main.ScreenPointToRay(Input.mousePosition).direction.normalized * throwForce;
         rigidBody.AddForce(forceToThrowAt, ForceMode.Impulse);
         rigidBody.AddRelativeTorque(UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(1,throwForce), ForceMode.Impulse);
@@ -215,14 +214,10 @@ public class PickableObject : PlayerInteractableObject,iInteractable
 
     private void OnCollisionEnter(Collision collision)
     {
-       // print(collision.relativeVelocity.magnitude);
         if(collision.relativeVelocity.magnitude > 3f)
         {
-            print("play noise");
             noiseMaker.MakeNoise(collision.relativeVelocity.magnitude);
         }
-
-
 
         if (InPlayersHands && collision.gameObject.tag != "Ground" && collision.gameObject.layer != LayerMask.NameToLayer("Pickable")) //Maybe change this to check layer of ground instead.
         {

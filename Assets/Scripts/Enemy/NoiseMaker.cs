@@ -20,13 +20,8 @@ public class NoiseMaker : MonoBehaviour
 
     public void MakeNoise(float speed) 
     {
-        GameObject debugSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        debugSphere.transform.position = transform.position;
-        //debugSphere.GetComponent<MeshRenderer>().enabled = false;
-        debugSphere.GetComponent<SphereCollider>().radius = radius * speed;
-        debugSphere.GetComponent<SphereCollider>().isTrigger = true;
-
-         
+        AudioSource.PlayClipAtPoint(audioClip, transform.position);
+    
         Collider[] colliders = Physics.OverlapSphere(transform.position, radius * speed, layerMask, QueryTriggerInteraction.Ignore);
         for (int i = 0; i < colliders.Length; i++)
         {
