@@ -6,6 +6,9 @@ TagManager:
   tags:
   - InteractableArea
   - Ground
+  - Enemy
+  - Path
+  - Door
   layers:
   - Default
   - TransparentFX
@@ -19,9 +22,9 @@ TagManager:
   - Interactable
   - Pickable
   - Player
-  - 
-  - 
-  - 
+  - InteractArea
+  - ParentTargetTrigger
+  - Enemy
   - 
   - 
   - 

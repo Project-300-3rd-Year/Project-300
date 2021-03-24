@@ -6,6 +6,6 @@ using UnityEngine.UI;
 
 public class PlayerInteractableObject : PlayerInteractableComponent
 {
-    [Header("UI")]
-    [SerializeField] protected Sprite UIImageToShowIfPlayerLooksAtMe;
+    //public Action PlayerLookedAtMeInteractable;
+    //public Action PlayerLookedAtMeNotInteractable;
 }

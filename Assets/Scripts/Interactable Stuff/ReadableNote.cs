@@ -1,0 +1,92 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ReadableNote : PlayerInteractableObject,iInteractable
+{
+    //Components.
+    private PlayerMovement playerMovement;
+    private PlayerCameraRotation playerCameraRotation;
+
+    [Header("Note To Show")]
+    public Note note;
+
+    [Header("Stopping reading")]
+    [SerializeField] private KeyCode keyToStopReadingNote;
+
+    private Coroutine readingNoteCoroutine;
+
+    public bool IsInteractable { get { return true; } set { _IsInteractable = value;} }
+
+    public override void Awake()
+    {
+        base.Awake();
+        playerMovement = player.GetComponent<PlayerMovement>();
+        playerCameraRotation = player.GetComponentInChildren<PlayerCameraRotation>();
+    }
+    public override void Start() => base.Start();
+
+    public void PlayerInteracted()
+    {
+        if(IsInteractable)
+        {
+            if (readingNoteCoroutine != null)
+                StopCoroutine(readingNoteCoroutine);
+
+            readingNoteCoroutine = StartCoroutine(ReadingNoteCoroutine());
+
+            PlayerInteractRaycast.Instance.DisableInteractionWithObjects();
+            PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
+
+            Cursor.lockState = CursorLockMode.None;
+
+            playerMovement.DisableMovement();
+            playerCameraRotation.DisableRotation();
+
+            UIManager.Instance.aimDot.DisableAimDot();
+            UIManager.Instance.noteUI.Show(note);
+        }
+    }
+
+    public void PlayerLookedAtMe()
+    {
+        UIManager.Instance.aimDot.ChangeToGreen();
+    }
+
+    public void PlayerLookedAwayFromMe()
+    {
+        UIManager.Instance.aimDot.Reset();
+    }
+
+    public void PlayerStoppedInteraction()
+    {
+
+    }
+
+    private IEnumerator ReadingNoteCoroutine()
+    {
+        while (true)
+        {
+            if(Input.GetKeyDown(keyToStopReadingNote))
+            {
+                PlayerInteractRaycast.Instance.EnableInteractionWithObjects();
+                PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
+
+                Cursor.lockState = CursorLockMode.Locked;
+
+                playerMovement.EnableMovement();
+                playerCameraRotation.EnableRotation();
+
+                UIManager.Instance.aimDot.EnableAimDot();
+                UIManager.Instance.noteUI.Hide();
+
+                break;
+            }
+
+            yield return null;
+        }
+    }
+}

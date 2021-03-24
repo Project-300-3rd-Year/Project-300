@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float maxWalkSpeed;
 
     [Header("Sprinting")]
-    [SerializeField] private bool IsSprinting;
+    public bool IsSprinting;
     [SerializeField] private float sprintSpeed = 24f;
     [SerializeField] private float sprintTimer = 0;
     [SerializeField] private float maxSprintTime = 3;
@@ -74,13 +74,17 @@ public class PlayerMovement : MonoBehaviour
     private Quaternion defaultRotation;
     private Quaternion rotationAtStartOfLean;
 
+    public Transform objectHoldPosition;
+
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
     }
 
     private void Start()
-    {  
+    {
+        GameManager.Instance.currentGameSessionState = GameSessonState.InGame;
+
         defaultRotation = transform.rotation;
 
         currentMovementSpeed = maxWalkSpeed;
@@ -89,6 +93,10 @@ public class PlayerMovement : MonoBehaviour
         crouchHeight = characterController.height / 2;
 
         CapsLockIsActive = (((ushort)GetKeyState(0x14)) & 0xffff) != 0;
+
+        Cursor.visible = false;
+
+        GameManager.Instance.onGameEnd += DisableMovement;
     }
 
     void Update()
@@ -141,6 +149,8 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            IsSprinting = false;
+
             if (SprintIsInCooldown)
             {
                 sprintCooldownTimer += Time.deltaTime;
@@ -247,10 +257,9 @@ public class PlayerMovement : MonoBehaviour
     //TEMPORARY TEST FOR COLLIDING WITH OTHER RIGIDBODIES - FIX UP LATER.
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (hit.rigidbody != null)
-        {
-            print("added force");
-            hit.rigidbody.AddForce(hit.moveDirection * 5f);
-        }
+        //if (hit.rigidbody != null)
+        //{
+        //    hit.rigidbody.AddForce(hit.moveDirection * 5f);
+        //}
     }
 }

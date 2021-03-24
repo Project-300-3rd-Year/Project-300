@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9fdcc8b000825e46908bed018f87602, type: 3}
+  m_Name: Note1
+  m_EditorClassIdentifier: 
+  date: 25th December 2004
+  text: "My name is Jerome Williams. I am freshly ordained exorcist. A week ago I
+    received a letter from a Bishop. He was asking me to go and investigate a certain
+    family living in an old house on the outskirts of a small backwards town. I sent
+    out a reply and few days later a package arrived with documents, pictures and
+    what seemed like interrogation transcripts with a small note with the address.
+    On Christmas Eve I took a train and arrived at a town called \"Melas\". I checked
+    in the motel and decided to ask locals about the family. They did not want to
+    talk about it at all and even more than that they would not look me in the eye.
+    It was unusual but I decided to leave it. I\u2019m in my room and it is close
+    to midnight now. This town seems strange. There is no noise after dark, not even
+    a dog barking. I am probably just being paranoid. Tomorrow I will go to talk
+    to Romanovs. The family name sounds familiar, but I can\u2019t recall where I
+    heard it before. "

@@ -2,118 +2,164 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class DoorHandle : PlayerInteractableObject, iInteractable
+/* Should have made seperate scripts for door handles and just regular handles for cubbards etc. but ran out of time.
+*/
+
+public class DoorHandle : Handle, iInteractable, iLockable
 {
-    //Components.
-    private PlayerCameraRotation playerCameraRotation;
-    [SerializeField] private PlayerInteractableArea interactableArea;
+    private Rigidbody doorRigidbody;
 
-    [Header("Interaction")]
-    [SerializeField] private bool PlayerInteractingWithDoor;
-    private Coroutine interactWithDoorCoroutine;
-
-    [Header("Door - Rotation")]
-    [SerializeField] private GameObject doorGameObject;
-    [SerializeField] private float rotationSpeed;
-    [SerializeField] private Transform playerRelativePositionChecker;
-    Rigidbody doorRigidbody;
+    private BreakDownDoor breakDownDoor; //Might not have one.
+    public List<GameObject> enemyPathsToActivateOnUnlocking; //Might not have any. Should have made a seperate script.
 
     public bool IsInteractable
     {
         get
         {
-            _IsInteractable = true;
-            return _IsInteractable;
+            bool returnValue = IsLocked == false && PlayerInteracting == false;
+
+            if (breakDownDoor != null)
+                returnValue = !breakDownDoor.SequenceIsActive;
+
+            return returnValue;
+
         }
         set
         {
             _IsInteractable = value;
         }
     }
+    public event Action<DoorHandle> UnlockEvent;
 
-    public event Action InteractedEvent;
+    [Header("Locking")]
+    [SerializeField] private bool _isLocked;
+    [SerializeField] private KeyInventoryItem _keyToUnlockMe;
+    [SerializeField] private KeyCode _keyCodeToUnlockMe;
+    [SerializeField] private Sprite _unlockSprite;
 
+    public bool IsLocked { get { return _isLocked; } set { _isLocked = value; } }
+    public KeyInventoryItem KeyToUnlockMe { get { return _keyToUnlockMe; } }
+    public KeyCode KeyCodeToUnlockMe { get { return _keyCodeToUnlockMe; } }
+    public Sprite UnlockSprite { get { return _unlockSprite; } }
 
+    //Start.
     public override void Awake()
     {
         base.Awake();
-        playerCameraRotation = player.GetComponentInChildren<PlayerCameraRotation>();
-        doorRigidbody = doorGameObject.GetComponent<Rigidbody>();
+        doorRigidbody = gameObjectToAffect.GetComponent<Rigidbody>();
+        gameObjectToAffect.TryGetComponent(out breakDownDoor);
     }
-
     public override void Start()
     {
         base.Start();
+
         interactableArea.PlayerLeftArea += PlayerStoppedInteraction;
+
+        if (IsLocked)
+            Lock();
     }
 
-    void Update()
+    public void Unlock()
     {
-        print(playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position));
+        UnlockEvent?.Invoke(this);
+
+        IsLocked = false;
+        ChangeKeyInteractCondition(holdToInteract: true);
+        currentKeyToInteract = defaultKeyToInteract;
+        doorRigidbody.isKinematic = false;
     }
 
+    public void Lock()
+    {
+        IsLocked = true;
+        ChangeKeyInteractCondition(holdToInteract: false);
+        currentKeyToInteract = KeyCodeToUnlockMe;
+        doorRigidbody.isKinematic = true;
+    }
+
+    //IInteractable.
     public void PlayerInteracted()
     {
-        if(interactWithDoorCoroutine == null)
-            interactWithDoorCoroutine = StartCoroutine(InteractWithDoorHandle());
-    }
+        if(IsInteractable)
+        {
+            StartCoroutine(InteractWithDoorHandle());
+        }
+        else
+        {
+            if(breakDownDoor != null && breakDownDoor.SequenceIsActive)
+                UIManager.Instance.aimDot.Reset();
 
-    public void PlayerIsLookingAtMe()
-    {
-        PlayerLookedAtMe();
+            else if(player.GetComponent<PlayerInventory>().HasKeyInInventory(KeyToUnlockMe)) //Unlock.
+            {
+                Unlock();
+
+                UIManager.Instance.aimDot.ChangeToGreen();
+                UIManager.Instance.singleInteractImage.Hide();
+            }
+            else
+            {
+                UIManager.Instance.messageNotification.Show($"Door is locked... seems like I need the {KeyToUnlockMe.keyName} key...");
+            }
+        }
     }
 
     public void PlayerLookedAtMe()
     {
-        if (PlayerInteractingWithDoor == false)
-            AimDotUI.Instance.ChangeAimDotToGreen(); //Check if can open door - some other criteria maybe - has key etc.
-    }
-
-    public void PlayerLookedAwayFromMe()
-    {
-        if(PlayerInteractingWithDoor == false)
-            AimDotUI.Instance.ChangeAimDotBackToNormal();
-    }
-
-    public void PlayerStoppedInteraction()
-    {
-        PlayerInteractingWithDoor = false;
-        AimDotUI.Instance.EnableAimDot();
-        AimDotUI.Instance.ChangeAimDotBackToNormal();
-        playerCameraRotation.EnableRotation();
-
-        if (interactWithDoorCoroutine != null)
+        if (IsInteractable)
+        {        
+            UIManager.Instance.aimDot.ChangeToGreen();
+        }
+        else
         {
-            StopCoroutine(interactWithDoorCoroutine);
-            interactWithDoorCoroutine = null;
+            if(IsLocked)
+            {
+                UIManager.Instance.aimDot.ChangeToRed();
+                UIManager.Instance.singleInteractImage.Show(UnlockSprite);
+            }
         }
     }
+    public void PlayerLookedAwayFromMe()
+    {
+        if(PlayerInteracting == false)
+            UIManager.Instance.aimDot.Reset();
 
+        if (IsLocked)
+            UIManager.Instance.singleInteractImage.Hide();
+    }
+
+    //Interaction.
     private IEnumerator InteractWithDoorHandle()
     {
         Vector3 playerRelativePosition = playerRelativePositionChecker.transform.InverseTransformPoint(player.transform.position);
+        PlayerInteracting = true;
 
-        PlayerInteractingWithDoor = true;
+        PlayerInteractRaycast.Instance.DisableCheckingForInteractables();
 
         playerCameraRotation.DisableRotation();
-        AimDotUI.Instance.DisableAimDot();
+        UIManager.Instance.aimDot.DisableAimDot();
 
-        while (inputDelegate(defaultKeyToInteract))
+        while (inputDelegate(defaultKeyToInteract)) 
         {
             float desiredMouseInput = Mathf.Abs(Input.GetAxisRaw("Mouse X")) > Mathf.Abs(Input.GetAxisRaw("Mouse Y")) ? Input.GetAxisRaw("Mouse X") : Input.GetAxisRaw("Mouse Y"); //Choose input based on which left / right input is bigger.
-            doorRigidbody.AddRelativeTorque(doorGameObject.transform.up * rotationSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime, ForceMode.VelocityChange);
+            doorRigidbody.AddRelativeTorque(gameObjectToAffect.transform.up * affectSpeed * (desiredMouseInput = playerRelativePosition.z > 0 ? desiredMouseInput : -desiredMouseInput) * Time.deltaTime, ForceMode.VelocityChange);
+
             yield return null;
         }
 
         PlayerStoppedInteraction();
     }
+    public void PlayerStoppedInteraction()
+    {
+        if (PlayerInteracting)
+        {
+            PlayerInteracting = false;
+            UIManager.Instance.aimDot.EnableAimDot();
+            UIManager.Instance.aimDot.Reset();
+            playerCameraRotation.EnableRotation();
 
-    //float ClampAngle(float angle, float from, float to)
-    //{
-    //    // accepts e.g. -80, 80
-    //    if (angle < 0f) angle = 360 + angle;
-    //    if (angle > 180f) return Mathf.Max(angle, 360 + from);
-    //    return Mathf.Min(angle, to);
-    //}
+            PlayerInteractRaycast.Instance.EnableCheckingForInteractables();
+        }
+    }
 }

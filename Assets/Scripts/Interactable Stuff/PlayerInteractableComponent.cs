@@ -10,12 +10,17 @@ public class PlayerInteractableComponent : MonoBehaviour
 
     [Header("Conditions For Interaction")]
     [SerializeField] public KeyCode defaultKeyToInteract;
+    [SerializeField] public KeyCode currentKeyToInteract;
     [SerializeField] public bool holdToInteract;
     public bool KeyWasHeldOnLookingAtMe;
     public Func<KeyCode, bool> inputDelegate;
 
     public virtual void Awake() => player = GameObject.FindGameObjectWithTag("Player");
-    public virtual void Start() => ChangeKeyInteractCondition(holdToInteract);
+    public virtual void Start()
+    {
+        ChangeKeyInteractCondition(holdToInteract);
+        ChangeCurrentKeyToInteract(defaultKeyToInteract);
+    } 
 
     protected void ChangeKeyInteractCondition(bool holdToInteract)
     {
@@ -27,7 +32,15 @@ public class PlayerInteractableComponent : MonoBehaviour
         this.holdToInteract = holdToInteract;
     }
 
-    protected void ChangeDefaultKeyToInteract(KeyCode newKeyCode) => defaultKeyToInteract = newKeyCode;
+    protected void ChangeCurrentKeyToInteract(KeyCode newKeyCode) => currentKeyToInteract = newKeyCode;
+
+    protected bool IsPlayerLookingAtMe()
+    {
+        if (PlayerInteractRaycast.Instance.interactableObject != null && PlayerInteractRaycast.Instance.interactableObject.gameObject == this.gameObject)
+            return true;
+
+       return false;
+    }
 
     //OLD
 
